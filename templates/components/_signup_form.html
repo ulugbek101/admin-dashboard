@@ -1,0 +1,89 @@
+<form method="post" action="{% url 'signup' %}">
+  {% csrf_token %} 
+  {% if request.GET.next %}
+  <input type="hidden" name="next" value="{{ request.GET.next }}" />
+  {% endif %}
+
+  <div class="text-center mb-3">
+    <p>Sign up with:</p>
+
+    <!-- <button type="button" class="btn btn-secondary btn-floating mx-1">
+        <i class="fab fa-facebook-f"></i>
+    </button> -->
+
+    <button type="button" class="btn btn-secondary btn-floating mx-1">
+      <a href="{% url 'social:begin' 'google-oauth2' %}">
+        <i class="fab fa-google"></i>
+      </a>
+    </button>
+
+    <!-- <button type="button" class="btn btn-secondary btn-floating mx-1">
+        <i class="fab fa-twitter"></i>
+    </button> -->
+
+    <button type="button" class="btn btn-secondary btn-floating mx-1">
+      <a href="{% url 'social:begin' 'github' %}">
+        <i class="fab fa-github"></i>
+      </a>
+    </button>
+  </div>
+
+  <p class="text-center">or:</p>
+
+  <!-- First Name input -->
+  <div class="form-outline mb-4">
+    <input type="text" id="first_name" class="form-control" name="first_name" value="{{ first_name }}" />
+    <label class="form-label" for="first_name">Ism</label>
+  </div>
+
+  <!-- Last Name input -->
+  <div class="form-outline mb-4">
+    <input type="text" id="last_name" class="form-control" name="last_name" value="{{ last_name }}" />
+    <label class="form-label" for="last_name">Familiya</label>
+  </div>
+
+  <!-- Username input -->
+  <div class="form-outline mb-4">
+    <input type="text" id="username" class="form-control" name="username" value="{{ username }}" required />
+    <label class="form-label" for="username">Username</label>
+  </div>
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <input type="email" id="email" class="form-control" name="email" value="{{ email }}" required />
+    <label class="form-label" for="email">E-mail manzil</label>
+  </div>
+
+  <!-- Password input -->
+  <div class="form-outline mb-4">
+    <input type="password" id="password1" class="form-control" name="password1" value="{{ password1 }}" required />
+    <label class="form-label" for="password1">Parol</label>
+  </div>
+
+  <!-- Repeat Password input -->
+  <div class="form-outline mb-4">
+    <input type="password" id="password2" class="form-control" name="password2" value="{{ password2 }}" required />
+    <label class="form-label" for="password2"
+      >Parolni takrorlang</label
+    >
+  </div>
+
+  <!-- Checkbox -->
+  <div class="form-check d-flex justify-content-center mb-4">
+    <input
+      class="form-check-input me-2"
+      type="checkbox"
+      value=""
+      id="registerCheck"
+      checked
+      aria-describedby="registerCheckHelpText"
+      required
+    />
+    <label class="form-check-label" for="registerCheck">
+      Shaxsiy ma'lumotlarimni qayta ishlashga ruxsat beraman
+    </label>
+  </div>
+
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
+</form>

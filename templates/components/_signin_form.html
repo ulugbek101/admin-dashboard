@@ -1,0 +1,50 @@
+<form method="post" action="{% url 'signin' %}">
+  {% csrf_token %}
+  
+  {% if request.GET.next %}
+  <input type="hidden" name="next" value="{{ request.GET.next }}" />
+  {% endif %}
+
+  <div class="text-center mb-3">
+    <p>Sign in with:</p>
+
+    <!-- <button type="button" class="btn btn-secondary btn-floating mx-1">
+        <a href="{% url 'social:begin' 'facebook' %}">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+    </button> -->
+
+    <button type="button" class="btn btn-secondary btn-floating mx-1">
+      <a href="{% url 'social:begin' 'google-oauth2' %}">
+        <i class="fab fa-google"></i>
+      </a>
+    </button>
+
+    <!-- <button type="button" class="btn btn-secondary btn-floating mx-1">
+        <i class="fab fa-twitter"></i>
+    </button> -->
+
+    <button type="button" class="btn btn-secondary btn-floating mx-1">
+      <a href="{% url 'social:begin' 'github' %}">
+        <i class="fab fa-github"></i>
+      </a>
+    </button>
+  </div>
+
+  <p class="text-center">or:</p>
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <input type="email" id="email" class="form-control" name="email" required value="{{ email }}" />
+    <label class="form-label" for="email">Email</label>
+  </div>
+
+  <!-- Password input -->
+  <div class="form-outline mb-4">
+    <input type="password" id="password" class="form-control" name="password" required value="{{ password }}" />
+    <label class="form-label" for="password">Password</label>
+  </div>
+
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+</form>
