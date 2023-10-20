@@ -14,5 +14,7 @@ class User(AbstractUser):
     updated = models.DateTimeField(auto_now=True)
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
 
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
