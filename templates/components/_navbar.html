@@ -13,38 +13,38 @@
     </div>
 
     <div class="sidebar">
-        <a href="#">
+        <a href="{% url 'subjects' %}" class="{% if subjects == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         bookmark
                     </span>
             <h3>Fanlar</h3>
         </a>
-        <a href="#">
+        <a href="{% url 'groups' %}" class="{% if groups == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         groups
                     </span>
             <h3>Guruhlar</h3>
         </a>
-        <a href="#">
+        <a href="{% url 'teachers' %}" class="{% if teachers == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         people_alt
                     </span>
             <h3>O'qituvchilar</h3>
         </a>
-        <a href="#">
+        <a href="{% url 'pupils' %}" class="{% if pupils == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         school
                     </span>
             <h3>O'quvchilar</h3>
 <!--            <span class="message-count">27</span>-->
         </a>
-        <a href="#" class="active">
+        <a href="{% url 'dashboard' %}" class="{% if dashboard == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         insights
                     </span>
             <h3>Analitika</h3>
         </a>
-        <a href="#">
+        <a href="{% url 'settings' %}" class="{% if settings == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         settings
                     </span>
