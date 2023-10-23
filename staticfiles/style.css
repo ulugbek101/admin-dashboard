@@ -412,7 +412,6 @@ main .new-users .user-list {
   border-radius: var(--card-border-radius);
   box-shadow: var(--box-shadow);
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
   gap: 1.4rem;
   cursor: pointer;
@@ -429,6 +428,7 @@ main .new-users .user-list .user {
   align-items: center;
   justify-content: center;
   max-width: 200px;
+  height: 100%;
   text-align: center;
 }
 

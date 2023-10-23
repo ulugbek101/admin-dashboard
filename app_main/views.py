@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 from app_users.models import User
@@ -50,6 +50,31 @@ def settings(request):
 
 def add_teacher(request):
     form = forms.TeacherForm()
+
+    if request.method == "POST":
+        form = forms.TeacherForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            if request.POST.get('password1') == request.POST.get('password2'):
+                teacher = form.save(commit=False)
+                teacher.username = request.POST.get('email')[:request.POST.get('email').find('@')]
+                teacher.set_password(request.POST.get('password2'))
+                teacher.save()
+                # success message: teacher added
+                return redirect('teachers')
+            else:
+                # error message: password mismatch
+                # form.fields.pop('password1')
+                # form.fields.pop('password2')
+                context = {
+                    "form": form,
+                    "title": "Yangi o'qituvchi qo'shish",
+                    "btn_text": "Qo'shish",
+                }
+                return render(request, "form.html", context)
+        else:
+            # error message: form invalid
+            return redirect('add_teacher')
 
     context = {
         "form": form,
