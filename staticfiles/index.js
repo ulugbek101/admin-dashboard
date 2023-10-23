@@ -1,33 +1,37 @@
-const sideMenu = document.querySelector('aside');
-const menuBtn = document.getElementById('menu-btn');
-const closeBtn = document.getElementById('close-btn');
+const sideMenu = document.querySelector("aside");
+const menuBtn = document.getElementById("menu-btn");
+const closeBtn = document.getElementById("close-btn");
+const modalCloseBtn = document.querySelector(".modal-window-top button");
+const modalWindow = document.querySelector(".modal-window");
+const modalWindowShade = document.querySelector(".modal-window-shade");
 
-const darkMode = document.querySelector('.dark-mode');
+const darkMode = document.querySelector(".dark-mode");
 
-menuBtn.addEventListener('click', () => {
-    sideMenu.style.display = 'block';
+modalWindowShade.addEventListener("click", () => {
+  removeModalWindow();
 });
 
-closeBtn.addEventListener('click', () => {
-    sideMenu.style.display = 'none';
+modalCloseBtn.addEventListener("click", () => {
+  removeModalWindow();
 });
 
-darkMode.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode-variables');
-    darkMode.querySelector('span:nth-child(1)').classList.toggle('active');
-    darkMode.querySelector('span:nth-child(2)').classList.toggle('active');
-})
-
-
-Orders.forEach(order => {
-    const tr = document.createElement('tr');
-    const trContent = `
-        <td>${order.productName}</td>
-        <td>${order.productNumber}</td>
-        <td>${order.paymentStatus}</td>
-        <td class="${order.status === 'Declined' ? 'danger' : order.status === 'Pending' ? 'warning' : 'primary'}">${order.status}</td>
-        <td class="primary">Details</td>
-    `;
-    tr.innerHTML = trContent;
-    document.querySelector('table tbody').appendChild(tr);
+menuBtn.addEventListener("click", () => {
+  sideMenu.style.display = "block";
 });
+
+closeBtn.addEventListener("click", () => {
+  sideMenu.style.display = "none";
+});
+
+darkMode.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode-variables");
+  darkMode.querySelector("span:nth-child(1)").classList.toggle("active");
+  darkMode.querySelector("span:nth-child(2)").classList.toggle("active");
+});
+
+const removeModalWindow = () => {
+  modalWindow.classList.remove("modal-active");
+  modalWindowShade.classList.remove("modal-active");
+}
+
+export {modalWindow, modalWindowShade};

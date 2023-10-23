@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
     <title>Responsive Dashboard Design #1 | AsmrProg</title>
-</head>
+  </head>
 
-<body class="dark-mode-variables">
+  <body class="dark-mode-variables">
+    <div class="container">{% block content %} {% endblock content %}</div>
 
-<div class="container">
+    <div class="modal-window-shade"></div>
+    <div class="modal-window">
+      <div class="user-list modal-window-top">
+        <button>
+          <span class="material-icons-sharp"> close </span>
+        </button>
+      </div>
+      <div class="model-window-body">
+        <form action="" method="post" class="teacher-form">
+          <div>
+            <input type="text" placeholder="Username" />
+          </div>
+          <div>
+            <input type="text" placeholder="First Name" />
+          </div>
+          <div>
+            <input type="text" placeholder="Last Name" />
+          </div>
+          <div>
+            <input type="email" placeholder="Email" />
+          </div>
+          <div class="teacher-form-photo">
+            <span class="teacher-form-photo-label">Rasm tanlang</span>
+            <input type="file" placeholder="Photo" />
+          </div>
+          <div>
+            <input type="password" placeholder="Password" />
+          </div>
+          <div>
+            <input type="password" placeholder="Password Confirmation" />
+          </div>
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </div>
 
-    {% block content %} {% endblock content %}
-
-</div>
-
-<script src="{% static 'orders.js' %}"></script>
-<script src="{% static 'index.js' %}"></script>
-</body>
+    <script src="{% static 'index.js' %}" type="module"></script>
+    <script src="{% static 'teacher-form.js' %}" type="module"></script>
+  </body>
 </html>
-
-

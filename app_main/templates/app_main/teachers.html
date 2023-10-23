@@ -7,11 +7,11 @@
     <h1>Teachers page</h1>
     <div class="new-users">
         <div class="user-list">
-            <div class="user">
+            <button class="user add-user">
                 <img src="{% static 'images/plus.png' %}">
-                <h2>Yangi</h2>
-                <p>o'qituvchi qo'shish</p>
-            </div>
+                <h2>Yangi o'qituvchi qo'shish</h2>
+                <!-- <p></p> -->
+            </button>
             {% for teacher in teachers_list %}
             <div class="user">
                 <img src="{{ teacher.profile_picture.url }}">
