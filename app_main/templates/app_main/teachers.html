@@ -1,9 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
     <h1>Teachers page</h1>
+    <div class="new-users">
+        <div class="user-list">
+            <div class="user">
+                <img src="{% static 'images/plus.png' %}">
+                <h2>Yangi</h2>
+                <p>o'qituvchi qo'shish</p>
+            </div>
+            {% for teacher in teachers_list %}
+            <div class="user">
+                <img src="{{ teacher.profile_picture.url }}">
+                <h2>{{ teacher.get_full_name }}</h2>
+                <p>{{ teacher.created|date }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </main>
 {% include 'components/_right_block.html' %}
 {% endblock content %}

@@ -125,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 # LANGUAGE_CODE = env.str('LANG_CODE')  # 'en-us', 'ru', 'uz'
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'uz'
 
 # TIME_ZONE = env.str('TIMEZONE')  # 'Asia/Tashkent', 'Europe/Istanbul
 TIME_ZONE = 'Asia/Tashkent'  # 'Asia/Tashkent', 'Europe/Istanbul
@@ -138,7 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# MEDIA_URL = 'images/'
+MEDIA_URL = 'media/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
@@ -146,7 +146,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
-# MEDIA_ROOT = BASE_DIR / 'static/images'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type

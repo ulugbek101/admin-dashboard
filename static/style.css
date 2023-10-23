@@ -222,6 +222,7 @@ aside .sidebar .message-count{
 
 main{
     margin-top: 1.4rem;
+    height: 88vh;
 }
 
 main .analyse{
@@ -304,14 +305,15 @@ main .analyse .progresss .percentage{
 }
 
 main .new-users{
-    margin-top: 1.3rem;
+    height: 100%;
+    overflow: auto;
+    margin-top: 1rem;
 }
 
 main .new-users .user-list{
     background-color: var(--color-white);
     padding: var(--card-padding);
     border-radius: var(--card-border-radius);
-    margin-top: 1rem;
     box-shadow: var(--box-shadow);
     display: flex;
     justify-content: space-around;

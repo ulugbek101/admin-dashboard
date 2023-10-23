@@ -1,6 +1,9 @@
 from django.shortcuts import render
 
 
+from app_users.models import User
+
+
 def subjects(request):
     context = {
         "subjects": True,
@@ -18,6 +21,7 @@ def groups(request):
 def teachers(request):
     context = {
         "teachers": True,
+        "teachers_list": User.objects.all().order_by('created')
     }
     return render(request, "app_main/teachers.html", context)
 
