@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'components/_navbar.html' %}
+<main>
+    <h1>{{ title }}</h2>
+    <div class="form-wrapper">
+        <form action="" method="post" class="form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <br>
+            <button type="submit" class="button">{{ btn_text }}</button>
+        </form>
+    </div>
+</main>
+{% include 'components/_right_block.html' %}
+{% endblock content %}

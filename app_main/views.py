@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 
 from app_users.models import User
+from . import forms
 
 
 def subjects(request):
@@ -45,3 +46,14 @@ def settings(request):
         "settings": True,
     }
     return render(request, "app_main/settings.html", context)
+
+
+def add_teacher(request):
+    form = forms.TeacherForm()
+
+    context = {
+        "form": form,
+        "title": "Yangi o'qituvchi qo'shish",
+        "btn_text": "Qo'shish",
+    }
+    return render(request, "form.html", context)
