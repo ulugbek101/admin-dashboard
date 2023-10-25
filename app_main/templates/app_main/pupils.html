@@ -1,9 +1,54 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
     <h1>Pupils page</h1>
+    <div class="card-wrapper">
+        <div class="card">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>№</th>
+                        <th>O'quvchi</th>
+                        <th>Guruh</th>
+                        <th>To'lov</th>
+                        <th>O'zgartirish / O'chirish</th>
+                    </tr>
+                    {% for pupil in pupils_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ pupil.full_name }}</td>
+                        <td>{{ pupil.group.name }}</td>
+                        
+                        {% for payment in pupil.payments %}
+                            
+                                <td class="{% if payment.amount == pupil.group.price %} success {% endif %}">
+                                    {{ payment.amount|intcomma }}
+                                    / {{ pupil.group.price|intcomma }}</td>
+                            
+                        {% empty %}
+                            <td>0 / {{ pupil.group.price|intcomma }}</td>
+                        {% endfor %}
+                        <td>
+                            <a href="">
+                              <span class="material-icons-sharp">
+                                edit
+                              </span>                  
+                            </a>
+                            <a href="">
+                              <span class="material-icons-sharp">
+                                delete
+                              </span>                  
+                            </a>
+                          </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
 {% include 'components/_right_block.html' %}
 {% endblock content %}

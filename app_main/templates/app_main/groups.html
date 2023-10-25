@@ -1,5 +1,7 @@
 {% extends 'base.html' %} 
 {% block content %} 
+{% load humanize %}
+
 {% include 'components/_navbar.html' %}
 <main>
   <h1>Groups page</h1>
@@ -19,7 +21,7 @@
             <td>{{ forloop.counter }}</td>
             <td>{{ group.name }}</td>
             <td>{{ group.teacher.full_name }}</td>
-            <td>{{ group.pupil_set.all.count }}</td>
+            <td>{{ group.pupil_set.all.count|intcomma }}</td>
             <td>
               <a href="">
                 <span class="material-icons-sharp">

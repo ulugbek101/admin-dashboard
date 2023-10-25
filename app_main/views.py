@@ -1,7 +1,10 @@
+from datetime import date, datetime
+
 from django.shortcuts import render, redirect
+from django.db import models
 
 
-from . models import Group
+from . models import Group, Pupil
 from app_users.models import User
 from . import forms
 
@@ -31,6 +34,8 @@ def teachers(request):
 
 def pupils(request):
     context = {
+        "pupils_list": Pupil.objects.all(),
+        "current_date": str(date.today())[:-3],
         "pupils": True,
     }
     return render(request, "app_main/pupils.html", context)

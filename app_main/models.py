@@ -53,7 +53,7 @@ class Pupil(models.Model):
 
     @property
     def payments(self):
-        return self.payment_set.filter(month=str(date.today())[:-3])
+        return self.payment_set.filter(month__month=str(date.today().month))
 
     @property
     def is_fully_paid(self):
@@ -75,7 +75,7 @@ class Payment(models.Model):
     group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True, verbose_name='Guruh')
     group_name = models.CharField(max_length=200, blank=True, null=True)
     amount = models.IntegerField(verbose_name='To\'lov')
-    note = models.TextField(verbose_name='Eslatma / To\'lov tarifi')
+    note = models.TextField(verbose_name='Eslatma / To\'lov tarifi', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True, verbose_name='To\'lov vaqti')
     updated = models.DateTimeField(auto_now=True, null=True, verbose_name='O\'zgartirilgan vaqt')
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
