@@ -400,13 +400,13 @@ main .analyse .progresss .percentage {
   width: 100%;
 }
 
-main .new-users {
+main .card-wrapper {
   height: 100%;
   overflow: auto;
   margin-top: 1rem;
 }
 
-main .new-users .user-list {
+main .card-wrapper .card {
   background-color: var(--color-white);
   padding: var(--card-padding);
   border-radius: var(--card-border-radius);
@@ -418,11 +418,11 @@ main .new-users .user-list {
   transition: all 0.3s ease;
 }
 
-main .new-users .user-list:hover {
+main .card-wrapper .card:hover {
   box-shadow: none;
 }
 
-main .new-users .user-list .user {
+main .card-wrapper .card .user {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -432,7 +432,7 @@ main .new-users .user-list .user {
   text-align: center;
 }
 
-main .new-users .user-list .user img {
+main .card-wrapper .card .user img {
   width: 5rem;
   height: 5rem;
   margin-bottom: 0.4rem;
@@ -447,28 +447,57 @@ main .recent-orders h2 {
   margin-bottom: 0.8rem;
 }
 
-main .recent-orders table {
-  background-color: var(--color-white);
+.card-wrapper .card table {
+  font-family: "Poppins", sans-serif;
+  border-collapse: collapse;
   width: 100%;
-  padding: var(--card-padding);
-  text-align: center;
-  box-shadow: var(--box-shadow);
-  border-radius: var(--card-border-radius);
-  transition: all 0.3s ease;
 }
 
-main .recent-orders table:hover {
-  box-shadow: none;
+.card-wrapper .card table td, .card-wrapper .card table th {
+  border-bottom: 1px solid var(--color-info-dark);
+  padding: 8px;
 }
 
-main table tbody td {
-  height: 2.8rem;
-  border-bottom: 1px solid var(--color-light);
-  color: var(--color-dark-variant);
+.card-wrapper .card table tr td:last-child span {
+  /* display: flex;
+  flex-direction: row;
+  justify-content: space-around; */
+  /* color: var(--color-info-dark); */
+  padding: 5px 10px;
+  margin: 0 5px;
+  border-radius: var(--border-radius-1);
+  border: 1px solid transparent;
+  transition: .5s;
 }
 
-main table tbody tr:last-child td {
-  border: none;
+.card-wrapper .card table tr td:last-child a:last-child span:hover{
+  border: 1px solid var(--color-danger);
+  background-color: var(--color-danger);
+}
+
+.card-wrapper .card table tr td:last-child a:first-child span:hover{
+  border: 1px solid var(--color-warning);
+  background-color: var(--color-warning);
+}
+
+/* .card-wrapper .card table tr:nth-child(even){
+  background-color: var(--color-info-dark);
+} */
+/* .card-wrapper .card table tr:nth-child(even){
+  background-color: ;
+} */
+/* .card-wrapper .card table tr:hover {background-color: var(--color-info-dark);} */
+
+.card-wrapper .card table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: var(--color-white);
+  color: var(--color-info-dark);
+}
+
+.card-wrapper .card table td {
+  color: var(--color-info-dark);
 }
 
 main .recent-orders a {
@@ -635,7 +664,7 @@ main .recent-orders a {
   gap: 0.6rem;
 }
 
-@media screen and (max-width: 1200px) {
+/* @media screen and (max-width: 1200px) {
   .container {
     width: 95%;
     grid-template-columns: 7rem auto 23rem;
@@ -663,7 +692,7 @@ main .recent-orders a {
     gap: 0;
   }
 
-  main .new-users .user-list .user {
+  main .card-wrapper .card .user {
     flex-basis: 40%;
   }
 
@@ -688,7 +717,7 @@ main .recent-orders a {
   main table tbody tr td:first-child {
     display: none;
   }
-}
+} */
 
 @media screen and (max-width: 768px) {
   .container {
@@ -747,7 +776,7 @@ main .recent-orders a {
     padding: 0 1rem;
   }
 
-  main .new-users .user-list .user {
+  main .card-wrapper .card .user {
     flex-basis: 35%;
   }
 
@@ -757,10 +786,10 @@ main .recent-orders a {
     width: 100%;
   }
 
-  main .recent-orders table {
+  /* main .recent-orders table {
     width: 100%;
     margin: 0;
-  }
+  } */
 
   .right-section {
     width: 94%;

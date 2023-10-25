@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 
+from . models import Group
 from app_users.models import User
 from . import forms
 
@@ -14,6 +15,7 @@ def subjects(request):
 
 def groups(request):
     context = {
+        "groups_list": Group.objects.all(),
         "groups": True,
     }
     return render(request, "app_main/groups.html", context)

@@ -2,6 +2,7 @@ import uuid
 
 from datetime import date
 
+from django.db.models.signals import pre_delete
 from django.db import models
 from app_users.models import User
 
@@ -65,20 +66,23 @@ class Pupil(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 
-# class Payment(models.Model):
-#     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
-#     month = models.CharField(max_length=200, null=True)
-#     pupil = models.ForeignKey(to=Pupil, on_delete=models.SET_NULL, null=True)
-#     group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True)
-#     amount = models.IntegerField(verbose_name='To\'lov')
-#     note = models.TextField(verbose_name='Eslatma / To\'lov tarifi')
-#     created = models.DateTimeField(auto_now_add=True, null=True, verbose_name='To\'lov vaqti')
-#     updated = models.DateTimeField(auto_now=True, null=True, verbose_name='O\'zgartirilgan vaqt')
-#     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-#
-#     @property
-#     def is_changed(self) -> bool:
-#         return self.created != self.updated
-#
-#     def __str__(self) -> str:
-#         return f'{self.pupil} - {self.amount}'
+class Payment(models.Model):
+    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    owner_fullname = models.CharField(max_length=200, blank=True, null=True)
+    month = models.DateField(max_length=200, null=True, verbose_name='To\'lov oyi')
+    pupil = models.ForeignKey(to=Pupil, on_delete=models.SET_NULL, null=True, verbose_name='O\'quvchi')
+    pupil_fullname = models.CharField(max_length=200, blank=True, null=True)
+    group = models.ForeignKey(to=Group, on_delete=models.SET_NULL, null=True, verbose_name='Guruh')
+    group_name = models.CharField(max_length=200, blank=True, null=True)
+    amount = models.IntegerField(verbose_name='To\'lov')
+    note = models.TextField(verbose_name='Eslatma / To\'lov tarifi')
+    created = models.DateTimeField(auto_now_add=True, null=True, verbose_name='To\'lov vaqti')
+    updated = models.DateTimeField(auto_now=True, null=True, verbose_name='O\'zgartirilgan vaqt')
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+    @property
+    def is_changed(self) -> bool:
+        return self.created != self.updated
+
+    def __str__(self) -> str:
+        return f'{self.pupil} - {self.amount}' if self.pupil else f'{self.pupil_fullname} - {self.amount}'
