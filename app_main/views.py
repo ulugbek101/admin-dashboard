@@ -18,7 +18,7 @@ def subjects(request):
 
 def groups(request):
     context = {
-        "groups_list": Group.objects.all(),
+        "groups_list": Group.objects.all().order_by("name"),
         "groups": True,
     }
     return render(request, "app_main/groups.html", context)
@@ -103,11 +103,35 @@ def add_pupil(request):
             return redirect("pupils")
         else:
             # error message: form invalid
-            return redirect("add-pupil")
+            return redirect("add_pupil")
 
     context = {
         "form": form,
         "title": "Yangi o'quvchi qo'shish",
         "btn_text": "Qo'shish",
+    }
+    return render(request, "form.html", context)
+
+
+def update_pupil(request, pk):
+    pupil = Pupil.objects.get(id=pk)
+    form = forms.PupilForm(instance=pupil)
+
+    if request.method == 'POST':
+        form = forms.PupilForm(request.POST, instance=pupil)
+        
+        if form.is_valid():
+            form.save()
+            # success message: pupil updated
+            return redirect("pupils")
+        else:
+            # error message: form invalid e.g: pupil with the same first name, last name and group name
+            return redirect("update_pupil", pk=pk)
+
+
+    context = {
+        "form": form,
+        "title": "O'quvchi ma'lumotlarini o'zgartirish",
+        "btn_text": "O'quvchi ma'lumotlarini yangilash"
     }
     return render(request, "form.html", context)

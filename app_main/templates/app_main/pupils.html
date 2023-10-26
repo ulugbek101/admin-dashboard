@@ -33,7 +33,7 @@
                             <td>0 / {{ pupil.group.price|intcomma }}</td>
                         {% endfor %}
                         <td>
-                            <a href="">
+                            <a href="{% url 'update_pupil' pk=pupil.id %}">
                               <span class="material-icons-sharp">
                                 edit
                               </span>                  
