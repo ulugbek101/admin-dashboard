@@ -331,8 +331,11 @@ form .form-cancel-btn:hover {
   background: var(--color-white);
 }
 
-.form input[type="text"],
-select,
+.form select,
+textarea,
+input[type="text"],
+input[type="date"],
+input[type="number"],
 input[type="email"],
 input[type="file"],
 input[type="password"] {

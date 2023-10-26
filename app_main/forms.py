@@ -1,5 +1,5 @@
-from collections.abc import Mapping
-from typing import Any
+from datetime import date
+
 from django import forms
 from django.core.files.base import File
 from django.db.models.base import Model
@@ -8,7 +8,8 @@ from app_users.models import User
 from django.contrib.auth import password_validation
 from django.utils.translation import gettext_lazy as _
 
-from .models import Pupil
+from .models import Pupil, Payment
+
 
 class TeacherForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -17,7 +18,7 @@ class TeacherForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={
             "autocomplete": "new-password",
             "placeholder": "Parol",
-            }),
+        }),
         help_text=password_validation.password_validators_help_text_html(),
     )
     password2 = forms.CharField(
@@ -25,25 +26,20 @@ class TeacherForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={
             "autocomplete": "new-password",
             "placeholder": "Parolni tasdiqlang",
-            }),
+        }),
         strip=False,
         help_text=_("Enter the same password as before, for verification."),
     )
+
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email", "profile_picture", "password1", "password2"]
+        fields = ["first_name", "last_name", "email",
+                  "profile_picture", "password1", "password2"]
         widgets = {
             "profile_picture": forms.FileInput(attrs={
                 "accept": "image/*"
             })
         }
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     for _, field in self.fields.items():
-    #         field.widget.attrs.update({
-    #             "placeholder": field.label,
-    #         })
-        
 
 
 class PupilForm(forms.ModelForm):
@@ -51,9 +47,18 @@ class PupilForm(forms.ModelForm):
         model = Pupil
         fields = '__all__'
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     for _, field in self.fields.items():
-    #         field.widget.attrs.update({
-    #             "placeholder": field.label,
-    #         })
+
+class PaymentForm(forms.ModelForm):
+    class Meta:
+        model = Payment
+        fields = ['month', 'amount', 'note']
+        widgets = {
+            'month': forms.DateInput(attrs={
+                "type": "date",
+                "value": date.today(),
+                "min": date.today(),
+            }),
+            'amount': forms.NumberInput(attrs={
+                "step": 5000,
+            })
+        }

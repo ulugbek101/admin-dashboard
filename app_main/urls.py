@@ -13,6 +13,8 @@ urlpatterns = [
     path('add-teacher/', views.add_teacher, name='add_teacher'),
     path('add-pupil/', views.add_pupil, name='add_pupil'),
     
+    path('add-payment/<str:group_id>/<str:pupil_id>/', views.add_payment, name='add_payment'),
+    
     path('update-pupil/<str:pk>/', views.update_pupil, name='update_pupil'),
 
     path('delete-pupil/<str:pk>/', views.delete_pupil, name='delete_pupil'),

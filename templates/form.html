@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 {% include 'components/_navbar.html' %}
@@ -11,6 +12,9 @@
             <div>
                 <label for="id_{{ field.name }}">{{ field.label }}</label>
                 {{ field }}
+                {% if max_payment and field.name == 'amount' %}
+                <p class="max-payment">Maksimal to'lov: <span>{{ max_payment|intcomma }}</span> so'm</p>
+                {% endif %}
             </div>
             {% endfor %}
             <br>

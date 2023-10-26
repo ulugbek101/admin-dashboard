@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.db import models
 
 
-from . models import Group, Pupil
+from . models import Group, Pupil, Payment
 from app_users.models import User
 from . import forms
 
@@ -109,6 +109,51 @@ def add_pupil(request):
         "form": form,
         "title": "Yangi o'quvchi qo'shish",
         "btn_text": "Qo'shish",
+    }
+    return render(request, "form.html", context)
+
+
+def add_payment(request, group_id, pupil_id):
+    try:
+        payment = Payment.objects.get(pupil__id=pupil_id, month=date.today())
+    except:
+        payment = None
+
+    form = forms.PaymentForm(data={
+        'amount': payment.amount if payment else 0,
+    })
+    pupil = Pupil.objects.get(group__id=group_id, id=pupil_id)
+
+    if request.method == 'POST':
+        if payment:
+            form = forms.PaymentForm(request.POST, instance=payment)
+        else:
+            form = forms.PaymentForm(request.POST)
+
+        if form.is_valid():
+            if request.POST.get('amount') == '0': 
+                return redirect("pupils")
+            
+            if int(request.POST.get('amount')) > pupil.group.price:
+                # error message: payment is more than group price
+                return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
+            
+            payment = form.save(commit=False)
+            payment.owner = request.user
+            payment.pupil = pupil
+            payment.group = pupil.group
+            payment.save()
+            # success message: payment added
+            return redirect("pupils")
+        else:
+            # error message: invalid payment form
+            return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
+    
+    context = {
+        "form": form,
+        "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov qilish",
+        "btn_text": "To'lovni kiritish",
+        "max_payment": pupil.group.price,
     }
     return render(request, "form.html", context)
 
