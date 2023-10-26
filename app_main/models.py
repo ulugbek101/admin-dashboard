@@ -33,7 +33,7 @@ class Group(models.Model):
 class Pupil(models.Model):
     first_name = models.CharField(max_length=200, verbose_name='Ism')
     last_name = models.CharField(max_length=200, verbose_name='Familiya')
-    group = models.ForeignKey(to=Group, on_delete=models.PROTECT)
+    group = models.ForeignKey(to=Group, on_delete=models.PROTECT, verbose_name='Guruh')
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)

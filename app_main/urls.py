@@ -11,4 +11,5 @@ urlpatterns = [
     path('settings/', views.settings, name='settings'),
 
     path('add-teacher/', views.add_teacher, name='add_teacher'),
+    path('add-pupil/', views.add_pupil, name='add_pupil'),
 ]

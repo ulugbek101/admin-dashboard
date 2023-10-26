@@ -89,3 +89,25 @@ def add_teacher(request):
         "btn_text": "Qo'shish",
     }
     return render(request, "form.html", context)
+
+
+def add_pupil(request):
+    form = forms.PupilForm()
+
+    if request.method == "POST":
+        form = forms.PupilForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            # success message: pupil added
+            return redirect("pupils")
+        else:
+            # error message: form invalid
+            return redirect("add-pupil")
+
+    context = {
+        "form": form,
+        "title": "Yangi o'quvchi qo'shish",
+        "btn_text": "Qo'shish",
+    }
+    return render(request, "form.html", context)

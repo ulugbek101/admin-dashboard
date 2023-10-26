@@ -291,6 +291,7 @@ aside .sidebar .message-count {
 }
 
 .form input[type="text"],
+select,
 input[type="email"],
 input[type="file"],
 input[type="password"] {
