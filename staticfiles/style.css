@@ -296,6 +296,7 @@ form .form-confirm-btn {
   border-radius: var(--border-radius-1);
   border: 1px solid var(--color-danger);
   color: var(--color-danger);
+  transition: .5s;
 }
 
 form .form-confirm-btn:hover {
@@ -309,6 +310,7 @@ form .form-cancel-btn {
   border-radius: var(--border-radius-1);
   border: 1px solid var(--color-dark);
   color: var(--color-dark);
+  transition: .5s;
 }
 
 form .form-cancel-btn:hover {
