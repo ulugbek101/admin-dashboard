@@ -278,6 +278,45 @@ aside .sidebar .message-count {
   color: var(--color-dark);
 }
 
+.form-btn-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-btn-group * {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+form .form-confirm-btn {
+  padding: var(--padding-1);
+  border-radius: var(--border-radius-1);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+
+form .form-confirm-btn:hover {
+  border-color: var(--color-danger);
+  color: white;
+  background: var(--color-danger);
+}
+
+form .form-cancel-btn {
+  padding: var(--padding-1);
+  border-radius: var(--border-radius-1);
+  border: 1px solid var(--color-dark);
+  color: var(--color-dark);
+}
+
+form .form-cancel-btn:hover {
+  border-color: var(--color-dark);
+  color: var(--color-white);
+  background: var(--color-dark);
+}
+
 .form-wrapper {
   height: 100%;
   margin-top: 1rem;

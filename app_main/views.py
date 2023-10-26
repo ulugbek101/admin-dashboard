@@ -135,3 +135,17 @@ def update_pupil(request, pk):
         "btn_text": "O'quvchi ma'lumotlarini yangilash"
     }
     return render(request, "form.html", context)
+
+
+def delete_pupil(request, pk):
+    pupil = Pupil.objects.get(id=pk)
+
+    if request.method == 'POST':
+        pupil.delete()
+        # success message: pupil deleted
+        return redirect("pupils")
+
+    context = {
+        "title": pupil.full_name,
+    }
+    return render(request, "delete.html", context)

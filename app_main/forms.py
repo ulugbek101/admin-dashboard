@@ -32,7 +32,11 @@ class TeacherForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email", "profile_picture", "password1", "password2"]
-    
+        widgets = {
+            "profile_picture": forms.FileInput(attrs={
+                "accept": "image/*"
+            })
+        }
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #     for _, field in self.fields.items():

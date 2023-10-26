@@ -4,8 +4,7 @@
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>Pupils page</h1>
-    <button class="button">O'quvchi qo'shish</button>
+    <h1>Barcha o'quvchilar</h1>
     <div class="card-wrapper">
         <div class="card">
             <table>
@@ -38,7 +37,7 @@
                                 edit
                               </span>                  
                             </a>
-                            <a href="">
+                            <a href="{% url 'delete_pupil' pk=pupil.id %}">
                               <span class="material-icons-sharp">
                                 delete
                               </span>                  

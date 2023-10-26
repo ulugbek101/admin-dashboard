@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+
+{% block content %} 
+{% include 'components/_navbar.html' %}
+<main>
+    <h1>{{ title }} ni o'chirish</h1>
+    <div class="card-wrapper">
+        <div class="card">
+            <form action="" method="post">
+                {% csrf_token %}
+                <h2>
+                    Bu operatsiyani amalga oshirishga ishonchingiz komilmi ? 
+                    <br>
+                    O'chirilgan
+                    obyektni ortga qaytarib bo'lmaydi
+                </h2>
+                <br>
+                <div class="form-btn-group">
+                    <button class="button form-confirm-btn" type="submit">
+                        <span class="material-icons-sharp">delete</span>
+                        Ha, ishonchim komil
+                    </button>
+                    <a href="{{ request.META.HTTP_REFERER }}" class="form-cancel-btn">
+                        <span class="material-icons-sharp">
+                            reply
+                        </span>
+                        Orqaga qaytish
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% include 'components/_right_block.html' %} 
+{% endblock content %}

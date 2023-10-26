@@ -14,4 +14,6 @@ urlpatterns = [
     path('add-pupil/', views.add_pupil, name='add_pupil'),
     
     path('update-pupil/<str:pk>/', views.update_pupil, name='update_pupil'),
+
+    path('delete-pupil/<str:pk>/', views.delete_pupil, name='delete_pupil'),
 ]
