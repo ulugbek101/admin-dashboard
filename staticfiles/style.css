@@ -477,6 +477,34 @@ main .card-wrapper .card .user {
   text-align: center;
 }
 
+main .card-wrapper .card .user div {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+main .card-wrapper .card .user div a {
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-1);
+    transition: .5s;
+    color: var(--color-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main .card-wrapper .card .user div a:first-child:hover {
+    background: var(--color-warning);
+    border-color: var(--color-warning);
+}
+
+main .card-wrapper .card .user div a:last-child:hover {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
 main .card-wrapper .card .user img {
   width: 5rem;
   height: 5rem;

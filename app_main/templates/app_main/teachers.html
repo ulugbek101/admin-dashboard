@@ -17,6 +17,18 @@
                 <img src="{{ teacher.profile_picture.url }}">
                 <h2>{{ teacher.get_full_name }}</h2>
                 <p>{{ teacher.created|date }}</p>
+                <div class="user-controls">
+                    <a href="" class="button">
+                        <span class="material-icons-sharp">
+                            edit
+                        </span>
+                    </a>
+                    <a href="" class="button">
+                        <span class="material-icons-sharp">
+                            delete
+                        </span>
+                    </a>
+                </div>
             </div>
             {% endfor %}
         </div>
