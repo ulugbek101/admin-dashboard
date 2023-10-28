@@ -467,24 +467,14 @@ main .card-wrapper .card:hover {
   box-shadow: none;
 }
 
-main .card-wrapper .card .user {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 200px;
-  height: 100%;
-  text-align: center;
-}
-
-main .card-wrapper .card .user div {
+main .card-wrapper .card .teacher .user-controls {
     margin-top: 5px;
     display: flex;
     flex-direction: row;
     gap: 5px;
 }
 
-main .card-wrapper .card .user div a {
+main .card-wrapper .card .teacher .user-controls a {
     padding: 5px 10px;
     border: 1px solid transparent;
     border-radius: var(--border-radius-1);
@@ -495,21 +485,14 @@ main .card-wrapper .card .user div a {
     align-items: center;
 }
 
-main .card-wrapper .card .user div a:first-child:hover {
+main .card-wrapper .card .teacher .user-controls a:first-child:hover {
     background: var(--color-warning);
     border-color: var(--color-warning);
 }
 
-main .card-wrapper .card .user div a:last-child:hover {
+main .card-wrapper .card .teacher .user-controls a:last-child:hover {
     background: var(--color-danger);
     border-color: var(--color-danger);
-}
-
-main .card-wrapper .card .user img {
-  width: 5rem;
-  height: 5rem;
-  margin-bottom: 0.4rem;
-  border-radius: 50%;
 }
 
 main .recent-orders {
@@ -854,7 +837,7 @@ main .recent-orders a {
     padding: 0 1rem;
   }
 
-  main .card-wrapper .card .user {
+  main .card-wrapper .card .teacher {
     flex-basis: 35%;
   }
 

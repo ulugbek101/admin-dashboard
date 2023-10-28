@@ -182,6 +182,28 @@ def update_pupil(request, pk):
     return render(request, "form.html", context)
 
 
+def update_teacher(request, pk):
+    teacher = User.objects.get(id=pk)
+    form = forms.TeacherForm(instance=teacher)
+
+    if request.method == 'POST':
+        form = forms.TeacherForm(request.POST, request.FILES, instance=teacher)
+        if form.is_valid():
+            form.save()
+            # success message: teacher updated
+            return redirect("teachers")
+        else:
+            # error message: form invalid e.g: teacher should have first and last names
+            return redirect("update_teacher", pk=pk)
+
+    context = {
+        "form": form,
+        "title": "O'qituvchi ma'lumotlarini o'zgartirish",
+        "btn_text": "O'qituvchi ma'lumotlarini yangilash"
+    }
+    return render(request, "form.html", context)
+
+
 def delete_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
 
@@ -192,5 +214,19 @@ def delete_pupil(request, pk):
 
     context = {
         "title": pupil.full_name,
+    }
+    return render(request, "delete.html", context)
+
+
+def delete_teacher(request, pk):
+    teacher = User.objects.get(id=pk)
+
+    if request.method == 'POST':
+        teacher.delete()
+        # success message: pupil deleted
+        return redirect("teachers")
+
+    context = {
+        "title": teacher.full_name,
     }
     return render(request, "delete.html", context)

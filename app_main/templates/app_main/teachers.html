@@ -4,33 +4,44 @@
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>Teachers page</h1>
+    <h1>Barcha o'qituvchilar</h1>
     <div class="card-wrapper">
         <div class="card">
-            <a class="user add-user button" href="{% url 'add_teacher' %}">
-                <img src="{% static 'images/plus.png' %}">
-                <h2>Yangi o'qituvchi qo'shish</h2>
-                <!-- <p></p> -->
-            </a>
-            {% for teacher in teachers_list %}
-            <div class="user">
-                <img src="{{ teacher.profile_picture.url }}">
-                <h2>{{ teacher.get_full_name }}</h2>
-                <p>{{ teacher.created|date }}</p>
-                <div class="user-controls">
-                    <a href="" class="button">
-                        <span class="material-icons-sharp">
-                            edit
-                        </span>
-                    </a>
-                    <a href="" class="button">
-                        <span class="material-icons-sharp">
-                            delete
-                        </span>
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</td>
+                        <th>O'qituvchi</td>
+                        <th>E-mail manzil</td>
+                        <th>Qo'shilgan sanasi</td>
+                        <th>O'zgartirish / O'chirish</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ teacher.full_name }}</td>
+                        <td>{% if teacher.email %} {{ teacher.email }} {% else %} - {% endif %}</td>
+                        <td>{{ teacher.created|date }}</td>
+                        <td>
+                            <div class="user-controls">
+                                <a href="{% url 'update_teacher' pk=teacher.id %}" class="button">
+                                    <span class="material-icons-sharp">
+                                        edit
+                                    </span>
+                                </a>
+                                <a href="{% url 'delete_teacher' pk=teacher.id %}" class="button">
+                                    <span class="material-icons-sharp">
+                                        delete
+                                    </span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </main>
