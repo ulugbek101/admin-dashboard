@@ -8,7 +8,7 @@ from app_users.models import User
 from django.contrib.auth import password_validation
 from django.utils.translation import gettext_lazy as _
 
-from .models import Pupil, Payment
+from .models import Pupil, Payment, Group
 
 
 class TeacherForm(forms.ModelForm):
@@ -62,3 +62,13 @@ class PaymentForm(forms.ModelForm):
                 "step": 5000,
             })
         }
+
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['subject', 'name', 'teacher', 'price']
+
+
+

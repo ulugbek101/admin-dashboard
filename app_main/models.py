@@ -6,6 +6,8 @@ from django.db.models.signals import pre_delete
 from django.db import models
 from app_users.models import User
 
+from . import validators
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=200, verbose_name='Fan nomi', unique=True)
@@ -21,7 +23,7 @@ class Group(models.Model):
     subject = models.ForeignKey(to=Subject, on_delete=models.PROTECT, verbose_name='Fan nomi')
     teacher = models.ForeignKey(to=User, on_delete=models.PROTECT, verbose_name='O\'qituvchisi')
     name = models.CharField(max_length=200, verbose_name='Guruh nomi', unique=True)
-    price = models.IntegerField(default=0, verbose_name='Guruh to\'lovi')
+    price = models.IntegerField(verbose_name='Guruh to\'lovi', validators=[validators.min_value_validator])
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)

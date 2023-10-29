@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.db import models
 
 
-from . models import Group, Pupil, Payment
+from . models import Group, Pupil, Payment, Subject
 from app_users.models import User
 from . import forms
 
@@ -158,6 +158,28 @@ def add_payment(request, group_id, pupil_id):
     return render(request, "form.html", context)
 
 
+def add_group(request):
+    form = forms.GroupForm()
+
+    if request.method == 'POST':
+        form = forms.GroupForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            # success message: group created
+            return redirect('groups')
+        else:
+            # error message: price should be more than 0
+            return redirect('add_group')
+
+    context = {
+        "form": form,
+        "title": "Guruh ma'lumotlarini o'zgartirish",
+        "btn_text": "Guruh ma'lumotlarini yangilash"
+    }
+    return render(request, "form.html", context)
+
+
 def update_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
     form = forms.PupilForm(instance=pupil)
@@ -204,6 +226,35 @@ def update_teacher(request, pk):
     return render(request, "form.html", context)
 
 
+def update_group(request, pk):
+    group = Group.objects.get(id=pk)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        teacher = User.objects.get(id=request.POST.get('teacher'))
+        subject = Subject.objects.get(id=request.POST.get('subject'))
+
+        if name and teacher and subject:
+            group.name = name
+            group.teacher = teacher
+            group.subject = subject
+            group.save()
+            # success message: group information has changed
+            return redirect('groups')
+        else:
+            # error message: invalid form
+            return redirect('update_group', pk=pk)
+
+    form = forms.GroupForm(instance=group)
+    form.fields.pop('price')
+    context = {
+        "form": form,
+        "title": "Guruh ma'lumotlarini o'zgartirish",
+        "btn_text": "Guruh ma'lumotlarini yangilash"
+    }
+    return render(request, "form.html", context)
+
+
 def delete_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
 
@@ -228,5 +279,19 @@ def delete_teacher(request, pk):
 
     context = {
         "title": teacher.full_name,
+    }
+    return render(request, "delete.html", context)
+
+
+def delete_group(request, pk):
+    group = Group.objects.get(id=pk)
+
+    if request.method == 'POST':
+        group.delete()
+        # success message: group deleted
+        return redirect("groups")
+    
+    context = {
+        "title": group.name,
     }
     return render(request, "delete.html", context)

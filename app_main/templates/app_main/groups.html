@@ -23,12 +23,12 @@
             <td>{{ group.teacher.full_name }}</td>
             <td>{{ group.pupil_set.all.count|intcomma }}</td>
             <td>
-              <a href="">
+              <a href="{% url 'update_group' pk=group.id %}">
                 <span class="material-icons-sharp">
                   edit
                 </span>                  
               </a>
-              <a href="">
+              <a href="{% url 'delete_group' pk=group.id %}">
                 <span class="material-icons-sharp">
                   delete
                 </span>                  
