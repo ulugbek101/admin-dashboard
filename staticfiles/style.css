@@ -526,7 +526,7 @@ main .recent-orders h2 {
   transition: .5s;
 }
 
-.card-wrapper .card table tr td:last-child a:first-child span:hover{
+.card-wrapper .card table tr td:last-child a:nth-child(1) span:hover{
   border: 1px solid var(--color-warning);
   background-color: var(--color-warning);
 }
@@ -536,7 +536,7 @@ main .recent-orders h2 {
   background-color: var(--color-danger);
 }
 
-.card-wrapper .card table tr td:last-child a:last-child span:hover{
+.card-wrapper .card table tr td:last-child a:nth-child(3) span:hover{
   border: 1px solid var(--color-success);
   background-color: var(--color-success);
 }
