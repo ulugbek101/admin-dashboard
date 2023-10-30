@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from django.shortcuts import render, redirect
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 
 from . models import Group, Pupil, Payment, Subject
@@ -43,8 +43,13 @@ def pupils(request):
 
 
 def dashboard(request):
+    total_payment = Group.objects.aggregate(total_amount=Sum("price")).get("total_amount")
+    total_paid = Payment.objects.aggregate(paid_amount=Sum("amount")).get("paid_amount")
+
     context = {
         "dashboard": True,
+        "total_payment": total_payment,
+        "total_paid": total_paid,
     }
     return render(request, "app_main/dashboard.html", context)
 

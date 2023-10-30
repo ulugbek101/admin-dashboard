@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
-    <title>Responsive Dashboard Design #1 | AsmrProg</title>
-  </head>
 
-  <body class="dark-mode-variables">
-    <div class="container">{% block content %} {% endblock content %}</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <title>Responsive Dashboard Design #1 | AsmrProg</title>
+</head>
 
-    <div class="modal-window-shade"></div>
-    <div class="modal-window">
-      <div class="modal-window-top">
-        <button class="button">
-          <span class="material-icons-sharp"> close </span>
-        </button>
-      </div>
-      <div class="model-window-body">
-        <!-- Any card content there -->
-      </div>
+<body class="dark-mode-variables">
+  <div class="container">{% block content %} {% endblock content %}</div>
+
+  <div class="modal-window-shade"></div>
+  <div class="modal-window">
+    <div class="modal-window-top">
+      <button class="button">
+        <span class="material-icons-sharp"> close </span>
+      </button>
     </div>
+    <div class="model-window-body">
+      <!-- Any card content there -->
+    </div>
+  </div>
 
-    <script src="{% static 'index.js' %}" type="module"></script>
-  </body>
+  <script src="{% static 'index.js' %}" type="module"></script>
+</body>
+
 </html>
