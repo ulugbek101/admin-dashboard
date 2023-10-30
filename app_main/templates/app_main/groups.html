@@ -1,5 +1,5 @@
-{% extends 'base.html' %} 
-{% block content %} 
+{% extends 'base.html' %}
+{% block content %}
 {% load humanize %}
 
 {% include 'components/_navbar.html' %}
@@ -7,6 +7,7 @@
   <h1>Barcha guruhlar</h1>
   <div class="card-wrapper">
     <div class="card">
+      <a class="button add-button" href="{% url 'add_group' %}">Guruh qo'shish</a>
       <table>
         <tbody>
           <tr>
@@ -28,12 +29,12 @@
               <a href="{% url 'update_group' pk=group.id %}">
                 <span class="material-icons-sharp">
                   edit
-                </span>                  
+                </span>
               </a>
               <a href="{% url 'delete_group' pk=group.id %}">
                 <span class="material-icons-sharp">
                   delete
-                </span>                  
+                </span>
               </a>
             </td>
           </tr>

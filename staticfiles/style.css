@@ -451,6 +451,19 @@ main .card-wrapper {
   margin-top: 1rem;
 }
 
+.card-wrapper .card a.button.add-button {
+  border: 1px solid var(--color-success);
+  border-radius: var(--border-radius-1); 
+  padding: var(--padding-1); 
+  transition: .5s;
+  color: var(--color-dark);
+}
+
+.card-wrapper .card a.button.add-button:hover {
+  background-color: var(--color-success);
+
+}
+
 main .card-wrapper .card {
   background-color: var(--color-white);
   padding: var(--card-padding);
