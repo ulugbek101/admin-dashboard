@@ -1,14 +1,10 @@
 from datetime import date
 
 from django import forms
-from django.core.files.base import File
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
 from app_users.models import User
-from django.contrib.auth import password_validation
 from django.utils.translation import gettext_lazy as _
 
-from .models import Pupil, Payment, Group
+from .models import Pupil, Payment, Group, Subject
 
 
 class TeacherForm(forms.ModelForm):
@@ -64,11 +60,13 @@ class PaymentForm(forms.ModelForm):
         }
 
 
-
 class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['subject', 'name', 'teacher', 'price']
 
 
-
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ["name"]

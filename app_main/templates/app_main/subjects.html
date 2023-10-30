@@ -1,9 +1,47 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
     <h1>Subrjects page</h1>
+    <div class="card-wrapper">
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Fan</th>
+                        <th>Guruhlar soni</th>
+                        <th>O'quvchilar soni</th>
+                        <th>O'zgartirish / O'chirish</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ subject.name }}</td>
+                        <td>{{ subject.group_set.all.count|intcomma }}</td>
+                        <td>{{ subject.pupils|intcomma }}</td>
+                        <td>
+                            <a href="{% url 'update_subject' pk=subject.id %}">
+                                <span class="material-icons-sharp">
+                                    edit
+                                </span>
+                            </a>
+                            <a href="{% url 'delete_subject' pk=subject.id %}">
+                                <span class="material-icons-sharp">
+                                    delete
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
 {% include 'components/_right_block.html' %}
 {% endblock content %}

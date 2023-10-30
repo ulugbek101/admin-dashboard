@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from django.shortcuts import render, redirect
-from django.db import models
+from django.db.models import Count
 
 
 from . models import Group, Pupil, Payment, Subject
@@ -12,13 +12,14 @@ from . import forms
 def subjects(request):
     context = {
         "subjects": True,
+        "subjects_list": Subject.objects.annotate(pupils=Count("group__pupil")).order_by("name", "-created")
     }
     return render(request, "app_main/subjects.html", context)
 
 
 def groups(request):
     context = {
-        "groups_list": Group.objects.all().order_by("name"),
+        "groups_list": Group.objects.all().order_by("name", "-created"),
         "groups": True,
     }
     return render(request, "app_main/groups.html", context)
@@ -27,14 +28,14 @@ def groups(request):
 def teachers(request):
     context = {
         "teachers": True,
-        "teachers_list": User.objects.all().order_by('created')
+        "teachers_list": User.objects.all().order_by("last_name", "first_name", "-created")
     }
     return render(request, "app_main/teachers.html", context)
 
 
 def pupils(request):
     context = {
-        "pupils_list": Pupil.objects.all(),
+        "pupils_list": Pupil.objects.all().order_by("last_name", "first_name", "-created"),
         "current_date": str(date.today())[:-3],
         "pupils": True,
     }
@@ -64,7 +65,8 @@ def add_teacher(request):
         if form.is_valid():
             if request.POST.get('password1') == request.POST.get('password2'):
                 teacher = form.save(commit=False)
-                teacher.username = request.POST.get('email')[:request.POST.get('email').find('@')]
+                teacher.username = request.POST.get(
+                    'email')[:request.POST.get('email').find('@')]
                 teacher.set_password(request.POST.get('password2'))
                 teacher.save()
                 # success message: teacher added
@@ -107,8 +109,8 @@ def add_pupil(request):
 
     context = {
         "form": form,
-        "title": "Yangi o'quvchi qo'shish",
-        "btn_text": "Qo'shish",
+        "title": "Yangi o'quvchi kiritish",
+        "btn_text":  "Kiritish",
     }
     return render(request, "form.html", context)
 
@@ -131,13 +133,13 @@ def add_payment(request, group_id, pupil_id):
             form = forms.PaymentForm(request.POST)
 
         if form.is_valid():
-            if request.POST.get('amount') == '0': 
+            if request.POST.get('amount') == '0':
                 return redirect("pupils")
-            
+
             if int(request.POST.get('amount')) > pupil.group.price:
                 # error message: payment is more than group price
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
-            
+
             payment = form.save(commit=False)
             payment.owner = request.user
             payment.pupil = pupil
@@ -148,10 +150,10 @@ def add_payment(request, group_id, pupil_id):
         else:
             # error message: invalid payment form
             return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
-    
+
     context = {
         "form": form,
-        "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov qilish",
+        "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov kiritish",
         "btn_text": "To'lovni kiritish",
         "max_payment": pupil.group.price,
     }
@@ -174,8 +176,30 @@ def add_group(request):
 
     context = {
         "form": form,
-        "title": "Guruh ma'lumotlarini o'zgartirish",
-        "btn_text": "Guruh ma'lumotlarini yangilash"
+        "title": "Guruh qo'shish",
+        "btn_text": "Guruhni qo'shish"
+    }
+    return render(request, "form.html", context)
+
+
+def add_subject(request):
+
+    if request.method == "POST":
+        form = forms.SubjectForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            # success message: subject added
+            return redirect("subjects")
+        else:
+            # error message: form invalid
+            return redirect("add_subject")
+
+    form = forms.SubjectForm()
+    context = {
+        "form": form,
+        "title": "Fan qo'shish",
+        "btn_text": "Fanni qo'shish"
     }
     return render(request, "form.html", context)
 
@@ -186,7 +210,7 @@ def update_pupil(request, pk):
 
     if request.method == 'POST':
         form = forms.PupilForm(request.POST, instance=pupil)
-        
+
         if form.is_valid():
             form.save()
             # success message: pupil updated
@@ -194,7 +218,6 @@ def update_pupil(request, pk):
         else:
             # error message: form invalid e.g: pupil with the same first name, last name and group name
             return redirect("update_pupil", pk=pk)
-
 
     context = {
         "form": form,
@@ -255,6 +278,29 @@ def update_group(request, pk):
     return render(request, "form.html", context)
 
 
+def update_subject(request, pk):
+    subject = Subject.objects.get(id=pk)
+
+    if request.method == "POST":
+        form = forms.SubjectForm(request.POST, instance=subject)
+
+        if form.is_valid():
+            form.save()
+            # success message: subject added
+            return redirect("subjects")
+        else:
+            # error message: form invalid
+            return redirect("update_subject", pk=pk)
+
+    form = forms.SubjectForm(instance=subject)
+    context = {
+        "form": form,
+        "title": "Fan qo'shish",
+        "btn_text": "Fanni qo'shish"
+    }
+    return render(request, "form.html", context)
+
+
 def delete_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
 
@@ -290,8 +336,22 @@ def delete_group(request, pk):
         group.delete()
         # success message: group deleted
         return redirect("groups")
-    
+
     context = {
         "title": group.name,
+    }
+    return render(request, "delete.html", context)
+
+
+def delete_subject(request, pk):
+    subject = Subject.objects.get(id=pk)
+
+    if request.method == 'POST':
+        subject.delete()
+        # success message: subject deleted
+        return redirect("subjects")
+
+    context = {
+        "title": subject.name,
     }
     return render(request, "delete.html", context)
