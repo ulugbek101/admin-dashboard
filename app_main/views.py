@@ -117,10 +117,10 @@ def add_pupil(request):
 
 def add_payment(request, group_id, pupil_id):
     try:
-        payment = Payment.objects.get(pupil__id=pupil_id, month=date.today())
+        payment = Payment.objects.get(pupil__id=pupil_id, month__month=date.today().month)
     except:
         payment = None
-
+    
     form = forms.PaymentForm(data={
         'amount': payment.amount if payment else 0,
     })
@@ -134,7 +134,8 @@ def add_payment(request, group_id, pupil_id):
 
         if form.is_valid():
             if request.POST.get('amount') == '0':
-                return redirect("pupils")
+                # error message: payment cannot be equal to 0
+                return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             if int(request.POST.get('amount')) > pupil.group.price:
                 # error message: payment is more than group price
