@@ -4,86 +4,79 @@
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>Analytics</h1>
-    <!-- Analyses -->
-    <div class="analyse">
-        <div class="sales">
-            <div class="status">
-                <div class="info">
-                    <h3>To'lovlar</h3>
-                    <h1>{{ total_paid|intcomma }} / {{ total_payment|intcomma }}</h1>
-                </div>
-                <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+81%</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="visits">
-            <div class="status">
-                <div class="info">
-                    <h3>Guruhlar</h3>
-                    <h1>57</h1>
-                </div>
-                <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>-18%</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="searches">
-            <div class="status">
-                <div class="info">
-                    <h3>O'quvchilar</h3>
-                    <h1>853</h1>
-                </div>
-                <div class="progresss">
-                    <svg>
-                        <circle cx="38" cy="38" r="36"></circle>
-                    </svg>
-                    <div class="percentage">
-                        <p>+11%</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <h1>Analitika</h1>
+
+    <div style="width: 100%; margin: 0 auto;">
+        <canvas id="myChart"></canvas>
+        <canvas id="barChart"></canvas>
     </div>
-    <!-- End of Analyses -->
 
-    <canvas id="myChart" style="width:80%;"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
-        const xValues = ["Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentbr", "Oktabr"];
-        const yValues = [7100000, 9800000, 7500000, 8750000, 10000000, 9000000, 7500000, 8000000, 6900000];
+        const labels = ["Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentbr", "Oktabr"];
+        const labelData = [7100000, 9800000, 7500000, 8750000, 10000000, 9000000, 7500000, 8000000, 6900000];
 
-        new Chart("myChart", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "white",
-                    borderColor: "white",
-                    data: yValues
-                }]
-            },
+        const data = {
+            labels: labels,
+            datasets: [{
+                data: labelData,
+                backgroundColor: '#9BD0F5',
+                borderColor: '#36A2EB',
+                hoverBorderColor: '#000',
+
+            }],
+        };
+
+        const lineChartConfig = {
+            type: 'line',
+            data: data,
             options: {
-                legend: { display: false },
-                scales: {
-                    yAxes: [{ ticks: { min: 0, max: 12000000 } }],
-                }
-            }
-        });
+                layout: {
+            padding: 40
+        },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: "Oylar bo'yicha to'lovlar (so'mda)"
+                    }
+                },
+                
+            },
+        };
+
+        const barChartConfig = {
+            type: 'pie',
+            data: data,
+            options: {
+                layout: {
+            padding: 20
+        },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: "Oylar bo'yicha to'lovlar (so'mda)"
+                    }
+                },
+                
+            },
+        };
+
+        const chart = new Chart(
+            document.getElementById('myChart'),
+            lineChartConfig,
+        );
+        const barChart = new Chart(
+            document.getElementById('barChart'),
+            barChartConfig,
+        );
+
     </script>
 </main>
 {% include 'components/_right_block.html' %}

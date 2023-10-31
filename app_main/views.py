@@ -2,13 +2,14 @@ from datetime import date, datetime
 
 from django.shortcuts import render, redirect
 from django.db.models import Count, Sum
-
+from django.contrib.auth.decorators import login_required
 
 from . models import Group, Pupil, Payment, Subject
 from app_users.models import User
 from . import forms
 
 
+@login_required(login_url='signin')
 def subjects(request):
     context = {
         "subjects": True,
@@ -17,6 +18,7 @@ def subjects(request):
     return render(request, "app_main/subjects.html", context)
 
 
+@login_required(login_url='signin')
 def groups(request):
     context = {
         "groups_list": Group.objects.all().order_by("name", "-created"),
@@ -25,6 +27,7 @@ def groups(request):
     return render(request, "app_main/groups.html", context)
 
 
+@login_required(login_url='signin')
 def teachers(request):
     context = {
         "teachers": True,
@@ -33,6 +36,7 @@ def teachers(request):
     return render(request, "app_main/teachers.html", context)
 
 
+@login_required(login_url='signin')
 def pupils(request):
     context = {
         "pupils_list": Pupil.objects.all().order_by("last_name", "first_name", "-created"),
@@ -42,9 +46,12 @@ def pupils(request):
     return render(request, "app_main/pupils.html", context)
 
 
+@login_required(login_url='signin')
 def dashboard(request):
-    total_payment = Group.objects.aggregate(total_amount=Sum("price")).get("total_amount")
-    total_paid = Payment.objects.aggregate(paid_amount=Sum("amount")).get("paid_amount")
+    total_payment = Group.objects.aggregate(
+        total_amount=Sum("price")).get("total_amount")
+    total_paid = Payment.objects.aggregate(
+        paid_amount=Sum("amount")).get("paid_amount")
 
     context = {
         "dashboard": True,
@@ -54,6 +61,7 @@ def dashboard(request):
     return render(request, "app_main/dashboard.html", context)
 
 
+@login_required(login_url='signin')
 def settings(request):
     context = {
         "settings": True,
@@ -61,6 +69,7 @@ def settings(request):
     return render(request, "app_main/settings.html", context)
 
 
+@login_required(login_url='signin')
 def add_teacher(request):
     form = forms.TeacherForm()
 
@@ -98,6 +107,7 @@ def add_teacher(request):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def add_pupil(request):
     form = forms.PupilForm()
 
@@ -120,12 +130,14 @@ def add_pupil(request):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def add_payment(request, group_id, pupil_id):
     try:
-        payment = Payment.objects.get(pupil__id=pupil_id, month__month=date.today().month)
+        payment = Payment.objects.get(
+            pupil__id=pupil_id, month__month=date.today().month)
     except:
         payment = None
-    
+
     form = forms.PaymentForm(data={
         'amount': payment.amount if payment else 0,
     })
@@ -166,6 +178,7 @@ def add_payment(request, group_id, pupil_id):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def add_group(request):
     form = forms.GroupForm()
 
@@ -188,6 +201,7 @@ def add_group(request):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def add_subject(request):
 
     if request.method == "POST":
@@ -210,6 +224,7 @@ def add_subject(request):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def update_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
     form = forms.PupilForm(instance=pupil)
@@ -233,6 +248,7 @@ def update_pupil(request, pk):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def update_teacher(request, pk):
     teacher = User.objects.get(id=pk)
     form = forms.TeacherForm(instance=teacher)
@@ -255,6 +271,7 @@ def update_teacher(request, pk):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def update_group(request, pk):
     group = Group.objects.get(id=pk)
 
@@ -284,6 +301,7 @@ def update_group(request, pk):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def update_subject(request, pk):
     subject = Subject.objects.get(id=pk)
 
@@ -307,6 +325,7 @@ def update_subject(request, pk):
     return render(request, "form.html", context)
 
 
+@login_required(login_url='signin')
 def delete_pupil(request, pk):
     pupil = Pupil.objects.get(id=pk)
 
@@ -321,6 +340,7 @@ def delete_pupil(request, pk):
     return render(request, "delete.html", context)
 
 
+@login_required(login_url='signin')
 def delete_teacher(request, pk):
     teacher = User.objects.get(id=pk)
 
@@ -335,6 +355,7 @@ def delete_teacher(request, pk):
     return render(request, "delete.html", context)
 
 
+@login_required(login_url='signin')
 def delete_group(request, pk):
     group = Group.objects.get(id=pk)
 
@@ -349,6 +370,7 @@ def delete_group(request, pk):
     return render(request, "delete.html", context)
 
 
+@login_required(login_url='signin')
 def delete_subject(request, pk):
     subject = Subject.objects.get(id=pk)
 
