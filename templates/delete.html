@@ -14,7 +14,7 @@
                 </h2>
                 <br>
                 <div class="form-btn-group">
-                    <button class="button form-confirm-btn" type="submit">
+                    <button class="{% if group.has_pupils %} disabled {% endif %} button form-confirm-btn" type="submit" {% if group.has_pupils %} disabled {% endif %}>
                         <span class="material-icons-sharp">delete</span>
                         Ha, ishonchim komil
                     </button>

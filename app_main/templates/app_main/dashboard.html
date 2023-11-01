@@ -6,11 +6,11 @@
 <main>
     <h1>Analitika</h1>
 
-    <div style="width: 100%; display: flex;">
-        <div style="width: 50%;">
+    <div style="width: 100%; display: flex; flex-direction: column;">
+        <div style="width: 85%;">
             <canvas id="myChart"></canvas>
         </div>
-        <div style="width: 50%;">
+        <div style="width: 85%;">
             <canvas id="barChart"></canvas>
         </div>
 
@@ -30,7 +30,6 @@
                     backgroundColor: '#9BD0F5',
                     borderColor: '#36A2EB',
                     hoverBorderColor: '#ffffff',
-
                 }],
             };
 
@@ -39,7 +38,7 @@
                 data: lineChartData,
                 options: {
                     layout: {
-                        padding: 40,
+                        padding: 20,
                     },
                     plugins: {
                         legend: {
@@ -50,7 +49,21 @@
                             text: "Oylar bo'yicha to'lovlar (so'mda)"
                         }
                     },
-
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Tushum miqdori",
+                            },
+                            min: 0,
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Oy nomi",
+                            }
+                        }
+                    }
                 },
             };
 
@@ -69,7 +82,7 @@
                 data: barChartData,
                 options: {
                     layout: {
-                        padding: 0,
+                        padding: 20,
                     },
                     plugins: {
                         legend: {
@@ -80,7 +93,21 @@
                             text: "Guruhlarning maksimal to'lovlari (so'mda)"
                         }
                     },
-
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: "To'lov miqdori"
+                            },
+                            min: 0,
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Guruh nomi",
+                            },
+                        }
+                    },
                 },
             };
 
