@@ -319,6 +319,17 @@ form .form-cancel-btn:hover {
   background: var(--color-dark);
 }
 
+form .disabled.button.form-confirm-btn {
+  color: var(--color-info-dark);
+  border-color: var(--color-dark-variant);
+}
+
+form .disabled.button.form-confirm-btn:hover {
+  color: var(--color-info-dark);
+  border-color: var(--color-dark);
+  background-color: transparent;
+}
+
 .form-wrapper {
   height: 100%;
   margin-top: 1rem;
@@ -738,7 +749,7 @@ main .recent-orders a {
   gap: 0.6rem;
 }
 
-/* @media screen and (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
   .container {
     width: 95%;
     grid-template-columns: 7rem auto 23rem;
@@ -791,7 +802,7 @@ main .recent-orders a {
   main table tbody tr td:first-child {
     display: none;
   }
-} */
+}
 
 @media screen and (max-width: 768px) {
   .container {
