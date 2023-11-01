@@ -13,9 +13,17 @@
         <div style="width: 60%;">
             <canvas id="barChart"></canvas>
         </div>
+        
+        <form action="" class="form" method="post">
+            {% csrf_token %}
+            <select name="month">
+                <option value="current">Shu oy uchun</option>
+                <option value="previous">O'tgan oy uchun</option>
+            </select>
+            <button type="submit" class="button">Statistikani yuklab olish</button>
+        </form>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <script>
             
             const lineChartLabels = {{ months_list|safe }};

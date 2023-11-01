@@ -3,6 +3,9 @@ from datetime import date, datetime
 from django.shortcuts import render, redirect
 from django.db.models import Count, Sum
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+
+from openpyxl import Workbook
 
 from . models import Group, Pupil, Payment, Subject
 from app_users.models import User
@@ -39,7 +42,7 @@ def teachers(request):
 @login_required(login_url='signin')
 def pupils(request):
     context = {
-        "pupils_list": Pupil.objects.all().order_by("last_name", "first_name", "-created"),
+        "pupils_list": Pupil.objects.all().order_by("first_name", "last_name", "-created"),
         "current_date": str(date.today())[:-3],
         "pupils": True,
     }
@@ -64,7 +67,7 @@ def dashboard(request):
         5: "May",
         6: "Iyun",
         7: "Iyul",
-        9: "Avgust",
+        8: "Avgust",
         9: "Sentyabr",
         10: "Oktyabr",
         11: "Noyabr",
@@ -87,6 +90,51 @@ def dashboard(request):
         if month_number > date.today().month:
             payments_dataset.pop(months[month_number])
 
+
+    if request.method == 'POST':
+        month = request.POST.get('month')
+        year = date.today().year
+
+        pupils = Pupil.objects.all().order_by('group__name', 'first_name', 'last_name', '-created')
+        payments = Payment.objects.all()
+
+        if month == 'current':
+            month = date.today().month
+        else:
+            month = date.today().month - 1
+            if month < 1:
+                year -= 1
+                month = 12
+        
+        wb = Workbook(write_only=True)
+        ws = wb.create_sheet()
+        ws.append(["№", "Guruh", "O'quvchi", "Oy", "To'lov", "Izoh"])
+
+        for index, pupil in enumerate(pupils, start=1):
+            if pupil.created.year == year and pupil.created.month <= month:
+                pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month)
+
+                if pupil_payment:
+                    group_name_ = pupil_payment[0].group.name if pupil_payment[0].group else pupil_payment.group_name
+                    pupil_name_ = pupil_payment[0].pupil.full_name if pupil_payment[0].pupil else pupil_payment.pupil_fullname
+                    month_ = months[month]
+                    amount_  = f"{pupil_payment[0].amount} / {pupil.group.price}"
+                    note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
+                else:
+                    group_name_ =  pupil.group.name
+                    pupil_name_ = pupil.full_name
+                    month_ = months[month]
+                    amount_ = f"{0} / {pupil.group.price}"
+                    note_ = "-"
+
+                ws.append([index, group_name_, pupil_name_, month_, amount_, note_])
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today()}-statistikasi.xlsx'
+        wb.save(response)
+
+        return response
+            
     context = {
         "dashboard": True,
 
