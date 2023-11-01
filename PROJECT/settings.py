@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['www.shams-school.up.railway.app', 'shams-school.up.railway.app']
+ALLOWED_HOSTS = ['www.shams-school.up.railway.app', 'shams-school.up.railway.app', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     'https://shams-school.up.railway.app',
 ]

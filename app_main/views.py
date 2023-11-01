@@ -57,7 +57,10 @@ def dashboard(request):
     total_payment = pupils.aggregate(total_payment=Sum("group__price")).get("total_payment")
     total_paid = Payment.objects.filter(month__year__exact=date.today().year, month__month__exact=date.today().month).aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
-     
+    
+    if not total_paid: total_paid = 0
+    if not total_payment: total_payment = 0
+    
     payments = Payment.objects.filter(
         month__lte=date.today()).order_by("created")[:12]
     months = {
