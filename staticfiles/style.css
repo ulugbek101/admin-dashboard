@@ -324,6 +324,17 @@ form .form-cancel-btn:hover {
   margin-top: 1rem;
 }
 
+.signin-form .form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.signin-form .form h1 {
+  text-align: center;
+}
+
 .form {
   padding: var(--card-padding);
   box-shadow: var(--box-shadow);

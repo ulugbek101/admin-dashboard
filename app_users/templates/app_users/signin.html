@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Signin page</h1>
+<div class="signin-form">
+    <form action="" method="post" class="form">
+        {% csrf_token %}
+        <h1>Tizimga kirish</h1>
+        <br>
+        <div>
+            <label for="email">E-mail manzil:</label>
+            <input type="email" name="email" autofocus>
+        </div>
+        <div>
+            <label for="password">Parol:</label>
+            <input type="password" name="password" autofocus>
+        </div>
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <br>
+        <button type="submit" class="button">Kirish</button>
+    </form>
+</div>
 {% endblock content %}
