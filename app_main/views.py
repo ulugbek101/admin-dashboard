@@ -54,7 +54,8 @@ def dashboard(request):
     total_paid = Payment.objects.aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
 
-    payments = Payment.objects.filter(month__lte=date.today()).order_by("created")[:12]
+    payments = Payment.objects.filter(
+        month__lte=date.today()).order_by("created")[:12]
     months = {
         1: "Yanvar",
         2: "Fevral",
@@ -70,10 +71,10 @@ def dashboard(request):
         12: "Dekabr",
     }
     payments_dataset = dict.fromkeys(months.values(), 0)
-    
+
     for payment in payments:
 
-        if payment.month.year != date.today().year: 
+        if payment.month.year != date.today().year:
             continue
 
         payment_month = payment.month.month
@@ -94,7 +95,7 @@ def dashboard(request):
 
         "months_list": list(payments_dataset.keys()),
         "payments_list": list(payments_dataset.values()),
-        
+
         "groups_total_payments": [group.get_total_payment for group in groups],
         "groups_names": [group.name for group in groups],
     }
@@ -103,8 +104,44 @@ def dashboard(request):
 
 @login_required(login_url='signin')
 def settings(request):
+
+    if request.method == "POST":
+        password1, password2, first_name, last_name, email, profile_picture, job = (request.POST.get("password1"), 
+                                request.POST.get("password2"),
+                                request.POST.get("first_name"),
+                                request.POST.get("last_name"),
+                                request.FILES.get("email"),
+                                request.FILES.get("profile_picture"),
+                                request.FILES.get("job"))
+        if first_name and last_name:
+            user = request.user
+            user.first_name = first_name
+            user.last_name = last_name
+
+            if email:
+                user.email = email
+            if profile_picture:
+                user.profile_picture = profile_picture
+            if job:
+                user.job = job
+
+            if (password1 and password2) and (password1 == password2):
+                if len(password1) >= 8:
+                    # success message: password updated
+                    user.set_password(request.POST.get("password2"))
+                else:
+                    password_error_message = "Parol 8 ta belgidan uzun bo'lishi shart"
+                    
+            user.save()
+            # success message: profile updated
+            return redirect("settings")
+        else:
+            # error message: invalid form
+            return redirect("settings")
+
     context = {
         "settings": True,
+        "btn_text": "Profile ma'lumotlarini yangilash",
     }
     return render(request, "app_main/settings.html", context)
 

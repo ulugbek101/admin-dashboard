@@ -2,26 +2,27 @@
 <div class="right-section">
     <div class="nav">
         <button id="menu-btn">
-                    <span class="material-icons-sharp">
-                        menu
-                    </span>
+            <span class="material-icons-sharp">
+                menu
+            </span>
         </button>
         <div class="dark-mode">
-                    <span class="material-icons-sharp">
-                        light_mode
-                    </span>
+            <span class="material-icons-sharp">
+                light_mode
+            </span>
             <span class="material-icons-sharp active">
-                        dark_mode
-                    </span>
+                dark_mode
+            </span>
         </div>
 
         <div class="profile">
             <div class="info">
                 <p>Salom, <b>Ulug'bek</b></p>
-                <small class="text-muted">Admin</small>
+                <small class="text-muted">{{ request.user.job }}</small>
             </div>
             <div class="profile-photo">
-                <img src="{% static 'profile-pictures/user-default.png' %}">
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}"
+                    title="{{ request.user.full_name }}">
             </div>
         </div>
 
@@ -29,14 +30,19 @@
     <!-- End of Nav -->
 
     <div class="user-profile">
-        <div class="logo">
-            <img src="{% static 'images/logo.png' %}">
-            <h2>AsmrProg</h2>
-            <p>Fullstack Web Developer</p>
+        <div class="logo" style="display: flex; flex-direction: column; align-items: center;">
+            {% if not request.user.profile_picture %}
+            <img src="{% static 'profile-pictures/user-default.png' %}" title="{{ request.user.full_name }}">
+            {% else %}
+            <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}"
+                title="{{ request.user.full_name }}">
+            {% endif %}
+            <h2>{{ request.user.full_name }}</h2>
+            <p>{{ request.user.job }}</p>
         </div>
     </div>
 
-    <div class="reminders">
+    <!-- <div class="reminders">
         <div class="header">
             <h2>Reminders</h2>
             <span class="material-icons-sharp">
@@ -91,6 +97,6 @@
             </div>
         </div>
 
-    </div>
+    </div> -->
 
 </div>
