@@ -6,6 +6,38 @@ const modalWindow = document.querySelector(".modal-window");
 const modalWindowShade = document.querySelector(".modal-window-shade");
 
 const darkMode = document.querySelector(".dark-mode");
+let colorScheme;
+
+function updateTheme() {
+  if (localStorage.getItem("theme") === "dark") {
+    document.querySelector('body').classList.add('dark-mode-variables')
+  }
+  else {
+    document.querySelector('body').classList.remove('dark-mode-variables')
+  }
+}
+
+(function setColorScheme() {
+  if (!localStorage.getItem("theme")) {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      colorScheme = "dark"
+    }
+    else {
+      colorScheme = "light"
+    }
+    localStorage.setItem("theme", colorScheme);
+    colorScheme === "dark" && document.querySelector('body').classList.add('dark-mode-variables');
+    colorScheme === "light" && document.querySelector('body').classList.remove('dark-mode-variables');
+
+
+  }
+  else {
+    updateTheme()
+  }
+
+  localStorage.getItem("theme") === "dark" ? darkMode.querySelector('span:nth-child(2)').classList.add('active') : darkMode.querySelector('span:nth-child(1)').classList.add('active');
+
+})();
 
 modalWindowShade.addEventListener("click", () => {
   removeModalWindow();
@@ -24,9 +56,14 @@ closeBtn.addEventListener("click", () => {
 });
 
 darkMode.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode-variables");
+
   darkMode.querySelector("span:nth-child(1)").classList.toggle("active");
   darkMode.querySelector("span:nth-child(2)").classList.toggle("active");
+
+  darkMode.querySelector("span:nth-child(1)").classList.contains("active") && localStorage.setItem("theme", "light");
+  darkMode.querySelector("span:nth-child(2)").classList.contains("active") && localStorage.setItem("theme", "dark");
+
+  updateTheme()
 });
 
 const removeModalWindow = () => {
@@ -34,4 +71,4 @@ const removeModalWindow = () => {
   modalWindowShade.classList.remove("modal-active");
 }
 
-export {modalWindow, modalWindowShade};
+export { modalWindow, modalWindowShade };
