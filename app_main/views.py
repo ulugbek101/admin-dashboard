@@ -52,11 +52,12 @@ def pupils(request):
 @login_required(login_url='signin')
 def dashboard(request):
     groups = Group.objects.all()
-    total_payment = groups.aggregate(
-        total_amount=Sum("price")).get("total_amount")
-    total_paid = Payment.objects.aggregate(
+    pupils = Pupil.objects.all()
+    total_payment = 0
+    total_payment = pupils.aggregate(total_payment=Sum("group__price")).get("total_payment")
+    total_paid = Payment.objects.filter(month__year__exact=date.today().year, month__month__exact=date.today().month).aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
-
+     
     payments = Payment.objects.filter(
         month__lte=date.today()).order_by("created")[:12]
     months = {
@@ -128,9 +129,11 @@ def dashboard(request):
                     note_ = "-"
 
                 ws.append([index, group_name_, pupil_name_, month_, amount_, note_])
+        
+        ws.append(["","","","",f"{total_paid} / {total_payment}",""])
 
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today()}-statistikasi.xlsx'
+        response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today().year}-statistikasi.xlsx'
         wb.save(response)
 
         return response

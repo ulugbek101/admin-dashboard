@@ -15,6 +15,7 @@
             <th>Guruh</th>
             <th>O'qituvchisi</th>
             <th>Fan</th>
+            <th>Narxi (so'm)</th>
             <th>Bolalar soni</th>
             <th>O'zgartirish / O'chirish</th>
           </tr>
@@ -24,6 +25,7 @@
             <td>{{ group.name }}</td>
             <td>{{ group.teacher.full_name }}</td>
             <td>{{ group.subject }}</td>
+            <td>{{ group.price|intcomma }}</td>
             <td>{{ group.pupil_set.all.count|intcomma }}</td>
             <td>
               <a href="{% url 'update_group' pk=group.id %}">

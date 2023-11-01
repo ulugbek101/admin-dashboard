@@ -42,61 +42,33 @@
         </div>
     </div>
 
-    <!-- <div class="reminders">
+    <div class="reminders">
         <div class="header">
-            <h2>Reminders</h2>
+            <h2>Statistikani yuklab olish</h2>
             <span class="material-icons-sharp">
-                        notifications_none
-                    </span>
+                addchart
+            </span>
         </div>
 
         <div class="notification">
-            <div class="icon">
-                        <span class="material-icons-sharp">
-                            volume_up
-                        </span>
-            </div>
-            <div class="content">
-                <div class="info">
-                    <h3>Workshop</h3>
-                    <small class="text_muted">
-                        08:00 AM - 12:00 PM
-                    </small>
-                </div>
-                <span class="material-icons-sharp">
-                            more_vert
-                        </span>
-            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <select name="month">
+                    <option value="current">Shu oy uchun</option>
+                    <option value="previous">O'tgan oy uchun</option>
+                </select>
+                <br>
+                <button type="submit" class="button">
+                    <span class="material-icons-sharp">
+                        file_download
+                    </span>
+                    Yuklab olish
+                </button>
+            </form>
         </div>
 
-        <div class="notification deactive">
-            <div class="icon">
-                        <span class="material-icons-sharp">
-                            edit
-                        </span>
-            </div>
-            <div class="content">
-                <div class="info">
-                    <h3>Workshop</h3>
-                    <small class="text_muted">
-                        08:00 AM - 12:00 PM
-                    </small>
-                </div>
-                <span class="material-icons-sharp">
-                            more_vert
-                        </span>
-            </div>
-        </div>
+        
 
-        <div class="notification add-reminder">
-            <div>
-                        <span class="material-icons-sharp">
-                            add
-                        </span>
-                <h3>Add Reminder</h3>
-            </div>
-        </div>
-
-    </div> -->
+    </div>
 
 </div>
