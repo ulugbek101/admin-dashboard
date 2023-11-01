@@ -35,6 +35,10 @@ class Group(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
 
+    @property
+    def get_total_payment(self):
+        return self.pupil_set.count() * self.price
+    
     def __str__(self) -> str:
         return self.name
 

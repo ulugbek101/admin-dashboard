@@ -48,15 +48,55 @@ def pupils(request):
 
 @login_required(login_url='signin')
 def dashboard(request):
-    total_payment = Group.objects.aggregate(
+    groups = Group.objects.all()
+    total_payment = groups.aggregate(
         total_amount=Sum("price")).get("total_amount")
     total_paid = Payment.objects.aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
 
+    payments = Payment.objects.filter(month__lte=date.today()).order_by("created")[:12]
+    months = {
+        1: "Yanvar",
+        2: "Fevral",
+        3: "Mart",
+        4: "Aprel",
+        5: "May",
+        6: "Iyun",
+        7: "Iyul",
+        9: "Avgust",
+        9: "Sentyabr",
+        10: "Oktyabr",
+        11: "Noyabr",
+        12: "Dekabr",
+    }
+    payments_dataset = dict.fromkeys(months.values(), 0)
+    
+    for payment in payments:
+
+        if payment.month.year != date.today().year: 
+            continue
+
+        payment_month = payment.month.month
+        if months[payment_month] not in payments_dataset:
+            payments_dataset[months[payment_month]] = payment.amount
+        else:
+            payments_dataset[months[payment_month]] += payment.amount
+
+    for month_number in months.keys():
+        if month_number > date.today().month:
+            payments_dataset.pop(months[month_number])
+
     context = {
         "dashboard": True,
+
         "total_payment": total_payment,
         "total_paid": total_paid,
+
+        "months_list": list(payments_dataset.keys()),
+        "payments_list": list(payments_dataset.values()),
+        
+        "groups_total_payments": [group.get_total_payment for group in groups],
+        "groups_names": [group.name for group in groups],
     }
     return render(request, "app_main/dashboard.html", context)
 
