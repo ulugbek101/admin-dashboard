@@ -7,9 +7,10 @@ from django.http import HttpResponse
 
 from openpyxl import Workbook
 
-from . models import Group, Pupil, Payment, Subject
 from app_users.models import User
+from . models import Group, Pupil, Payment, Subject
 from . import forms
+from . import utils
 
 
 @login_required(login_url='signin')
@@ -52,31 +53,13 @@ def pupils(request):
 @login_required(login_url='signin')
 def dashboard(request):
     groups = Group.objects.all()
-    pupils = Pupil.objects.all()
-    total_payment = 0
-    total_payment = pupils.aggregate(total_payment=Sum("group__price")).get("total_payment")
-    total_paid = Payment.objects.filter(month__year__exact=date.today().year, month__month__exact=date.today().month).aggregate(
-        paid_amount=Sum("amount")).get("paid_amount")
-    
-    if not total_paid: total_paid = 0
-    if not total_payment: total_payment = 0
-    
+    total_paid, total_payment = utils.get_payment_info()
+
     payments = Payment.objects.filter(
         month__lte=date.today()).order_by("created")[:12]
-    months = {
-        1: "Yanvar",
-        2: "Fevral",
-        3: "Mart",
-        4: "Aprel",
-        5: "May",
-        6: "Iyun",
-        7: "Iyul",
-        8: "Avgust",
-        9: "Sentyabr",
-        10: "Oktyabr",
-        11: "Noyabr",
-        12: "Dekabr",
-    }
+    
+    months = utils.get_months()
+
     payments_dataset = dict.fromkeys(months.values(), 0)
 
     for payment in payments:
@@ -94,52 +77,6 @@ def dashboard(request):
         if month_number > date.today().month:
             payments_dataset.pop(months[month_number])
 
-
-    if request.method == 'POST':
-        month = request.POST.get('month')
-        year = date.today().year
-
-        pupils = Pupil.objects.all().order_by('group__name', 'first_name', 'last_name', '-created')
-        payments = Payment.objects.all()
-
-        if month == 'current':
-            month = date.today().month
-        else:
-            month = date.today().month - 1
-            if month < 1:
-                year -= 1
-                month = 12
-        
-        wb = Workbook(write_only=True)
-        ws = wb.create_sheet()
-        ws.append(["№", "Guruh", "O'quvchi", "Oy", "To'lov", "Izoh"])
-
-        for index, pupil in enumerate(pupils, start=1):
-            if pupil.created.year == year and pupil.created.month <= month:
-                pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month)
-
-                if pupil_payment:
-                    group_name_ = pupil_payment[0].group.name if pupil_payment[0].group else pupil_payment.group_name
-                    pupil_name_ = pupil_payment[0].pupil.full_name if pupil_payment[0].pupil else pupil_payment.pupil_fullname
-                    month_ = months[month]
-                    amount_  = f"{pupil_payment[0].amount} / {pupil.group.price}"
-                    note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
-                else:
-                    group_name_ =  pupil.group.name
-                    pupil_name_ = pupil.full_name
-                    month_ = months[month]
-                    amount_ = f"{0} / {pupil.group.price}"
-                    note_ = "-"
-
-                ws.append([index, group_name_, pupil_name_, month_, amount_, note_])
-        
-        ws.append(["","","","",f"{total_paid} / {total_payment}",""])
-
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today().year}-statistikasi.xlsx'
-        wb.save(response)
-
-        return response
             
     context = {
         "dashboard": True,
@@ -154,6 +91,59 @@ def dashboard(request):
         "groups_names": [group.name for group in groups],
     }
     return render(request, "app_main/dashboard.html", context)
+
+
+@login_required(login_url='signin')
+def download_stats(request):
+    months = utils.get_months()
+    month = request.POST.get('month')
+    year = date.today().year
+
+    pupils = Pupil.objects.all().order_by('group__name', 'first_name', 'last_name', '-created')
+
+    if month == 'current':
+        month = date.today().month
+    else:
+        month = date.today().month - 1
+        if month < 1:
+            year -= 1
+            month = 12
+    
+    # print( month, year )
+    total_paid, total_payment = utils.get_payment_info(year=year, month=month)
+    print(total_paid, total_payment)
+
+    wb = Workbook(write_only=True)
+    ws = wb.create_sheet()
+    ws.append(["№", "Guruh", "O'quvchi", "Oy", "To'lov", "Izoh"])
+
+    for index, pupil in enumerate(pupils, start=1):
+        if pupil.created.year == year and pupil.created.month <= month:
+            pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month)
+
+            if pupil_payment:
+                group_name_ = pupil_payment[0].group.name if pupil_payment[0].group else pupil_payment.group_name
+                pupil_name_ = pupil_payment[0].pupil.full_name if pupil_payment[0].pupil else pupil_payment.pupil_fullname
+                month_ = months[month]
+                amount_  = f"{pupil_payment[0].amount} / {pupil.group.price}"
+                note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
+            else:
+                group_name_ =  pupil.group.name
+                pupil_name_ = pupil.full_name
+                month_ = months[month]
+                amount_ = f"{0} / {pupil.group.price}"
+                note_ = "-"
+
+            ws.append([index, group_name_, pupil_name_, month_, amount_, note_])
+    
+    ws.append(["","","","",f"{total_paid} / {total_payment}",""])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today().year}-statistikasi.xlsx'
+    wb.save(response)
+
+    return response
+
 
 
 @login_required(login_url='signin')
@@ -497,6 +487,8 @@ def delete_group(request, pk):
 
     context = {
         "title": group.name,
+        "btn_disabled": group.has_students,
+        "btn_disabled_warning_text": "Guruhda o'quvchilar mavjud, avval o'quvchilarni barchasini o'chiring yoki boshqa guruhga o'tkazing", 
     }
     return render(request, "delete.html", context)
 
@@ -512,5 +504,7 @@ def delete_subject(request, pk):
 
     context = {
         "title": subject.name,
+        "btn_disabled": subject.has_groups,
+        "btn_disabled_warning_text": "Bu fanga bog'liq guruhlar mavjud. Shu guruhlarni o'chirib qaytadan urinib ko'ring",
     }
     return render(request, "delete.html", context)

@@ -17,6 +17,10 @@ class Subject(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
 
+    @property
+    def has_groups(self):
+        return self.group_set.all().count() > 0
+
     def __str__(self) -> str:
         return self.name
 
@@ -34,6 +38,10 @@ class Group(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
+
+    @property
+    def has_students(self):
+        return self.pupil_set.all().count() > 0
 
     @property
     def get_total_payment(self):

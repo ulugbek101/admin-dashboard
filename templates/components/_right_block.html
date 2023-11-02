@@ -51,7 +51,7 @@
         </div>
 
         <div class="notification">
-            <form action="" method="post">
+            <form action="{% url 'download_stats' %}" method="post">
                 {% csrf_token %}
                 <select name="month">
                     <option value="current">Shu oy uchun</option>

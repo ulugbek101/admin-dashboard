@@ -32,11 +32,13 @@
                                         edit
                                     </span>
                                 </a>
+                                {% if request.user != teacher %}
                                 <a href="{% url 'delete_teacher' pk=teacher.id %}" class="button">
                                     <span class="material-icons-sharp">
                                         delete
                                     </span>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
