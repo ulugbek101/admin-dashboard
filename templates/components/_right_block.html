@@ -17,7 +17,7 @@
 
         <div class="profile">
             <div class="info">
-                <p>Salom, <b>Ulug'bek</b></p>
+		    <p>Salom, <b>{{ request.user.first_name }}</b></p>
                 <small class="text-muted">{{ request.user.job }}</small>
             </div>
             <div class="profile-photo">
