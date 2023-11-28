@@ -10,7 +10,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=200, verbose_name="Familiya")
     email = models.EmailField(max_length=200, verbose_name="E-mail manzil", null=True, blank=True, unique=True)
     job = models.CharField(max_length=200, default="O'qituvchi", blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='shams-media/profile-pictures/',
+    profile_picture = models.ImageField(upload_to='thedevu101-admin-media/profile-pictures/',
                                         null=True,
                                         blank=True,
                                         default='profile-pictures/user-default.png', verbose_name="Profil rasmi")

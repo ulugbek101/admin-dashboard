@@ -29,11 +29,10 @@ SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.shams-school.online', 'shams-school.online', 'www.shams-school.uz', 'shams-school.uz', 'www.shams-school.up.railway.app', 'shams-school.up.railway.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
-    'https://shams-school.up.railway.app',
-]
-
+    'https://thedevu101.online',
+    ]
 # Application definition
 
 INSTALLED_APPS = [
@@ -141,7 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_URL = 'shams-media/'
+MEDIA_URL = 'thedevu101-admin-media/'
 
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'staticfiles'
