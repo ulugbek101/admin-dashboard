@@ -290,6 +290,7 @@ def add_payment(request, group_id, pupil_id):
             # error message: invalid payment form
             return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
+    form.fields['month'].widget.attrs.update({"value": date.today()})
     context = {
         "form": form,
         "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov kiritish",

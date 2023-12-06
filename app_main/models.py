@@ -118,4 +118,4 @@ class Payment(models.Model):
         return f'{self.month} - {self.pupil} - {self.amount}' if self.pupil else f'{self.month} - {self.pupil_fullname} - {self.amount}'
     
     class Meta:
-        ordering = ('-created', 'amount')
+        ordering = ('-month', 'pupil_fullname', 'pupil', 'amount')

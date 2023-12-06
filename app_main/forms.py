@@ -51,7 +51,6 @@ class PaymentForm(forms.ModelForm):
         widgets = {
             'month': forms.DateInput(attrs={
                 "type": "date",
-                "value": date.today(),
                 "min": date.today(),
             }),
             'amount': forms.NumberInput(attrs={
