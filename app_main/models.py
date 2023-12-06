@@ -115,7 +115,7 @@ class Payment(models.Model):
         return self.created != self.updated
 
     def __str__(self) -> str:
-        return f'{self.created.year}.{self.created.month}.{self.created.day} - {self.pupil} - {self.amount}' if self.pupil else f'{self.created.year}.{self.created.month}.{self.created.day} - {self.pupil_fullname} - {self.amount}'
+        return f'{self.month} - {self.pupil} - {self.amount}' if self.pupil else f'{self.month} - {self.pupil_fullname} - {self.amount}'
     
     class Meta:
         ordering = ('-created', 'amount')
