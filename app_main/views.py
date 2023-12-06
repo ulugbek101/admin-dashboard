@@ -53,7 +53,7 @@ def pupils(request):
 @login_required(login_url='signin')
 def dashboard(request):
     groups = Group.objects.all()
-    total_paid, total_payment = utils.get_payment_info()
+    total_paid, total_payment = utils.get_payment_info(year=date.today().year, month=date.today().month)
 
     payments = Payment.objects.filter(
         month__lte=date.today()).order_by("created")[:12]
@@ -64,14 +64,12 @@ def dashboard(request):
 
     for payment in payments:
 
-        if payment.month.year != date.today().year:
-            continue
-
-        payment_month = payment.month.month
-        if months[payment_month] not in payments_dataset:
-            payments_dataset[months[payment_month]] = payment.amount
-        else:
-            payments_dataset[months[payment_month]] += payment.amount
+        if payment.month.year == date.today().year:
+            payment_month = payment.month.month
+            if months[payment_month] not in payments_dataset:
+                payments_dataset[months[payment_month]] = payment.amount
+            else:
+                payments_dataset[months[payment_month]] += payment.amount
 
     for month_number in months.keys():
         if month_number > date.today().month:

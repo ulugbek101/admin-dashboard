@@ -1,7 +1,5 @@
-from datetime import date
-
 from django.db.models import Sum
-from .models import Payment, Pupil
+from .models import Payment, Group
 
 
 def get_months() -> dict:
@@ -22,23 +20,18 @@ def get_months() -> dict:
     return months
 
 
-def get_payment_info(year: int = None, month: int = None) -> tuple:
-    pupils = Pupil.objects.all()
-
-    if not year:
-        year = date.today().year
-        month = date.today().month
+def get_payment_info(year: int, month: int) -> tuple:
+    groups = Group.objects.all()
 
     total_payment = 0
 
-    total_payment = pupils.filter(created__year__exact=year, created__month__exact=month).aggregate(
-        total_payment=Sum("group__price")).get("total_payment")
     total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month).aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
 
+    for group in groups:
+        total_payment += group.price * group.pupil_set.count()
+     
     if not total_paid:
         total_paid = 0
-    if not total_payment:
-        total_payment = 0
 
     return total_paid, total_payment
