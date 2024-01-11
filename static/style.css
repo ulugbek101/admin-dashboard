@@ -2,7 +2,9 @@
 
 :root {
   --color-primary: #6c9bcf;
+  --color-info: #6c9bcf;
   --color-danger: red;
+  --color-error: red;
   --color-success: #1b9c85;
   --color-warning: #f7d060;
   --color-white: #fff;
@@ -101,7 +103,15 @@ b {
   color: var(--color-primary);
 }
 
+.info {
+  color: var(--color-primary);
+}
+
 .danger {
+  color: var(--color-danger);
+}
+
+.error {
   color: var(--color-danger);
 }
 
@@ -111,6 +121,15 @@ b {
 
 .warning {
   color: var(--color-warning);
+}
+
+.message-container {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid;
 }
 
 .container {

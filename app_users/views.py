@@ -1,47 +1,56 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import logout, login, get_user_model
+from django.contrib import messages
 
 User = get_user_model()
 
 
 def signout(request):
+    messages.info(request, "Tizimdan chiqdingiz")
     logout(request)
     return redirect("signin")
 
 
 def signin(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        next_page = request.POST.get("next")
 
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        next_page = request.POST.get('next')
-        
         try:
             user = User.objects.get(email=email)
         except:
             user = None
-        
+
         if user:
             password_is_correct = user.check_password(password)
             if password_is_correct:
-                # success message
+                messages.success(request, f"Xush kelibsiz, {user.first_name} {user.last_name}!")
                 # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 login(request, user)
-                
+
                 if next_page:
                     return redirect(next_page)
 
-                return redirect('dashboard')
+                return redirect("dashboard")
             else:
-                # password incorrect error message
-                return redirect('signin')
+                messages.error(request, "Parol noto'g'ri kiritilgan")
+                context = {
+                    "title": "Tizimga kirish",
+                    "email": email,
+                }
+                return render(request, "app_users/signin.html", context)
         else:
-            # user not found error message
-            return redirect('signin')
-    
-    context = {}
+            messages.error(request, "Bunday foydalanuvhi tizimda topilmadi")
+            context = {
+                "title": "Tizimga kirish",
+                "email": email,
+            }
+            return render(request, "app_users/signin.html", context)
+
+    context = {
+        "title": "Tizimga kirish",
+    }
     return render(request, "app_users/signin.html", context)
 
 
