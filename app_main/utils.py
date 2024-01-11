@@ -28,7 +28,7 @@ def get_payment_info(year: int, month: int) -> tuple:
     total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month).aggregate(
         paid_amount=Sum("amount")).get("paid_amount")
 
-    for group in groups:
+    for group in groups.filter(created__year__lte=year):
         total_payment += group.price * group.pupil_set.count()
      
     if not total_paid:

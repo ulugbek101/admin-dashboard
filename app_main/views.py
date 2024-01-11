@@ -16,6 +16,7 @@ from . import utils
 @login_required(login_url='signin')
 def subjects(request):
     context = {
+        "title": "Barcha fanlar",
         "subjects": True,
         "subjects_list": Subject.objects.annotate(pupils=Count("group__pupil")).order_by("name", "-created")
     }
@@ -25,6 +26,7 @@ def subjects(request):
 @login_required(login_url='signin')
 def groups(request):
     context = {
+        "title": "Barchar guruhlar",
         "groups_list": Group.objects.all().order_by("name", "-created"),
         "groups": True,
     }
@@ -34,6 +36,7 @@ def groups(request):
 @login_required(login_url='signin')
 def teachers(request):
     context = {
+        "title": "Barcha o'qituvchilar",
         "teachers": True,
         "teachers_list": User.objects.all().order_by("last_name", "first_name", "-created")
     }
@@ -43,6 +46,7 @@ def teachers(request):
 @login_required(login_url='signin')
 def pupils(request):
     context = {
+        "title": "Barcha o'quvchilar",
         "pupils_list": Pupil.objects.all().order_by("first_name", "last_name", "-created"),
         "current_date": str(date.today())[:-3],
         "pupils": True,
@@ -56,14 +60,14 @@ def dashboard(request):
     total_paid, total_payment = utils.get_payment_info(year=date.today().year, month=date.today().month)
 
     payments = Payment.objects.filter(
-        month__lte=date.today()).order_by("created")[:12]
+        month__lte=date.today()).order_by("created")
     
     months = utils.get_months()
 
     payments_dataset = dict.fromkeys(months.values(), 0)
 
     for payment in payments:
-
+    
         if payment.month.year == date.today().year:
             payment_month = payment.month.month
             if months[payment_month] not in payments_dataset:
@@ -75,8 +79,8 @@ def dashboard(request):
         if month_number > date.today().month:
             payments_dataset.pop(months[month_number])
 
-            
     context = {
+        "title": "Analitika",
         "dashboard": True,
 
         "total_payment": total_payment,
@@ -107,16 +111,14 @@ def download_stats(request):
             year -= 1
             month = 12
     
-    # print( month, year )
     total_paid, total_payment = utils.get_payment_info(year=year, month=month)
-    print(total_paid, total_payment)
 
     wb = Workbook(write_only=True)
     ws = wb.create_sheet()
     ws.append(["№", "Guruh", "O'quvchi", "Oy", "To'lov", "Izoh"])
 
     for index, pupil in enumerate(pupils, start=1):
-        if pupil.created.year == year and pupil.created.month <= month:
+        if (pupil.created.year == year and pupil.created.month <= month) or (pupil.created.year < year):
             pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month)
 
             if pupil_payment:
@@ -137,7 +139,7 @@ def download_stats(request):
     ws.append(["","","","",f"{total_paid} / {total_payment}",""])
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename={months[month]}-{date.today().year}-statistikasi.xlsx'
+    response['Content-Disposition'] = f'attachment; filename={months[month]}-{year}-statistikasi.xlsx'
     wb.save(response)
 
     return response
@@ -182,6 +184,7 @@ def settings(request):
             return redirect("settings")
 
     context = {
+        "title": "Sozlamalar",
         "settings": True,
         "btn_text": "Profile ma'lumotlarini yangilash",
     }
