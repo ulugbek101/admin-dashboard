@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['137.184.90.161', 'www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     'https://thedevu101.online',
     ]
