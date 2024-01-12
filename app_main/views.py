@@ -53,7 +53,7 @@ def pupils(request):
     context = {
         "title": "Barcha o'quvchilar",
         "pupils_list": Pupil.objects.all().order_by(
-            "first_name", "last_name", "-created"
+            "group__name", "first_name", "last_name", "-created"
         ),
         "current_date": str(date.today())[:-3],
         "pupils": True,
