@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'style.css' %}" />
   <title>
@@ -12,7 +13,7 @@
   </title>
 </head>
 
-<body>
+<body class='dark-mode-variables'>
   {% include 'components/_messages.html' %}
   <div class="container">{% block content %} {% endblock content %}</div>
 
