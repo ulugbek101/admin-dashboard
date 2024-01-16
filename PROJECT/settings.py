@@ -11,7 +11,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)'
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['137.184.90.161', 'www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
 
@@ -82,22 +82,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PROJECT.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env.str('DB_NAME'),
-#         'HOST': env.str('DB_HOST'),
-#         'PORT': env.str('DB_PORT'),
-#         'USER': env.str('DB_USER'),
-#         'PASSWORD': env.str('DB_PASSWORD'),
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': env.str('DB_NAME'),
+         'HOST': env.str('DB_HOST'),
+         'PORT': env.str('DB_PORT'),
+         'USER': env.str('DB_USER'),
+         'PASSWORD': env.str('DB_PASSWORD'),
+     }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
