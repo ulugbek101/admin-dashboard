@@ -7,7 +7,9 @@
   <h1>Barcha guruhlar</h1>
   <div class="card-wrapper">
     <div class="card">
+      {% if request.user.is_superuser %}
       <a class="button add-button" href="{% url 'add_group' %}">Guruh qo'shish</a>
+      {% endif %}
       <table>
         <tbody>
           <tr>
@@ -22,7 +24,11 @@
           {% for group in groups_list %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ group.name }}</td>
+            <td>
+              <a href="{% url 'group_detail' id=group.id %}" class="table-link">
+                {{ group.name }}
+              </a>
+            </td>
             <td>{{ group.teacher.full_name }}</td>
             <td>{{ group.subject }}</td>
             <td>{{ group.price|intcomma }}</td>

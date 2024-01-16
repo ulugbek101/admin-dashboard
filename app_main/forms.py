@@ -1,6 +1,9 @@
 from datetime import date
 
 from django import forms
+from django.contrib.auth import password_validation
+from django.contrib.auth.forms import UserCreationForm
+
 from app_users.models import User
 from django.utils.translation import gettext_lazy as _
 
@@ -8,29 +11,23 @@ from .models import Pupil, Payment, Group, Subject
 
 
 class TeacherForm(forms.ModelForm):
-    # password1 = forms.CharField(
-    #     label=_("Password"),
-    #     strip=False,
-    #     widget=forms.PasswordInput(attrs={
-    #         "autocomplete": "new-password",
-    #         "placeholder": "Parol",
-    #     }),
-    #     help_text=password_validation.password_validators_help_text_html(),
-    # )
-    # password2 = forms.CharField(
-    #     label=_("Password confirmation"),
-    #     widget=forms.PasswordInput(attrs={
-    #         "autocomplete": "new-password",
-    #         "placeholder": "Parolni tasdiqlang",
-    #     }),
-    #     strip=False,
-    #     help_text=_("Enter the same password as before, for verification."),
-    # )
+    password1 = forms.CharField(
+        label=_("Parol"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    password2 = forms.CharField(
+        label=_("Parolni takrorlang"),
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        strip=False,
+        help_text=_("Parollar bir xil bo'lishi kerak"),
+    )
 
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email",
-                  "profile_picture"]
+                  "profile_picture", "password1", "password2"]
         widgets = {
             "profile_picture": forms.FileInput(attrs={
                 "accept": "image/*"
@@ -41,7 +38,7 @@ class TeacherForm(forms.ModelForm):
 class PupilForm(forms.ModelForm):
     class Meta:
         model = Pupil
-        fields = '__all__'
+        fields = ['first_name', 'last_name']
 
 
 class PaymentForm(forms.ModelForm):
@@ -63,6 +60,23 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['subject', 'name', 'teacher', 'price']
+
+
+class GroupUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ["teacher", "subject", "name"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super(GroupUpdateForm, self).__init__(*args, **kwargs)
+
+        # Check if the user is not a superuser
+        if user and not user.is_superuser:
+            # Remove certain fields from the form
+            del self.fields["teacher"]
+            del self.fields["subject"]
+            # Add more conditions and field removals as needed
 
 
 class SubjectForm(forms.ModelForm):

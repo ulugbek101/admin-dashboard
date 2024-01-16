@@ -2,7 +2,7 @@
 	{% for message in messages %}
 		<div class="message-container" style='border-color: var(--color-{{ message.tags }});'>
 			<p class='{{ message.tags }}'>
-				Message {{ message }}
+				{{ message }}
 			</p>
 		</div>
 	{% endfor %}

@@ -62,6 +62,15 @@ a {
   color: var(--color-dark);
 }
 
+.table-link {
+    color: var(--color-dark-variant);
+    text-decoration: none;
+}
+
+.table-link:hover {
+    text-decoration: underline;
+}
+
 img {
   display: block;
   width: 100%;

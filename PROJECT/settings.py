@@ -1,3 +1,4 @@
+from django.urls import reverse, reverse_lazy
 from environs import Env
 
 env = Env()
@@ -34,7 +35,19 @@ INSTALLED_APPS = [
     'app_users.apps.AppUsersConfig',
     'app_main.apps.AppMainConfig',
     # 'api.apps.ApiConfig'
+
+    'debug_toolbar',
 ]
+
+INTERNAL_IPS = [
+    # add your IP address here
+    '127.0.0.1',
+    # add more IPs if necessary
+]
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -45,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'PROJECT.urls'
@@ -67,22 +82,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PROJECT.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('DB_NAME'),
-        'HOST': env.str('DB_HOST'),
-        'PORT': env.str('DB_PORT'),
-        'USER': env.str('DB_USER'),
-        'PASSWORD': env.str('DB_PASSWORD'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env.str('DB_NAME'),
+#         'HOST': env.str('DB_HOST'),
+#         'PORT': env.str('DB_PORT'),
+#         'USER': env.str('DB_USER'),
+#         'PASSWORD': env.str('DB_PASSWORD'),
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -107,11 +122,11 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL = 'thedevu101-admin-media/'
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'static'
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
-STATIC_ROOT = BASE_DIR / 'static'
+# STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -123,3 +138,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': env.str('API_SECRET'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+LOGIN_URL = reverse_lazy("signin")
+LOGOUT_REDIRECT_URL = reverse_lazy("signin")

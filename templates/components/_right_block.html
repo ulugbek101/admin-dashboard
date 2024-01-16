@@ -42,6 +42,7 @@
         </div>
     </div>
 
+    {% if request.user.is_superuser %}
     <div class="reminders">
         <div class="header">
             <h2>Statistikani yuklab olish</h2>
@@ -70,5 +71,6 @@
         
 
     </div>
+    {% endif %}
 
 </div>

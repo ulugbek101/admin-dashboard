@@ -13,12 +13,14 @@
     </div>
 
     <div class="sidebar">
+        {% if request.user.is_superuser %}
         <a href="{% url 'subjects' %}" class="{% if subjects == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         bookmark
                     </span>
             <h3>Fanlar</h3>
         </a>
+        {% endif %}
         <a href="{% url 'groups' %}" class="{% if groups == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         groups
@@ -38,12 +40,14 @@
             <h3>O'quvchilar</h3>
 <!--            <span class="message-count">27</span>-->
         </a>
+        {% if request.user.is_superuser %}
         <a href="{% url 'dashboard' %}" class="{% if dashboard == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         insights
                     </span>
             <h3>Analitika</h3>
         </a>
+        {% endif %}
         <a href="{% url 'settings' %}" class="{% if settings == True %} active {% endif %}">
                     <span class="material-icons-sharp">
                         settings

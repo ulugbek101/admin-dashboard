@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     first_name = models.CharField(max_length=200, verbose_name="Ism")
     last_name = models.CharField(max_length=200, verbose_name="Familiya")
-    email = models.EmailField(max_length=200, verbose_name="E-mail manzil", null=True, blank=True, unique=True)
+    email = models.EmailField(max_length=200, verbose_name="E-mail manzil", unique=True)
     job = models.CharField(max_length=200, default="O'qituvchi", blank=True, null=True)
     profile_picture = models.ImageField(upload_to='thedevu101-admin-media/profile-pictures/',
                                         null=True,
@@ -26,7 +26,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
 
     class Meta:
         unique_together = [

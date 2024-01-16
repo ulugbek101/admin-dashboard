@@ -1,30 +1,28 @@
 {% extends 'base.html' %}
+{% block content %}
 {% load humanize %}
 
-{% block content %}
 {% include 'components/_navbar.html' %}
 <main>
-  <h1>Barcha o'quvchilar</h1>
+  <h1>{{ group.name }} guruhi</h1>
   <div class="card-wrapper">
     <div class="card">
-      {# <a class="button add-button" href="{% url 'add_pupil' %}">O'quvchi qo'shish</a> #}
-      <table>
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>O'quvchi</th>
-            <th>Guruh</th>
-            <th>To'lov</th>
-            <th>O'zgartirish / O'chirish</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for pupil in pupils_list %}
+        <a class="button add-button" href="{% url 'add_pupil' %}?group_id={{ group_id }}">O'quvchi qo'shish</a>
+        <table>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>O'quvchi</th>
+              <th>To'lov</th>
+              <th>O'zgartirish / O'chirish</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for pupil in pupils %}
 
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ pupil.full_name }}</td>
-            <td>{{ pupil.group.name }}</td>
 
             {% for payment in pupil.payments %}
 
@@ -54,8 +52,8 @@
             </td>
           </tr>
           {% endfor %}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
     </div>
   </div>
 </main>

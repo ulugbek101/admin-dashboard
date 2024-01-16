@@ -32,7 +32,7 @@ def signin(request):
                 if next_page:
                     return redirect(next_page)
 
-                return redirect("dashboard")
+                return redirect("groups")
             else:
                 messages.error(request, "Parol noto'g'ri kiritilgan")
                 context = {

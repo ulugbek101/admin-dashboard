@@ -7,7 +7,9 @@
     <h1>Barcha o'qituvchilar</h1>
     <div class="card-wrapper">
         <div class="card">
+            {% if request.user.is_superuser %}
             <a class="button add-button" href="{% url 'add_teacher' %}">O'qituvchi qo'shish</a>
+            {% endif %}
             <table>
                 <thead>
                     <tr>
@@ -15,7 +17,11 @@
                         <th>O'qituvchi</td>
                         <th>E-mail manzil</td>
                         <th>Qo'shilgan sanasi</td>
-                        <th>O'zgartirish / O'chirish</td>
+                        <th>
+                            {% if request.user.is_superuser %}
+                            O'zgartirish / O'chirish
+                            {% endif %}
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,12 +33,14 @@
                         <td>{{ teacher.created|date }}</td>
                         <td>
                             <div class="user-controls">
+                                {% if request.user.is_superuser %}
                                 <a href="{% url 'update_teacher' pk=teacher.id %}" class="button">
                                     <span class="material-icons-sharp">
                                         edit
                                     </span>
                                 </a>
-                                {% if request.user != teacher %}
+                                {% endif %}
+                                {% if request.user.is_superuser and request.user != teacher %}
                                 <a href="{% url 'delete_teacher' pk=teacher.id %}" class="button">
                                     <span class="material-icons-sharp">
                                         delete
