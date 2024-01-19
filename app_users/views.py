@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, get_user_model
+from django.contrib.auth.views import LogoutView
 from django.contrib import messages
+from django.urls import reverse
 
 User = get_user_model()
 
 
-def signout(request):
-    messages.info(request, "Tizimdan chiqdingiz")
-    logout(request)
-    return redirect("signin")
+class CustomLogoutView(LogoutView):
+    def get_success_url(self):
+        messages.info(self.request, "Tizimdan chiqdingiz")
+        return reverse("signin")
 
 
 def signin(request):

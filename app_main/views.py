@@ -14,7 +14,7 @@ from app_users.models import User
 from . import forms
 from . import utils
 from .decorators import is_superuser
-from .models import Group, Pupil, Payment, Subject
+from .models import Group, Pupil, Payment, Subject, Expense
 
 
 class SubjectList(LoginRequiredMixin, ListView):
@@ -67,16 +67,16 @@ class GroupDetail(LoginRequiredMixin, DetailView):
         return context
 
 
-@login_required(login_url="signin")
-def teachers(request):
-    context = {
+class TeacherList(LoginRequiredMixin, ListView):
+    """Return teachers list"""
+
+    queryset = User.objects.all().order_by("last_name", "first_name", "-created")
+    template_name = "app_main/teachers.html"
+    context_object_name = "teachers_list"
+    extra_context = {
         "title": "Barcha o'qituvchilar",
         "teachers": True,
-        "teachers_list": User.objects.all().order_by(
-            "last_name", "first_name", "-created"
-        ),
     }
-    return render(request, "app_main/teachers.html", context)
 
 
 class PupilList(LoginRequiredMixin, ListView):
@@ -102,6 +102,28 @@ class PupilList(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             return pupils.filter(group__teacher=self.request.user)
         return pupils
+
+
+class ExpenseList(LoginRequiredMixin, ListView):
+    """Render expenses list"""
+
+    template_name = "app_main/expenses.html"
+    context_object_name = "expenses_list"
+    extra_context = {
+        "title": "Chiqimlar ro'yxati",
+        "expenses": True
+    }
+
+    def get_queryset(self):
+        """
+        Return all expenses if user is superuser,
+        otherwise only expenses of the user
+        """
+
+        expenses = Expense.objects.all().order_by("-created")
+        if not self.request.user.is_superuser:
+            return expenses.filter(owner=self.request.user)
+        return expenses
 
 
 @login_required(login_url="signin")
@@ -282,8 +304,8 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
         if password1 == password2:
             teacher = form.save(commit=False)
             teacher.username = self.request.POST.get("email")[
-                                       : self.request.POST.get("email").find("@")
-                                       ]
+                               : self.request.POST.get("email").find("@")
+                               ]
             teacher.set_password(password2)
             teacher.save()
 
@@ -338,12 +360,22 @@ def add_payment(request, group_id, pupil_id):
     except:
         payment = None
 
-    form = forms.PaymentForm(
-        data={
-            "amount": payment.amount if payment else 0,
-            "note": payment.note if payment.note else "",
-        }
-    )
+    # If there is an existing payment, add note field to display it in the form
+    if payment:
+        form = forms.PaymentForm(
+            data={
+                "amount": payment.amount if payment else 0,
+                "note": payment.note if payment.note else "",
+            }
+        )
+    # Otherwise display a form with blank note field
+    else:
+        form = forms.PaymentForm(
+            data={
+                "amount": payment.amount if payment else 0,
+            }
+        )
+
     pupil = Pupil.objects.get(group__id=group_id, id=pupil_id)
 
     if request.method == "POST":
@@ -399,12 +431,31 @@ def add_group(request):
             return redirect("add_group")
 
     context = {
-        "title": "Guruh qo'shish",
         "form": form,
         "title": "Guruh qo'shish",
         "btn_text": "Guruhni qo'shish",
     }
     return render(request, "form.html", context)
+
+
+class GroupCreate(LoginRequiredMixin, CreateView):
+    """Render form that creates group"""
+
+    template_name = "form.html"
+    form_class = forms.GroupForm
+    success_url = reverse_lazy("groups")
+    extra_context = {
+        "title": "Guruh qo'shish",
+        "btn_text": "Guruhni qo'shish",
+    }
+
+    def form_valid(self, form):
+        messages.success(self.request, "Guruh yaratildi")
+        return super(GroupCreate, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Guruh to'lovi miqdori 0 bo'lishi mumkin emas")
+        return super(GroupCreate, self).form_invalid(form)
 
 
 class SubjectCreate(LoginRequiredMixin, CreateView):
@@ -474,6 +525,7 @@ class TeacherUpdate(LoginRequiredMixin, UpdateView):
         "title": "O'qituvchi ma'lumotlarini o'zgartirish",
         "btn_text": "O'qituvchi ma'lumotlarini yangilash",
     }
+
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_superuser and self.request.user != self.get_object():
             raise Http404("Not found")

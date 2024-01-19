@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+{% include 'components/_navbar.html' %}
+<main>
+    <h1>Barcha guruhlar</h1>
+    <div class="card-wrapper">
+        <div class="card">
+            <a class="button add-button" href="">Chiqim qo'shish</a>
+            <table>
+                <tbody>
+                <tr>
+                    <th>№</th>
+                    <th>Chiqim turi</th>
+                    <th>O'qituvchi</th>
+                    <th>Qiymati (so'm)</th>
+                    <th>Olingan sana</th>
+                    <th>O'zgartirish / O'chirish</th>
+                </tr>
+                {% for expense in expenses_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <a href="" class="table-link">
+                            {{ expense.name }}
+                        </a>
+                    </td>
+                    <td>{% if expense.owner %} {{ expense.owner.full_name }} {% else %} {{ expense.get_owner_fullname }}
+                        {% endif %}
+                    </td>
+                    <td>{{ expense.amount|intcomma }}</td>
+                    <td>{{ expense.created }}</td>
+                    <td>
+                        <a href="">
+                <span class="material-icons-sharp">
+                  edit
+                </span>
+                        </a>
+                        <a href="">
+                <span class="material-icons-sharp">
+                  delete
+                </span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% include 'components/_right_block.html' %}
+{% endblock content %}

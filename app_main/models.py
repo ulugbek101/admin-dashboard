@@ -11,7 +11,7 @@ from . import validators
 
 class Subject(models.Model):
     name = models.CharField(max_length=200, verbose_name='Fan nomi', unique=True, validators=[
-                            validators.subject_name_length_validator])
+        validators.subject_name_length_validator])
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
@@ -33,7 +33,7 @@ class Group(models.Model):
     name = models.CharField(
         max_length=200, verbose_name='Guruh nomi', unique=True)
     price = models.IntegerField(verbose_name='Guruh to\'lovi', validators=[
-                                validators.min_value_validator])
+        validators.min_value_validator])
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
@@ -46,7 +46,7 @@ class Group(models.Model):
     @property
     def get_total_payment(self):
         return self.pupil_set.count() * self.price
-    
+
     def __str__(self) -> str:
         return self.name
 
@@ -69,10 +69,6 @@ class Pupil(models.Model):
         unique_together = (
             ('first_name', 'last_name', 'group'),
         )
-
-    @property
-    def full_name(self):
-        return f'{self.first_name} {self.last_name}'
 
     @property
     def payments(self):
@@ -116,6 +112,28 @@ class Payment(models.Model):
 
     def __str__(self) -> str:
         return f'{self.month} - {self.pupil} - {self.amount}' if self.pupil else f'{self.month} - {self.pupil_fullname} - {self.amount}'
-    
+
     class Meta:
         ordering = ('-month', 'pupil_fullname', 'pupil', 'amount')
+
+
+class Expense(models.Model):
+    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    owner_fullname = models.CharField(max_length=200, blank=True, null=True)
+    name = models.CharField(max_length=200)
+    amount = models.DecimalField(decimal_places=2, max_digits=12, default=0,
+                                 validators=[validators.expense_amount_validator])
+    note = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(
+        auto_now_add=True, null=True, verbose_name='To\'lov vaqti')
+    updated = models.DateTimeField(
+        auto_now=True, null=True, verbose_name='O\'zgartirilgan vaqt')
+    id = models.UUIDField(default=uuid.uuid4, unique=True,
+                          primary_key=True, editable=False)
+
+    @property
+    def get_owner_fullname(self):
+        return f"{self.owner.first_name} {self.owner.last_name}" if self.owner else self.owner_fullname
+
+    def __str__(self):
+        return f"{self.get_owner_fullname} - {self.name} - {self.amount}"

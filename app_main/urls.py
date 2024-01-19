@@ -6,12 +6,15 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
 
     path('subjects/', views.SubjectList.as_view(), name='subjects'),
+
     path('groups/', views.GroupList.as_view(), name='groups'),
     path('group/<uuid:id>/', views.GroupDetail.as_view(), name='group_detail'),
-    path('teachers/', views.teachers, name='teachers'),
+
+    path('teachers/', views.TeacherList.as_view(), name='teachers'),
     path('pupils/', views.PupilList.as_view(), name='pupils'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('settings/', views.settings, name='settings'),
+    path('expenses/', views.ExpenseList.as_view(), name='expenses'),
 
     path('add-teacher/', views.TeacherCreate.as_view(), name='add_teacher'),
     path('add-pupil/', views.PupilCreate.as_view(), name='add_pupil'),
