@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'app_main.apps.AppMainConfig',
     # 'api.apps.ApiConfig'
 
-    'debug_toolbar',
+    # 'debug_toolbar',
 ]
 
 INTERNAL_IPS = [
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'PROJECT.urls'
