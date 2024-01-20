@@ -4,13 +4,13 @@
 {% block content %}
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>{{ title }}</h2>
+    <h1>{{ title }}</h1>
     <div class="form-wrapper">
         <form action="" method="post" class="form" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
             <div>
-                <label for="id_{{ field.name }}">{{ field.label }}</label>
+                <label for="id_{{ field.name }}">{{ field.label }}:</label>
                 {{ field }}
                 {% if max_payment and field.name == 'amount' %}
                 <p class="max-payment">Maksimal to'lov: <span>{{ max_payment|intcomma }}</span> so'm</p>

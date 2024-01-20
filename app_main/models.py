@@ -118,12 +118,12 @@ class Payment(models.Model):
 
 
 class Expense(models.Model):
-    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
-    owner_fullname = models.CharField(max_length=200, blank=True, null=True)
-    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True, verbose_name="O'qituvchi")
+    owner_fullname = models.CharField(max_length=200, blank=True, null=True, verbose_name="O'qituvchi")
+    name = models.CharField(max_length=200, verbose_name="Nima uchun")
     amount = models.DecimalField(decimal_places=2, max_digits=12, default=0,
-                                 validators=[validators.expense_amount_validator])
-    note = models.TextField(null=True, blank=True)
+                                 validators=[validators.expense_amount_validator], verbose_name="Miqdor (so'mda)")
+    note = models.TextField(null=True, blank=True, verbose_name="Qo'shimcha ma'lumot")
     created = models.DateTimeField(
         auto_now_add=True, null=True, verbose_name='To\'lov vaqti')
     updated = models.DateTimeField(

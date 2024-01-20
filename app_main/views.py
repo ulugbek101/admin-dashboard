@@ -126,6 +126,25 @@ class ExpenseList(LoginRequiredMixin, ListView):
         return expenses
 
 
+class ExpenseDetail(LoginRequiredMixin, DetailView):
+    """Renders a page with detailed information about certain expense"""
+
+    template_name = "app_main/expense_detail.html"
+    model = Expense
+    context_object_name = "expense"
+    pk_url_kwarg = "expense_id"
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Return an expense if user is a creator or superuser of this object,
+        otherwise throws 404 error
+        """
+
+        if not self.request.user.is_superuser and self.get_object().owner == self.request.user:
+            raise Http404("Not found")
+        return super(ExpenseDetail, self).dispatch(request, *args, **kwargs)
+
+
 @login_required(login_url="signin")
 @is_superuser
 def dashboard(request):
@@ -488,6 +507,30 @@ class SubjectCreate(LoginRequiredMixin, CreateView):
         return super(SubjectCreate, self).form_invalid(form)
 
 
+class ExpenseCreate(LoginRequiredMixin, CreateView):
+    """Render form that creates expense"""
+
+    template_name = "form.html"
+    form_class = forms.ExpenseForm
+    success_url = reverse_lazy("expenses")
+    extra_context = {
+        "title": "Chiqim qo'shish",
+        "btn_text": "Chiqimni qo'shish",
+    }
+
+    def form_valid(self, form):
+        expense = form.save(commit=False)
+        expense.owner = self.request.user
+        expense.save()
+
+        messages.success(self.request, "Chiqim qo'shildi")
+        return redirect("expenses")
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Forma noto'g'ri to'ldirilgan")
+        return super(ExpenseCreate, self).form_invalid(form)
+
+
 class PupilUpdate(LoginRequiredMixin, UpdateView):
     template_name = "form.html"
     model = Pupil
@@ -698,3 +741,26 @@ def delete_subject(request, pk):
         "btn_disabled_warning_text": "Bu fanga bog'liq guruhlar mavjud. Shu guruhlarni o'chirib qaytadan urinib ko'ring",
     }
     return render(request, "delete.html", context)
+
+
+class ExpenseDelete(LoginRequiredMixin, DeleteView):
+    model = Expense
+    template_name = "delete.html"
+    success_url = reverse_lazy("expenses")
+    pk_url_kwarg = "expense_id"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_superuser and self.request.user != self.get_object().owner:
+            raise Http404("Not found")
+        return super(ExpenseDelete, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Chiqim o'chirildi")
+        return super(ExpenseDelete, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ExpenseDelete, self).get_context_data(**kwargs)
+        context.update({
+            "title": f'"{self.object.name}"',
+        })
+        return context

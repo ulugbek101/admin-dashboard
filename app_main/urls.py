@@ -14,7 +14,9 @@ urlpatterns = [
     path('pupils/', views.PupilList.as_view(), name='pupils'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('settings/', views.settings, name='settings'),
+
     path('expenses/', views.ExpenseList.as_view(), name='expenses'),
+    path('expense/<uuid:expense_id>/', views.ExpenseDetail.as_view(), name='expense_detail'),
 
     path('add-teacher/', views.TeacherCreate.as_view(), name='add_teacher'),
     path('add-pupil/', views.PupilCreate.as_view(), name='add_pupil'),
@@ -22,6 +24,7 @@ urlpatterns = [
     path('add-subject/', views.SubjectCreate.as_view(), name='add_subject'),
     path('add-payment/<uuid:group_id>/<uuid:pupil_id>/',
          views.add_payment, name='add_payment'),
+    path('add-expense/', views.ExpenseCreate.as_view(), name='add_expense'),
 
     path('update-pupil/<uuid:pk>/', views.PupilUpdate.as_view(), name='update_pupil'),
     path('update-teacher/<uuid:pk>/', views.TeacherUpdate.as_view(), name='update_teacher'),
@@ -32,6 +35,7 @@ urlpatterns = [
     path('delete-teacher/<uuid:pk>/', views.delete_teacher, name='delete_teacher'),
     path('delete-group/<uuid:pk>/', views.GroupDelete.as_view(), name='delete_group'),
     path('delete-subject/<uuid:pk>/', views.delete_subject, name='delete_subject'),
+    path('delete-expense/<uuid:expense_id>/', views.ExpenseDelete.as_view(), name='delete_expense'),
 
     path('download-stats/', views.download_stats, name='download_stats')
 ]

@@ -2,12 +2,11 @@ from datetime import date
 
 from django import forms
 from django.contrib.auth import password_validation
-from django.contrib.auth.forms import UserCreationForm
 
 from app_users.models import User
 from django.utils.translation import gettext_lazy as _
 
-from .models import Pupil, Payment, Group, Subject
+from .models import Pupil, Payment, Group, Subject, Expense
 
 
 class TeacherForm(forms.ModelForm):
@@ -83,3 +82,16 @@ class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = ["name"]
+
+
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = ['name', 'amount', 'note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields.get("amount").widget.attrs.update({
+            "step": 5000,
+        })

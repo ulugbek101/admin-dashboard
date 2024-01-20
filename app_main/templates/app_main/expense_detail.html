@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+{% include 'components/_navbar.html' %}
+<main>
+    <h1>{{ expense.name }}</h1>
+    <div class="card-wrapper">
+        <div class="card" style="flex-direction: column;">
+            <a href="{% url 'expenses' %}" class="button add-button"
+               style="display: flex; align-items: center; width: max-content;">
+                <span class="material-icons-sharp">
+                    reply
+                </span>
+                Orqaga qaytish
+            </a>
+            <p style="font-size: 1.2em;">
+                {{ expense.note|linebreaksbr }}
+            </p>
+            <div style="display: flex; flex-row: column; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-icons-sharp">
+                        person
+                    </span>
+                    <span>
+                        {{ expense.get_owner_fullname }}
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-icons-sharp">
+                        watch_later
+                    </span>
+                    <span>
+                        {{ expense.created }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% include 'components/_right_block.html' %}
+{% endblock content %}
