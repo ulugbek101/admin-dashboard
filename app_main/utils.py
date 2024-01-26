@@ -1,4 +1,6 @@
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
+
 from .models import Payment, Group, Expense
 
 
@@ -49,3 +51,47 @@ def get_total_expenses_amount(year: int, month: int) -> int:
     ).get("total_amount")
 
     return expenses
+
+
+def get_total_payment_info_by_groups(year: int, month: int) -> tuple:
+    """Returns payments details by groups"""
+
+    groups = Group.objects.filter(created__year__exact=year, created__month__lte=month)
+    payments_dataset_by_groups = []
+
+    for group in groups:
+        total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month,
+                                            group=group).aggregate(paid_amount=Sum("amount")).get("paid_amount")
+        total_payment = group.price * group.pupil_set.count()
+        payments_dataset_by_groups.append({
+            "name": group.name,
+            "total_paid": total_paid or 0,
+            "total_payment": total_payment or 0
+        })
+
+    return payments_dataset_by_groups, groups
+
+
+def get_expenses_amount(year: int, month: int) -> tuple:
+    """Returns expenses list and total expenses amount for a particular month"""
+
+    expenses = Expense.objects.filter(created__year__exact=year, created__month__exact=month).order_by("-created", "-amount")
+    expenses_dataset = []
+
+    for expense in expenses:
+        expenses_dataset.append({
+            "owner": expense.get_owner_fullname,
+            "name": expense.name,
+            "amount": expense.amount,
+            "note": expense.note,
+            "date": expense.created.strftime("%d-%m-%Y %H:%M:%S"),
+        })
+
+    return expenses_dataset, expenses
+
+
+def format_number(number):
+    if not number:
+        return 0
+    formatted_number = "{:,}".format(number)
+    return formatted_number

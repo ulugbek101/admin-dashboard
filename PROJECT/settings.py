@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
 ]
 
+# This is for Django debug tools
 INTERNAL_IPS = [
     # add your IP address here
     '127.0.0.1',

@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, StreamingHttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView
-from openpyxl import Workbook
+from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView, View
+import pandas as pd
 
 from app_users.models import User
 from . import forms
@@ -21,6 +21,9 @@ class SubjectList(LoginRequiredMixin, ListView):
     """Return subjects list"""
     template_name = "app_main/subjects.html"
     context_object_name = "subjects_list"
+    extra_context = {
+        "title": "Fanlar"
+    }
 
     def get_queryset(self):
         """
@@ -120,7 +123,7 @@ class ExpenseList(LoginRequiredMixin, ListView):
         otherwise only expenses of the user
         """
 
-        expenses = Expense.objects.all().order_by("-created")
+        expenses = Expense.objects.filter(created__year=date.today().year, created__month=date.today().month).order_by("-created")
         if not self.request.user.is_superuser:
             return expenses.filter(owner=self.request.user)
         return expenses
@@ -185,15 +188,16 @@ def dashboard(request):
 
 
 @login_required(login_url="signin")
+@is_superuser
 def download_stats(request):
+    # Getting months list
     months = utils.get_months()
-    month = request.POST.get("month")
+
+    # Identifying current year
     year = date.today().year
 
-    pupils = Pupil.objects.all().order_by(
-        "group__name", "first_name", "last_name", "-created"
-    )
-
+    # Identifying month selected by user, current or previous
+    month = request.POST.get("month")
     if month == "current":
         month = date.today().month
     else:
@@ -202,52 +206,112 @@ def download_stats(request):
             year -= 1
             month = 12
 
+    payments_dataset_by_groups, groups = utils.get_total_payment_info_by_groups(year=year, month=month)
+    expenses_dataset, expenses = utils.get_expenses_amount(year=year, month=month)
+    overall_expenses_amount = utils.get_total_expenses_amount(year=year, month=month)
     total_paid, total_payment = utils.get_payment_info(year=year, month=month)
 
-    wb = Workbook(write_only=True)
-    ws = wb.create_sheet()
-    ws.append(["№", "Guruh", "O'quvchi", "Oy", "To'lov", "Izoh"])
+    # Creating Excel file
+    writer = pd.ExcelWriter("stats.xlsx", engine="openpyxl")
 
-    for index, pupil in enumerate(pupils, start=1):
-        if (pupil.created.year == year and pupil.created.month <= month) or (
-                pupil.created.year < year
-        ):
-            pupil_payment = pupil.payment_set.filter(
-                month__year=year, month__month=month
-            )
+    # Iterating through all groups and generating Excel sheet for each group with its payments details
+    for group in groups:
+        data = {
+            "O'quvchi": [],
+            "Guruh": [],
+            "Oy": [],
+            "To'lov": [],
+            "Qo'shimcha ma'lumot": [],
+            # "To'langan qismi / Kutilayotgan tushum": []
+        }
 
-            if pupil_payment:
-                group_name_ = (
-                    pupil_payment[0].group.name
-                    if pupil_payment[0].group
-                    else pupil_payment.group_name
+        for index, pupil in enumerate(group.pupil_set.all(), start=1):
+            if (pupil.created.year == year and pupil.created.month <= month) or (
+                    pupil.created.year < year
+            ):
+                pupil_payment = pupil.payment_set.filter(
+                    month__year=year, month__month=month
                 )
-                pupil_name_ = (
-                    pupil_payment[0].pupil.full_name
-                    if pupil_payment[0].pupil
-                    else pupil_payment.pupil_fullname
-                )
-                month_ = months[month]
-                amount_ = f"{pupil_payment[0].amount} / {pupil.group.price}"
-                note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
-            else:
-                group_name_ = pupil.group.name
-                pupil_name_ = pupil.full_name
-                month_ = months[month]
-                amount_ = f"{0} / {pupil.group.price}"
-                note_ = "-"
+                if pupil_payment:
+                    group_name_ = (
+                        pupil_payment[0].group.name
+                        if pupil_payment[0].group
+                        else pupil_payment.group_name
+                    )
+                    pupil_name_ = (
+                        pupil_payment[0].pupil.full_name
+                        if pupil_payment[0].pupil
+                        else pupil_payment.pupil_fullname
+                    )
+                    month_ = months[month]
+                    amount_ = f"{utils.format_number(pupil_payment[0].amount)} / {utils.format_number(pupil.group.price)}"
+                    note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
+                else:
+                    group_name_ = pupil.group.name
+                    pupil_name_ = pupil.full_name
+                    month_ = months[month]
+                    amount_ = f"{0} / {utils.format_number(pupil.group.price)}"
+                    note_ = "-"
 
-            ws.append([index, group_name_, pupil_name_, month_, amount_, note_])
+                data["O'quvchi"].append(pupil_name_)
+                data["Guruh"].append(group_name_)
+                data["Oy"].append(month_)
+                data["To'lov"].append(amount_)
+                data["Qo'shimcha ma'lumot"].append(note_)
 
-    ws.append(["", "", "", "", f"{total_paid} / {total_payment}", ""])
+        df = pd.DataFrame(data)
+        df.index = df.index + 1
+        df.to_excel(writer, sheet_name=group.name, index_label="№")
+
+    # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
+    # Creating special variables to insert them to the end of row for payments column in an Excel sheet
+    total_paid_by_group = sum([group.get("total_paid") for group in payments_dataset_by_groups])
+    total_payment_by_groups = sum([group.get("total_payment") for group in payments_dataset_by_groups])
+
+    groups_dataset = {
+        "Guruh": [group.get("name") for group in payments_dataset_by_groups] + ["-",
+                                                                                "To'langan / Kutilayotgan tushum"],
+        "To'langan": [group.get("total_paid") for group in payments_dataset_by_groups] +
+                     ["-", total_paid_by_group],
+        "Kutilayotgan tushum": [group.get("total_payment") for group in payments_dataset_by_groups] +
+                               ["-", total_payment_by_groups],
+    }
+    df = pd.DataFrame(groups_dataset)
+    df.index = df.index + 1
+    df.to_excel(writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="№")
+    # ==================================================================================================================
+    # ======================= Adding expenses dataframe to an Excel document as a separate sheet =======================
+    expenses_dataset = {
+        "Chiqim nomi": [expense.get("name") for expense in expenses_dataset],
+        "O'qituvchi": [expense.get("owner") for expense in expenses_dataset],
+        "Miqdor": [utils.format_number(expense.get("amount")) for expense in expenses_dataset],
+        "Qo'shimcha ma'lumot": [expense.get("note") for expense in expenses_dataset],
+        "Olingan sana": [expense.get("date") for expense in expenses_dataset],
+    }
+    df = pd.DataFrame(expenses_dataset)
+    df.index = df.index + 1
+    df.to_excel(writer, sheet_name="Chiqimlar", index_label="№")
+    # ==================================================================================================================
+    # ======================= Adding overall dataframe to an Excel document as a separate sheet ========================
+    overall_stats_dataframe = {
+        "Tushum": [total_paid],
+        "Chiqim": [utils.format_number(overall_expenses_amount) or 0],
+        "Foyda": [utils.format_number((total_paid or 0) - (overall_expenses_amount or 0))],
+    }
+    df = pd.DataFrame(overall_stats_dataframe)
+    df.index = df.index + 1
+    df.to_excel(writer, sheet_name="Umumiy statistika", index_label="№")
+    # ==================================================================================================================
+
+    writer.close()
 
     response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response[
-        "Content-Disposition"
-    ] = f"attachment; filename={months[month]}-{year}-statistikasi.xlsx"
-    wb.save(response)
+    response['Content-Disposition'] = f'attachment; filename={months[month]}-{year} statistikasi.xlsx'
+
+    with open("stats.xlsx", "rb") as excel_file:
+        response.write(excel_file.read())
 
     return response
 
@@ -425,7 +489,6 @@ def add_payment(request, group_id, pupil_id):
 
     form.fields["month"].widget.attrs.update({"value": date.today()})
     context = {
-        "title": "To'lov qo'shish",
         "form": form,
         "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov kiritish",
         "btn_text": "To'lovni kiritish",
