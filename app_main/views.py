@@ -209,6 +209,7 @@ def download_stats(request):
     payments_dataset_by_groups, groups = utils.get_total_payment_info_by_groups(year=year, month=month)
     expenses_dataset, expenses = utils.get_expenses_amount(year=year, month=month)
     overall_expenses_amount = utils.get_total_expenses_amount(year=year, month=month)
+    print(year, month)
     total_paid, total_payment = utils.get_payment_info(year=year, month=month)
 
     # Creating Excel file
@@ -265,14 +266,14 @@ def download_stats(request):
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
-    total_paid_by_group = sum([group.get("total_paid") for group in payments_dataset_by_groups])
+    total_paid_by_groups = sum([group.get("total_paid") for group in payments_dataset_by_groups])
     total_payment_by_groups = sum([group.get("total_payment") for group in payments_dataset_by_groups])
 
     groups_dataset = {
         "Guruh": [group.get("name") for group in payments_dataset_by_groups] + ["-",
-                                                                                "To'langan / Kutilayotgan tushum"],
+                                                                                "-"],
         "To'langan": [group.get("total_paid") for group in payments_dataset_by_groups] +
-                     ["-", total_paid_by_group],
+                     ["-", total_paid_by_groups],
         "Kutilayotgan tushum": [group.get("total_payment") for group in payments_dataset_by_groups] +
                                ["-", total_payment_by_groups],
     }
@@ -294,9 +295,9 @@ def download_stats(request):
     # ==================================================================================================================
     # ======================= Adding overall dataframe to an Excel document as a separate sheet ========================
     overall_stats_dataframe = {
-        "Tushum": [total_paid],
+        "Tushum": [total_paid_by_groups],
         "Chiqim": [utils.format_number(overall_expenses_amount) or 0],
-        "Foyda": [utils.format_number((total_paid or 0) - (overall_expenses_amount or 0))],
+        "Foyda": [utils.format_number((total_paid_by_groups or 0) - (overall_expenses_amount or 0))],
     }
     df = pd.DataFrame(overall_stats_dataframe)
     df.index = df.index + 1

@@ -1,6 +1,6 @@
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 from .models import Payment, Group, Expense
 
 
@@ -55,10 +55,9 @@ def get_total_expenses_amount(year: int, month: int) -> int:
 
 def get_total_payment_info_by_groups(year: int, month: int) -> tuple:
     """Returns payments details by groups"""
-
-    groups = Group.objects.filter(created__year__exact=year, created__month__lte=month)
+    groups = Group.objects.filter(Q(created__year__lte=year) |  (Q(created__month__lte=month) & Q(created__year__exact=year)))
     payments_dataset_by_groups = []
-
+    print(groups.count())
     for group in groups:
         total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month,
                                             group=group).aggregate(paid_amount=Sum("amount")).get("paid_amount")
