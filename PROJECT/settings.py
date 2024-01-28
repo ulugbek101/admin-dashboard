@@ -13,10 +13,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)'
 DEBUG = False
 
-ALLOWED_HOSTS = ['137.184.90.161', 'www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['www.shams-school.uz', 'www.shams-school.uz', 'shams-school.online', 'shams-school.online', 'localhost', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://thedevu101.online',
+    'https://shams-school.online',
+    'https://shams-school.uz',
 ]
 
 INSTALLED_APPS = [
