@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import HttpResponse, Http404, StreamingHttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView, View
 import pandas as pd
 
@@ -123,7 +123,8 @@ class ExpenseList(LoginRequiredMixin, ListView):
         otherwise only expenses of the user
         """
 
-        expenses = Expense.objects.filter(created__year=date.today().year, created__month=date.today().month).order_by("-created")
+        expenses = Expense.objects.filter(created__year=date.today().year, created__month=date.today().month).order_by(
+            "-created")
         if not self.request.user.is_superuser:
             return expenses.filter(owner=self.request.user)
         return expenses
@@ -265,14 +266,14 @@ def download_stats(request):
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
-    total_paid_by_group = sum([group.get("total_paid") for group in payments_dataset_by_groups])
+    total_paid_by_groups = sum([group.get("total_paid") for group in payments_dataset_by_groups])
     total_payment_by_groups = sum([group.get("total_payment") for group in payments_dataset_by_groups])
 
     groups_dataset = {
         "Guruh": [group.get("name") for group in payments_dataset_by_groups] + ["-",
-                                                                                "To'langan / Kutilayotgan tushum"],
+                                                                                "-"],
         "To'langan": [group.get("total_paid") for group in payments_dataset_by_groups] +
-                     ["-", total_paid_by_group],
+                     ["-", total_paid_by_groups],
         "Kutilayotgan tushum": [group.get("total_payment") for group in payments_dataset_by_groups] +
                                ["-", total_payment_by_groups],
     }
@@ -525,11 +526,13 @@ class GroupCreate(LoginRequiredMixin, CreateView):
 
     template_name = "form.html"
     form_class = forms.GroupForm
-    success_url = reverse_lazy("groups")
     extra_context = {
         "title": "Guruh qo'shish",
         "btn_text": "Guruhni qo'shish",
     }
+
+    def get_success_url(self):
+        return reverse("group_detail", kwargs={"pk": self.get_object().id})
 
     def form_valid(self, form):
         messages.success(self.request, "Guruh yaratildi")
