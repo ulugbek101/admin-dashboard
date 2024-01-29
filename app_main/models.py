@@ -24,6 +24,8 @@ class Subject(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        ordering = ["name", "created"]
 
 class Group(models.Model):
     subject = models.ForeignKey(
