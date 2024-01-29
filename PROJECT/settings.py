@@ -122,7 +122,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-MEDIA_URL = 'thedevu101-admin-media/'
+MEDIA_URL = 'shams-media/'
 
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'static'
