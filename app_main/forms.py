@@ -48,6 +48,8 @@ class PaymentForm(forms.ModelForm):
             'month': forms.DateInput(attrs={
                 "type": "date",
                 "min": date.today(),
+                "readonly": "true",
+                "disabled": "true",
             }),
             'amount': forms.NumberInput(attrs={
                 "step": 5000,

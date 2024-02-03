@@ -570,7 +570,7 @@ class SubjectCreate(LoginRequiredMixin, CreateView):
         return super(SubjectCreate, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Bunday fan allaqachon mavjud")
+        messages.error(self.request, "Bunday fan allaqachon mavjud yoki Fan nomi juda qisqa")
         return super(SubjectCreate, self).form_invalid(form)
 
 
@@ -717,7 +717,7 @@ def update_subject(request, pk):
 
         if form.is_valid():
             form.save()
-            messages.success(request, "Fan qo'shildi")
+            messages.success(request, "Fan yangilandi")
             return redirect("subjects")
         else:
             messages.error(request, "Forma noto'g'ri to'ldirilgan")
@@ -736,12 +736,14 @@ class PupilDelete(LoginRequiredMixin, DeleteView):
     model = Pupil
     template_name = "delete.html"
     pk_url_kwarg = "pk"
-    success_url = reverse_lazy("pupils")
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_superuser and self.request.user != self.get_object().group.teacher:
             raise Http404("Not found")
         return super(PupilDelete, self).dispatch(request, *args, **kwargs)
+    
+    def get_success_url(self) -> str:
+        return reverse("group_detail", kwargs={"id": self.get_object().group.id})
 
     def form_valid(self, form):
         messages.success(self.request, "O'quvchi o'chirildi")
@@ -764,6 +766,8 @@ def delete_teacher(request, pk):
 
     context = {
         "title": teacher.full_name,
+        "btn_disabled": teacher.group_set.all().count() != 0,
+        "btn_disabled_warning_text": "O'qituvchiga bog'langan guruhlar mvjud, avval guruhlarni o'chiring keyin o'qituvchini o'chirishingiz mumkin bo'ladi",
     }
     return render(request, "delete.html", context)
 
