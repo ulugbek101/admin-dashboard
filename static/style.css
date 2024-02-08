@@ -425,6 +425,7 @@ input[type="text"],
 input[type="date"],
 input[type="number"],
 input[type="email"],
+input[type="tel"],
 input[type="file"],
 input[type="password"] {
   background: var(--color-white);
@@ -549,7 +550,19 @@ main .card-wrapper {
 
 .card-wrapper .card a.button.add-button:hover {
   background-color: var(--color-success);
+}
 
+.warning-button {
+  border: 1px solid var(--color-warning);
+  border-radius: var(--border-radius-1); 
+  padding: var(--padding-1); 
+  transition: .5s;
+  color: var(--color-dark);
+}
+
+.warning-button:hover {
+  background-color: var(--color-warning);
+  color: var(--color-dark);
 }
 
 main .card-wrapper .card {
@@ -615,11 +628,7 @@ main .recent-orders h2 {
   padding: 8px;
 }
 
-.card-wrapper .card table tr td:last-child span {
-  /* display: flex;
-  flex-direction: row;
-  justify-content: space-around; */
-  /* color: var(--color-info-dark); */
+.card-wrapper .card table tr td.manage-pupil span {
   padding: 5px 10px;
   margin: 0 5px;
   border-radius: var(--border-radius-1);
@@ -627,17 +636,17 @@ main .recent-orders h2 {
   transition: .5s;
 }
 
-.card-wrapper .card table tr td:last-child a:nth-child(1) span:hover{
+.card-wrapper .card table tr td.manage-pupil a:nth-child(1) span:hover{
   border: 1px solid var(--color-warning);
   background-color: var(--color-warning);
 }
 
-.card-wrapper .card table tr td:last-child a:nth-child(2) span:hover{
+.card-wrapper .card table tr td.manage-pupil a:nth-child(2) span:hover{
   border: 1px solid var(--color-danger);
   background-color: var(--color-danger);
 }
 
-.card-wrapper .card table tr td:last-child a:nth-child(3) span:hover{
+.card-wrapper .card table tr td.manage-pupil a:nth-child(3) span:hover{
   border: 1px solid var(--color-success);
   background-color: var(--color-success);
 }

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+
+{% include 'components/_navbar.html' %}
+<main>
+    <h1>{{ expenses_list.first.owner.get_full_name }} ning shu oy uchun chiqimlari</h1>
+    <div class="card-wrapper">
+        <div class="card">
+            <a class="button add-button" href="{% url 'expenses' %}" style='display: flex; align-items: center; width: max-content; gap: 5px;'>
+				<span class='material-icons-sharp'>reply</span>
+				Orqaga qaytish
+			</a>
+			<table>
+				<thead>
+					<td>№</td>
+					<td>Chiqim turi</td>
+					<td>Qiymati (so'mda)</td>
+					<td>Yaratilgan sana</td>
+				</thead>
+				<tbody>
+					{% for expense in expenses_list %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>
+							<a href="{% url 'expense_detail' expense_id=expense.id %}" class='table-link'>
+								{{ expense.name }}
+							</a>
+						</td>
+						<td>{{ expense.amount|intcomma }}</td>
+						<td>{{ expense.created }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+    </div>
+</main>
+{% include 'components/_right_block.html' %}
+{% endblock content %}

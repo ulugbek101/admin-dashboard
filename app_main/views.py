@@ -1,20 +1,25 @@
 from datetime import date
 
+from django.db.models import Sum, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpResponse, Http404, StreamingHttpResponse
+from django.http import HttpRequest, HttpResponse, Http404
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView, View
+from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView
+
 import pandas as pd
 
 from app_users.models import User
 from . import forms
 from . import utils
+
 from .decorators import is_superuser
 from .models import Group, Pupil, Payment, Subject, Expense
+from .mixins import IsSuperuserMixin
 
 
 class SubjectList(LoginRequiredMixin, ListView):
@@ -22,7 +27,8 @@ class SubjectList(LoginRequiredMixin, ListView):
     template_name = "app_main/subjects.html"
     context_object_name = "subjects_list"
     extra_context = {
-        "title": "Fanlar"
+        "title": "Fanlar",
+        "subjects": True
     }
 
     def get_queryset(self):
@@ -107,13 +113,33 @@ class PupilList(LoginRequiredMixin, ListView):
         return pupils
 
 
+
+class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):
+    """ Render expenses list for specific teacher """
+    template_name = "app_main/expenses_by_teacher.html"
+    context_object_name = "expenses_list"
+    extra_context = {
+        "title": "Chiqimlar ro'yxati",
+        "expenses": True
+    }
+
+    def get_queryset(self):
+        """
+        Return all expenses of a specific teacher for this month
+        """
+        expenses = Expense.objects.filter(owner__id=self.kwargs['teacher_id'], created__year=date.today().year, created__month=date.today().month).order_by("-created")
+        return expenses
+
+    
+
 class ExpenseList(LoginRequiredMixin, ListView):
-    """Render expenses list"""
+    """ Render expenses list """
 
     template_name = "app_main/expenses.html"
     context_object_name = "expenses_list"
     extra_context = {
         "title": "Chiqimlar ro'yxati",
+        "title_for_superuser": "Chiqim olganlar ro'yxati",
         "expenses": True
     }
 
@@ -128,7 +154,20 @@ class ExpenseList(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             return expenses.filter(owner=self.request.user)
         return expenses
-
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['teachers_with_expenses'] = User.objects.annotate(
+            total_expenses_amount=Sum(
+                'expense__amount', 
+                filter=Q(expense__created__month=date.today().month, expense__created__year=date.today().year)
+            ),
+            total_expenses_count=Count(
+                'expense',
+                filter=Q(expense__created__month=date.today().month, expense__created__year=date.today().year)
+            )
+        ).filter(total_expenses_amount__gt=0).order_by('first_name', '-created')
+        return context
 
 class ExpenseDetail(LoginRequiredMixin, DetailView):
     """Renders a page with detailed information about certain expense"""
@@ -144,7 +183,7 @@ class ExpenseDetail(LoginRequiredMixin, DetailView):
         otherwise throws 404 error
         """
 
-        if not self.request.user.is_superuser and self.get_object().owner == self.request.user:
+        if not self.request.user.is_superuser and self.get_object().owner != self.request.user:
             raise Http404("Not found")
         return super(ExpenseDetail, self).dispatch(request, *args, **kwargs)
 
@@ -157,7 +196,8 @@ def dashboard(request):
         year=date.today().year, month=date.today().month
     )
 
-    payments = Payment.objects.filter(month__lte=date.today()).order_by("created")
+    payments = Payment.objects.filter(
+        month__lte=date.today()).order_by("created")
 
     months = utils.get_months()
 
@@ -207,9 +247,12 @@ def download_stats(request):
             year -= 1
             month = 12
 
-    payments_dataset_by_groups, groups = utils.get_total_payment_info_by_groups(year=year, month=month)
-    expenses_dataset, expenses = utils.get_expenses_amount(year=year, month=month)
-    overall_expenses_amount = utils.get_total_expenses_amount(year=year, month=month)
+    payments_dataset_by_groups, groups = utils.get_total_payment_info_by_groups(
+        year=year, month=month)
+    expenses_dataset, expenses = utils.get_expenses_amount(
+        year=year, month=month)
+    overall_expenses_amount = utils.get_total_expenses_amount(
+        year=year, month=month)
     print(year, month)
     total_paid, total_payment = utils.get_payment_info(year=year, month=month)
 
@@ -267,8 +310,10 @@ def download_stats(request):
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
-    total_paid_by_groups = sum([group.get("total_paid") for group in payments_dataset_by_groups])
-    total_payment_by_groups = sum([group.get("total_payment") for group in payments_dataset_by_groups])
+    total_paid_by_groups = sum([group.get("total_paid")
+                               for group in payments_dataset_by_groups])
+    total_payment_by_groups = sum(
+        [group.get("total_payment") for group in payments_dataset_by_groups])
 
     groups_dataset = {
         "Guruh": [group.get("name") for group in payments_dataset_by_groups] + ["-",
@@ -280,7 +325,8 @@ def download_stats(request):
     }
     df = pd.DataFrame(groups_dataset)
     df.index = df.index + 1
-    df.to_excel(writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="№")
+    df.to_excel(
+        writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="№")
     # ==================================================================================================================
     # ======================= Adding expenses dataframe to an Excel document as a separate sheet =======================
     expenses_dataset = {
@@ -326,9 +372,9 @@ def settings(request):
             request.POST.get("password2"),
             request.POST.get("first_name"),
             request.POST.get("last_name"),
-            request.FILES.get("email"),
+            request.POST.get("email"),
             request.FILES.get("profile_picture"),
-            request.FILES.get("job"),
+            request.POST.get("job"),
         )
         if first_name and last_name:
             user = request.user
@@ -389,8 +435,8 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
         if password1 == password2:
             teacher = form.save(commit=False)
             teacher.username = self.request.POST.get("email")[
-                               : self.request.POST.get("email").find("@")
-                               ]
+                : self.request.POST.get("email").find("@")
+            ]
             teacher.set_password(password2)
             teacher.save()
 
@@ -435,7 +481,8 @@ def add_payment(request, group_id, pupil_id):
     pupil = Pupil.objects.get(id=pupil_id)
 
     if not request.user.is_superuser and request.user != pupil.group.teacher:
-        messages.error(request, "Boshqalarning o'quvchisini uchun to'lov qila olmaysiz")
+        messages.error(
+            request, "Boshqalarning o'quvchisini uchun to'lov qila olmaysiz")
         return redirect("groups")
 
     try:
@@ -471,11 +518,13 @@ def add_payment(request, group_id, pupil_id):
 
         if form.is_valid():
             if request.POST.get("amount") == "0":
-                messages.error(request, "To'lov miqdori 0 bo'lishi mumkin emas")
+                messages.error(
+                    request, "To'lov miqdori 0 bo'lishi mumkin emas")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             if int(request.POST.get("amount")) > pupil.group.price:
-                messages.error(request, "Qo'lov miqdori guruh to'lovi moiqdoridan ko'p")
+                messages.error(
+                    request, "Qo'lov miqdori guruh to'lovi moiqdoridan ko'p")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             payment = form.save(commit=False)
@@ -511,7 +560,8 @@ def add_group(request):
             messages.success(request, "Guruh yaratildi")
             return redirect("groups")
         else:
-            messages.error(request, "Guruh to'lovi miqdori 0 bo'lishi mumkin emas")
+            messages.error(
+                request, "Guruh to'lovi miqdori 0 bo'lishi mumkin emas")
             return redirect("add_group")
 
     context = {
@@ -540,7 +590,8 @@ class GroupCreate(LoginRequiredMixin, CreateView):
         return super(GroupCreate, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Guruh to'lovi miqdori 0 bo'lishi mumkin emas")
+        messages.error(
+            self.request, "Guruh to'lovi miqdori 0 bo'lishi mumkin emas")
         return super(GroupCreate, self).form_invalid(form)
 
 
@@ -570,7 +621,8 @@ class SubjectCreate(LoginRequiredMixin, CreateView):
         return super(SubjectCreate, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Bunday fan allaqachon mavjud yoki Fan nomi juda qisqa")
+        messages.error(
+            self.request, "Bunday fan allaqachon mavjud yoki Fan nomi juda qisqa")
         return super(SubjectCreate, self).form_invalid(form)
 
 
@@ -584,14 +636,22 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
         "title": "Chiqim qo'shish",
         "btn_text": "Chiqimni qo'shish",
     }
+    
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
-        expense = form.save(commit=False)
-        expense.owner = self.request.user
-        expense.save()
-
-        messages.success(self.request, "Chiqim qo'shildi")
-        return redirect("expenses")
+        if not self.request.user.is_superuser:
+            expense = form.save(commit=False)
+            expense.owner = self.request.user
+            expense.save()
+            messages.success(self.request, "Chiqim qo'shildi")
+            return redirect("expenses")
+        else:
+            return super(ExpenseCreate, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, "Forma noto'g'ri to'ldirilgan")
@@ -620,7 +680,8 @@ class PupilUpdate(LoginRequiredMixin, UpdateView):
         return super(PupilUpdate, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Forma noto'g'ri to'ldirilgan. Bundan ma'lumotlarga ega o'quvchi mavjud")
+        messages.error(
+            self.request, "Forma noto'g'ri to'ldirilgan. Bundan ma'lumotlarga ega o'quvchi mavjud")
         return super(PupilUpdate, self).form_invalid(form)
 
 
@@ -650,14 +711,16 @@ class TeacherUpdate(LoginRequiredMixin, UpdateView):
             teacher.set_password(password2)
             teacher.save()
 
-            messages.success(self.request, "O'qituvchi ma'lumotlari yangilandi")
+            messages.success(
+                self.request, "O'qituvchi ma'lumotlari yangilandi")
             return redirect("teachers")
         else:
             messages.error(self.request, "Parollar bir xil bo'lishi shart")
             return redirect("update_teacher", pk=teacher.id)
 
     def form_invalid(self, form):
-        messages.error(self.request, "O'qituvchi ism va familiyaga ega bo'lishi shart")
+        messages.error(
+            self.request, "O'qituvchi ism va familiyaga ega bo'lishi shart")
         return super(TeacherUpdate, self).form_invalid(form)
 
 
@@ -741,7 +804,7 @@ class PupilDelete(LoginRequiredMixin, DeleteView):
         if not self.request.user.is_superuser and self.request.user != self.get_object().group.teacher:
             raise Http404("Not found")
         return super(PupilDelete, self).dispatch(request, *args, **kwargs)
-    
+
     def get_success_url(self) -> str:
         return reverse("group_detail", kwargs={"id": self.get_object().group.id})
 
@@ -821,7 +884,7 @@ class ExpenseDelete(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = "expense_id"
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object().owner:
+        if not self.request.user.is_superuser: # and self.request.user != self.get_object().owner:
             raise Http404("Not found")
         return super(ExpenseDelete, self).dispatch(request, *args, **kwargs)
 

@@ -16,6 +16,7 @@ urlpatterns = [
     path('settings/', views.settings, name='settings'),
 
     path('expenses/', views.ExpenseList.as_view(), name='expenses'),
+	path('expenses/<uuid:teacher_id>/', views.ExpenseListByTeacher.as_view(), name='expenses_detail_by_teacher'),
     path('expense/<uuid:expense_id>/', views.ExpenseDetail.as_view(), name='expense_detail'),
 
     path('add-teacher/', views.TeacherCreate.as_view(), name='add_teacher'),

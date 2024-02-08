@@ -37,7 +37,15 @@ class TeacherForm(forms.ModelForm):
 class PupilForm(forms.ModelForm):
     class Meta:
         model = Pupil
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'phone_number']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={
+                'type': 'tel',
+                'id': 'phone',
+                'placeholder': '(+998) 99-000-00-00',
+                'value': '+998'
+            })
+        }
 
 
 class PaymentForm(forms.ModelForm):
@@ -49,10 +57,10 @@ class PaymentForm(forms.ModelForm):
                 "type": "date",
                 "min": date.today(),
                 "readonly": "true",
-                "disabled": "true",
+                # "disabled": "true",
             }),
-            'amount': forms.NumberInput(attrs={
-                "step": 5000,
+            'amount': forms.TextInput(attrs={
+                "value": 0,
             })
         }
 
@@ -89,11 +97,16 @@ class SubjectForm(forms.ModelForm):
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
-        fields = ['name', 'amount', 'note']
+        fields = ['owner', 'name', 'amount', 'note']
+        widgets = {
+            'amount': forms.TextInput(attrs={
+                "value": 0,
+            })
+        }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        user = kwargs.pop('user', None)
+        super(ExpenseForm, self).__init__(*args, **kwargs)
 
-        self.fields.get("amount").widget.attrs.update({
-            "step": 5000,
-        })
+        if user and not user.is_superuser:
+            self.fields.pop('owner')

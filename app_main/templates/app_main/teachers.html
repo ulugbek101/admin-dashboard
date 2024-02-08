@@ -8,7 +8,12 @@
     <div class="card-wrapper">
         <div class="card">
             {% if request.user.is_superuser %}
-            <a class="button add-button" href="{% url 'add_teacher' %}">O'qituvchi qo'shish</a>
+            <a class="button add-button" href="{% url 'add_teacher' %}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
+                <span class='material-icons-sharp'>
+                    person_add_alt
+                </span>
+                O'qituvchi qo'shish
+            </a>
             {% endif %}
             <table>
                 <thead>
@@ -17,6 +22,9 @@
                         <th>O'qituvchi</td>
                         <th>E-mail manzil</td>
                         <th>Qo'shilgan sanasi</td>
+                        {% if request.user.is_superuser %}
+                            <th>Yuborgan SMS soni (shu oy uchun)</th>
+                        {% endif %}
                         <th>
                             {% if request.user.is_superuser %}
                             O'zgartirish / O'chirish
@@ -31,7 +39,12 @@
                         <td>{{ teacher.full_name }}</td>
                         <td>{% if teacher.email %} {{ teacher.email }} {% else %} - {% endif %}</td>
                         <td>{{ teacher.created|date }}</td>
-                        <td>
+                        {% if request.user.is_superuser %}
+                            <td>
+                                {% if teacher.smssentcount %} {{ teacher.smssentcount.sms_sent_count }} {% else %} 0 {% endif %}
+                            </td>
+                        {% endif %}
+                        <td class='manage-pupil'>
                             <div class="user-controls">
                                 {% if request.user.is_superuser %}
                                 <a href="{% url 'update_teacher' pk=teacher.id %}" class="button">

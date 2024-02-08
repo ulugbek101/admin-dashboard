@@ -1,10 +1,9 @@
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from environs import Env
 
 env = Env()
 env.read_env()
 
-from os import environ
 from pathlib import Path
 
 
@@ -29,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'whitenoise',
+	'phonenumber_field',
     'rest_framework',
     'django.contrib.humanize',
     'cloudinary_storage',
@@ -143,3 +143,5 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 LOGIN_URL = reverse_lazy("signin")
 LOGOUT_REDIRECT_URL = reverse_lazy("signin")
+ESKIZ_EMAIL=env.str('ESKIZ_EMAIL')
+ESKIZ_PASSWORD=env.str('ESKIZ_PASSWORD')

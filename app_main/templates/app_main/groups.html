@@ -8,7 +8,12 @@
   <div class="card-wrapper">
     <div class="card">
       {% if request.user.is_superuser %}
-      <a class="button add-button" href="{% url 'add_group' %}">Guruh qo'shish</a>
+      <a class="button add-button" href="{% url 'add_group' %}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
+        <span class='material-icons-sharp'>
+          group_add
+        </span>
+        Guruh qo'shish
+      </a>
       {% endif %}
       <table>
         <tbody>
@@ -33,7 +38,7 @@
             <td>{{ group.subject }}</td>
             <td>{{ group.price|intcomma }}</td>
             <td>{{ group.pupil_set.all.count|intcomma }}</td>
-            <td>
+            <td class='manage-pupil'>
               <a href="{% url 'update_group' pk=group.id %}">
                 <span class="material-icons-sharp">
                   edit

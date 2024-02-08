@@ -3,8 +3,19 @@ from django.contrib.auth import logout, login, get_user_model
 from django.contrib.auth.views import LogoutView
 from django.contrib import messages
 from django.urls import reverse
+from django.http import JsonResponse
+
+from . import utils
 
 User = get_user_model()
+
+
+def send_sms(request):
+    if request.method == 'POST':
+        # Send SMS to pupils
+        utils.send_sms_to_pupils(request)
+
+    return JsonResponse({'success': True})
 
 
 class CustomLogoutView(LogoutView):

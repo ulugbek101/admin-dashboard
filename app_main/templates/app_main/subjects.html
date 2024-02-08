@@ -7,7 +7,12 @@
     <h1>Barcha fanlar</h1>
     <div class="card-wrapper">
         <div class="card">
-            <a class="button add-button" href="{% url 'add_subject' %}">Fan qo'shish</a>
+            <a class="button add-button" href="{% url 'add_subject' %}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
+                <span class='material-icons-sharp'>
+                    bookmark_add
+                </span>
+                Fan qo'shish
+            </a>
             <table>
                 <thead>
                     <tr>
@@ -25,7 +30,7 @@
                         <td>{{ subject.name }}</td>
                         <td>{{ subject.group_set.all.count|intcomma }}</td>
                         <td>{{ subject.pupils|intcomma }}</td>
-                        <td>
+                        <td class='manage-pupil'>
                             <a href="{% url 'update_subject' pk=subject.id %}">
                                 <span class="material-icons-sharp">
                                     edit

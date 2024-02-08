@@ -1,49 +1,75 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} 
+{% block content %} 
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>Profil ma'lumotlarini o'zgartirish</h1>
-    <div class="card-wrapper">
-        <form action="" method="post" class="form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div>
-                <label for="first_name">Ism:</label>
-                <input type="text" name="first_name" id="first_name" value="{{ request.user.first_name }}" required>
-            </div>
-            <div>
-                <label for="last_name">Familiya:</label>
-                <input type="text" name="last_name" id="last_name" value="{{ request.user.last_name }}" required>
-            </div>
-            <div>
-                <label for="email">E-mail manzil:</label>
-                <input type="email" name="email" id="email" value="{{ request.user.email }}">
-            </div>
-            <div>
-                <label for="profile_picture">Profil rasmi:</label>
-                <input type="file" name="profile_picture" accept="image/*" id="profile_picture">
-                <p>Profilingiz rasmi: 
-                    <img style="width: 50px; border-radius: 50%;" src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}">
-                </p>
-                <br>
-            </div>
-            <div>
-                <label for="job">Xodim statusi:</label>
-                <input type="text" name="job" id="job" value="{{ request.user.job }}">
-            </div>
-            <div>
-                <label for="password1">Yangi parol:</label>
-                <input type="password" name="password1" id="password2">
-            </div>
-            <div>
-                <label for="password2">Parolni takrorlang:</label>
-                <input type="password" name="password2" id="password2">
-            </div>
+	<h1>Profil ma'lumotlarini o'zgartirish</h1>
+	<div class="card-wrapper">
+		<form action="" method="post" class="form" enctype="multipart/form-data">
+			{% csrf_token %}
+			<div>
+				<label for="first_name">Ism:</label>
+				<input
+					type="text"
+					name="first_name"
+					id="first_name"
+					value="{{ request.user.first_name }}"
+					required
+				/>
+			</div>
+			<div>
+				<label for="last_name">Familiya:</label>
+				<input
+					type="text"
+					name="last_name"
+					id="last_name"
+					value="{{ request.user.last_name }}"
+					required
+				/>
+			</div>
+			<div>
+				<label for="email">E-mail manzil:</label>
+				<input
+					type="email"
+					name="email"
+					id="email"
+					value="{{ request.user.email }}"
+				/>
+			</div>
+			<div>
+				<label for="profile_picture">Profil rasmi:</label>
+				<input
+					type="file"
+					name="profile_picture"
+					accept="image/*"
+					id="profile_picture"
+				/>
+				<p>
+					Profilingiz rasmi:
+					<img
+						style="width: 50px; border-radius: 50%"
+						src="{{ request.user.profile_picture.url }}"
+						alt="{{ request.user.full_name }}"
+					/>
+				</p>
+				<br />
+			</div>
+			<div>
+				<label for="job">Xodim statusi:</label>
+				<input type="text" name="job" id="job" value="{{ request.user.job }}" />
+			</div>
+			<div>
+				<label for="password1">Yangi parol:</label>
+				<input type="password" name="password1" id="password2" />
+			</div>
+			<div>
+				<label for="password2">Parolni takrorlang:</label>
+				<input type="password" name="password2" id="password2" />
+			</div>
 
-            <br>
-            <button type="submit" class="button">{{ btn_text }}</button>
-        </form>
-    </div>
+			<br />
+			<button type="submit" class="button">{{ btn_text }}</button>
+		</form>
+	</div>
 </main>
-{% include 'components/_right_block.html' %}
+{% include 'components/_right_block.html' %} 
 {% endblock content %}
