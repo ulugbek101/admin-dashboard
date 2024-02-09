@@ -24,6 +24,7 @@
 			required
 		></textarea>
 		<br />
+		{% if pupils_list %}
 		<button
 			class="button send-sms-button"
 			style="
@@ -43,6 +44,7 @@
 		</span>
 			SMS yuborish
 		</button>
+		{% endif %}
 	</form>
 </div>
 <div
@@ -81,6 +83,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% if pupils_list %}
                     <tr>
                         <td></td>
                         <td></td>
@@ -92,6 +95,7 @@
                             <input class='pupil-checkboxes-selector' style='width: 24px; height: 24px;' type="checkbox">
                         </td>
                     </tr>
+					{% endif %}
 					{% for pupil in pupils_list %}
 					<tr>
 						<td>{{ forloop.counter }}</td>

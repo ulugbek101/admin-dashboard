@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block content %} {% load humanize %} 
+{% extends 'base.html' %} {% block content %} {% load humanize %}
 {% include 'components/_navbar.html' %}
 <div
 	style="
@@ -62,12 +62,14 @@
 				</span>
 				O'quvchi qo'shish
 			</a>
+            {% if pupils %}
 			<button class="button warning-button send-sms" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
 				<span class="material-icons-sharp">
 					textsms
 				</span>
 				SMS yuborish
 			</button>
+            {% endif %}
 			<table>
 				<thead>
 					<tr>
@@ -80,6 +82,7 @@
 					</tr>
 				</thead>
 				<tbody>
+				    {% if pupils %}
                     <tr>
                         <td></td>
                         <td></td>
@@ -90,6 +93,7 @@
                             <input class='pupil-checkboxes-selector' style='width: 24px; height: 24px;' type="checkbox">
                         </td>
                     </tr>
+				    {% endif %}
 					{% for pupil in pupils %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
