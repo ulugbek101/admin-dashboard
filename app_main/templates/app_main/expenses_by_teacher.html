@@ -17,6 +17,7 @@
 					<td>Chiqim turi</td>
 					<td>Qiymati (so'mda)</td>
 					<td>Yaratilgan sana</td>
+					<td>O'chirish</td>
 				</thead>
 				<tbody>
 					{% for expense in expenses_list %}
@@ -29,6 +30,14 @@
 						</td>
 						<td>{{ expense.amount|intcomma }}</td>
 						<td>{{ expense.created }}</td>
+						<td class="manage-pupil">
+							<a href=""></a>
+							<a href="{% url 'delete_expense' expense_id=expense.id  %}">
+								<span class="material-icons-sharp">
+									delete
+								</span>
+							</a>
+						</td>
 					</tr>
 					{% endfor %}
 				</tbody>

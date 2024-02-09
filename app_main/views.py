@@ -130,7 +130,7 @@ class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):
         expenses = Expense.objects.filter(owner__id=self.kwargs['teacher_id'], created__year=date.today().year, created__month=date.today().month).order_by("-created")
         return expenses
 
-    
+
 
 class ExpenseList(LoginRequiredMixin, ListView):
     """ Render expenses list """
@@ -154,12 +154,12 @@ class ExpenseList(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             return expenses.filter(owner=self.request.user)
         return expenses
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['teachers_with_expenses'] = User.objects.annotate(
             total_expenses_amount=Sum(
-                'expense__amount', 
+                'expense__amount',
                 filter=Q(expense__created__month=date.today().month, expense__created__year=date.today().year)
             ),
             total_expenses_count=Count(
@@ -637,20 +637,32 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
         "btn_text": "Chiqimni qo'shish",
     }
 
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.method == 'POST':
+            form = self.form_class(request.POST, request.FILES)
+
+            if self.request.user.is_superuser:
+                form.owner = request.POST.get('owner')
+            else:
+                form.owner = request.user
+
+            if form.is_valid():
+                form.save()
+                return redirect("expenses")
+
+        return super(ExpenseCreate, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         expense = form.save(commit=False)
         expense.owner = self.request.user
         expense.save()
         messages.success(self.request, "Chiqim qo'shildi")
-
         return redirect("expenses")
-
 
     def form_invalid(self, form):
         messages.error(self.request, "Forma noto'g'ri to'ldirilgan")

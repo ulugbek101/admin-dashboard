@@ -98,7 +98,7 @@ if (pupilCheckboxesSelector) {
 if (form && form.querySelector('#id_amount')) {
 	form.addEventListener('submit', event => {
 		let paymentAmountField = form.querySelector('#id_amount')
-		paymentAmountField.value = paymentAmountField.value.replace(' ', '')
+		paymentAmountField.value = paymentAmountField.value.replaceAll(' ', '')
 		form.submit()
 	})
 }
