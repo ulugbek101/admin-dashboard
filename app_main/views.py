@@ -636,7 +636,7 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
         "title": "Chiqim qo'shish",
         "btn_text": "Chiqimni qo'shish",
     }
-    
+
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -644,14 +644,13 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        if not self.request.user.is_superuser:
-            expense = form.save(commit=False)
-            expense.owner = self.request.user
-            expense.save()
-            messages.success(self.request, "Chiqim qo'shildi")
-            return redirect("expenses")
-        else:
-            return super(ExpenseCreate, self).form_valid(form)
+        expense = form.save(commit=False)
+        expense.owner = self.request.user
+        expense.save()
+        messages.success(self.request, "Chiqim qo'shildi")
+
+        return redirect("expenses")
+
 
     def form_invalid(self, form):
         messages.error(self.request, "Forma noto'g'ri to'ldirilgan")
