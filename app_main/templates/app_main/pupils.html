@@ -64,12 +64,14 @@
 	<h1>Barcha o'quvchilar</h1>
 	<div class="card-wrapper">
 		<div class="card">
+			{% if pupils_list %}
 			<button class="button warning-button send-sms" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
 				<span class="material-icons-sharp">
 					textsms
 				</span>
 				SMS yuborish
 			</button>
+			{% endif %}
 			<table>
 				<thead>
 					<tr>
