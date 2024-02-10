@@ -57,7 +57,12 @@ def get_total_expenses_amount(year: int, month: int) -> int:
 def get_total_payment_info_by_groups(year: int, month: int) -> tuple:
     """Returns payments details by groups"""
 
-    groups = Group.objects.filter(created__year__lte=year, created__month__lte=month)
+    day = 31 if month in (1, 3, 5, 7, 8, 10, 12) else 30
+    if month == 2:
+        day = 28
+
+    requested_date = date(year=year, month=month, day=day)
+    groups =Group.objects.filter(created__lte=requested_date)
 
     payments_dataset_by_groups = []
     print(groups.count())
