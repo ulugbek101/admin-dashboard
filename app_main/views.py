@@ -210,7 +210,7 @@ def download_stats(request):
     payments_dataset_by_groups, groups = utils.get_total_payment_info_by_groups(year=year, month=month)
     expenses_dataset, expenses = utils.get_expenses_amount(year=year, month=month)
     overall_expenses_amount = utils.get_total_expenses_amount(year=year, month=month)
-    print(year, month)
+
     total_paid, total_payment = utils.get_payment_info(year=year, month=month)
 
     # Creating Excel file
@@ -280,7 +280,7 @@ def download_stats(request):
     }
     df = pd.DataFrame(groups_dataset)
     df.index = df.index + 1
-    df.to_excel(writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="№")
+    df.to_excel(writer, sheet_name="Guruhlar bo'yicha tushumlar", index_label="№")
     # ==================================================================================================================
     # ======================= Adding expenses dataframe to an Excel document as a separate sheet =======================
     expenses_dataset = {
