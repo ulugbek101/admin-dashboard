@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %} {% load humanize %}
+{% extends 'base.html' %} 
+{% block content %} 
+{% load humanize %} 
 {% include 'components/_navbar.html' %}
 <div
 	style="
@@ -31,7 +33,7 @@
 				border: 1px solid var(--color-white);
 				border-radius: var(--border-radius-1);
 			"
-			type="submit"
+			type='button'
 		>
 			SMS yuborish
 		</button>
@@ -56,20 +58,33 @@
 		<div class="card">
 			<a
 				class="button add-button"
-				href="{% url 'add_pupil' %}?group_id={{ group_id }}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
-				<span class="material-icons-sharp">
-					school
-				</span>
+				href="{% url 'add_pupil' %}?group_id={{ group_id }}"
+				style="
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					width: max-content;
+					gap: 5px;
+				"
+			>
+				<span class="material-icons-sharp"> school </span>
 				O'quvchi qo'shish
 			</a>
-            {% if pupils %}
-			<button class="button warning-button send-sms" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
-				<span class="material-icons-sharp">
-					textsms
-				</span>
+			{% if pupils %}
+			<button
+				class="button warning-button send-sms"
+				style="
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					width: max-content;
+					gap: 5px;
+				"
+			>
+				<span class="material-icons-sharp"> textsms </span>
 				SMS yuborish
 			</button>
-            {% endif %}
+			{% endif %}
 			<table>
 				<thead>
 					<tr>
@@ -82,19 +97,22 @@
 					</tr>
 				</thead>
 				<tbody>
-				    {% if pupils %}
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <input class='pupil-checkboxes-selector' style='width: 24px; height: 24px;' type="checkbox">
-                        </td>
-                    </tr>
-				    {% endif %}
-					{% for pupil in pupils %}
+					{% if pupils %}
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<input
+								class="pupil-checkboxes-selector"
+								style="width: 24px; height: 24px"
+								type="checkbox"
+							/>
+						</td>
+					</tr>
+					{% endif %} {% for pupil in pupils %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
 						<td>{{ pupil.full_name }}</td>

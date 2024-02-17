@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load humanize %} 
+{% extends 'base.html' %} 
+{% load humanize %} 
 {% block content %} 
 {% include 'components/_navbar.html' %}
 <div
@@ -32,16 +33,15 @@
 				width: 100%;
 				border: 1px solid var(--color-white);
 				border-radius: var(--border-radius-1);
-				display: flex; flex-direction: row; 
+				display: flex;
+				flex-direction: row;
 				align-items: center;
 				justify-content: center;
 				gap: 5px;
 			"
-			type="submit"
+			type='button'
 		>
-		<span class='material-icons-sharp'>
-			mail_outline
-		</span>
+			<span class="material-icons-sharp"> mail_outline </span>
 			SMS yuborish
 		</button>
 		{% endif %}
@@ -65,10 +65,17 @@
 	<div class="card-wrapper">
 		<div class="card">
 			{% if pupils_list %}
-			<button class="button warning-button send-sms" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
-				<span class="material-icons-sharp">
-					textsms
-				</span>
+			<button
+				class="button warning-button send-sms"
+				style="
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					width: max-content;
+					gap: 5px;
+				"
+			>
+				<span class="material-icons-sharp"> textsms </span>
 				SMS yuborish
 			</button>
 			{% endif %}
@@ -80,25 +87,28 @@
 						<th>Guruh</th>
 						<th>To'lov</th>
 						<th>O'zgartirish / O'chirish</th>
-                        <th>Telefon raqami</th>
-                        <th>SMS</th>
+						<th>Telefon raqami</th>
+						<th>SMS</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% if pupils_list %}
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <input class='pupil-checkboxes-selector' style='width: 24px; height: 24px;' type="checkbox">
-                        </td>
-                    </tr>
-					{% endif %}
-					{% for pupil in pupils_list %}
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<input
+								class="pupil-checkboxes-selector"
+								style="width: 24px; height: 24px"
+								type="checkbox"
+							/>
+						</td>
+					</tr>
+					{% endif %} {% for pupil in pupils_list %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
 						<td>{{ pupil.full_name }}</td>
@@ -115,7 +125,7 @@
 						{% empty %}
 						<td>0 / {{ pupil.group.price|intcomma }}</td>
 						{% endfor %}
-						
+
 						<td class="manage-pupil">
 							<a href="{% url 'update_pupil' pk=pupil.id %}">
 								<span class="material-icons-sharp"> edit </span>
@@ -129,7 +139,7 @@
 								<span class="material-icons-sharp"> credit_card </span>
 							</a>
 						</td>
-                        <td>{{ pupil.get_phone_number }}</td>
+						<td>{{ pupil.get_phone_number }}</td>
 						<td>
 							<input
 								class="pupil-checkbox"
@@ -149,5 +159,4 @@
 		</div>
 	</div>
 </main>
-{% include 'components/_right_block.html' %} 
-{% endblock content %}
+{% include 'components/_right_block.html' %} {% endblock content %}

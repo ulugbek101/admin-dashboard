@@ -11,11 +11,12 @@ User = get_user_model()
 
 
 def send_sms(request):
-    if request.method == 'POST':
+    print(request)
+    if request.method == 'GET':    
         # Send SMS to pupils
-        utils.send_sms_to_pupils(request)
-
-    return JsonResponse({'success': True})
+        return utils.send_sms_to_pupils(request)
+    
+    return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
 class CustomLogoutView(LogoutView):

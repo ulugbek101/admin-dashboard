@@ -4,9 +4,11 @@ import json
 from app_main.models import Pupil
 from app_users.models import SMSSentCount
 from environs import Env
+from django.http import JsonResponse
 
 env = Env()
 env.read_env()
+
 
 def authorize():
     response = requests.post(url="https://notify.eskiz.uz/api/auth/login", data={
@@ -19,17 +21,15 @@ def authorize():
 
 
 def send_sms_to_pupils(request):
-    data = json.loads(request.body)
-
-    pupils_id = data.get('pupils')
-    sms_text = data.get('text')
+    pupils_id = list(set(request.GET.get('pupils').split(',')))
+    sms_text = request.GET.get('text')
     token_type, token = authorize()
 
     # Incrementing sms count for teacher to keep track of sent sms count of every teacher
     _, created = SMSSentCount.objects.get_or_create(teacher=request.user)
     _.sms_sent_count += len(pupils_id)
     _.save()
-
+    print(pupils_id)
     for pupil_id in pupils_id:
         pupil_number = Pupil.objects.get(id=pupil_id).phone_number
 
@@ -49,3 +49,5 @@ def send_sms_to_pupils(request):
         except Exception as exp:
             print(f"{exp.__class__.__name__}: {exp}")
             pass
+
+    return JsonResponse(data={'detail': 'Message was sent successfully'})

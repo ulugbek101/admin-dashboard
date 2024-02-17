@@ -13,7 +13,9 @@ let SMSModelWindowBackdrop = document.querySelector(
 let paymentAmountField = document.getElementById('id_amount')
 let phoneNumberField = document.getElementById('phone')
 let form = document.querySelector('.form')
-let pupilCheckboxesSelector = document.querySelector('.pupil-checkboxes-selector')
+let pupilCheckboxesSelector = document.querySelector(
+	'.pupil-checkboxes-selector'
+)
 
 let checkedPupilsList = []
 
@@ -46,21 +48,13 @@ function formatMoneyAmount(amount) {
 	return parts.join('.')
 }
 
-function sendSMSToCheckedPupils(pupilsList, smsText, token) {
-	fetch('/profiles/send-sms', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRFToken': token,
-		},
-		body: JSON.stringify({
-			csrfmiddlewaretoken: token,
-			pupils: [...pupilsList],
-			text: smsText,
-		}),
+async function sendSMSToCheckedPupils(pupilsList, smsText, token) {
+	let pupilsListUnique = new Set(pupilsList)
+	pupilsListUnique = new Array(...pupilsListUnique)
+
+	await fetch(`/profiles/send-sms?pupils=${pupilsListUnique}&text=${smsText}`, {
+		method: 'GET',
 	})
-	// .then(response => response.json())
-	// .then(data => console.log(data))
 }
 
 function getAllCheckedPupils() {
@@ -88,10 +82,9 @@ if (pupilCheckboxesSelector) {
 	pupilCheckboxesSelector.addEventListener('change', event => {
 		let pupilCheckboxes = document.querySelectorAll('.pupil-checkbox')
 
-		pupilCheckboxes.forEach( checkbox => {
+		pupilCheckboxes.forEach(checkbox => {
 			checkbox.checked = event.target.checked && true
 		})
-
 	})
 }
 
@@ -110,7 +103,7 @@ if (paymentAmountField) {
 
 if (sendSMSButton) {
 	sendSMSButton.addEventListener('click', event => {
-		let pupilCheckboxes = getAllCheckedPupils()
+		let pupilCheckboxes = document.querySelectorAll('.pupil-checkbox:checked')
 
 		if (pupilCheckboxes.length === 0) return
 
@@ -121,6 +114,7 @@ if (sendSMSButton) {
 		})
 
 		uncheckPupils()
+		pupilCheckboxesSelector.checked = false
 	})
 }
 
@@ -191,6 +185,7 @@ function updateTheme() {
 })()
 
 modalWindowShade.addEventListener('click', () => {
+	checkedPupilsList = []
 	removeModalWindow()
 })
 

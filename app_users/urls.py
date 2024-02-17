@@ -8,6 +8,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('signout/', views.CustomLogoutView.as_view(), name='signout'),
 
-    path('send-sms', views.send_sms, name='send_sms'),
+    path('send-sms/', views.send_sms, name='send_sms'),
     # path('social-auth/', include('social_django.urls', namespace='social')),
 ]
