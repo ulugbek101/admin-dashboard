@@ -19,11 +19,15 @@ def send_sms(request):
     return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
-class CustomLogoutView(LogoutView):
-    def get_success_url(self):
-        messages.info(self.request, "Tizimdan chiqdingiz")
-        return reverse("signin")
+# class CustomLogoutView(LogoutView):
+#     def get_success_url(self):
+#         messages.info(self.request, "Tizimdan chiqdingiz")
+#         return reverse("signin")
 
+def signout(request):
+    logout(request)
+    messages.info(request, "Tizmindan chiqdingiz")
+    return redirect("signin")
 
 def signin(request):
     if request.method == "POST":
