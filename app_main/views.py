@@ -303,10 +303,17 @@ def download_stats(request):
                 data["Oy"].append(month_)
                 data["To'lov"].append(amount_)
                 data["Qo'shimcha ma'lumot"].append(note_)
+        
+        depricated_symbols = ["*", "/", ":", "?", "\\",  "[", "]"]
+        group_name = None
 
+        for depricated_symbol in depricated_symbols:
+            if depricated_symbol in group.name:
+                group_name = group.name.replace(depricated_symbol, "_")
+        
         df = pd.DataFrame(data)
         df.index = df.index + 1
-        df.to_excel(writer, sheet_name=group.name, index_label="№")
+        df.to_excel(writer, sheet_name=group.name if not group_name else group_name, index_label="\u2116")
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
@@ -326,7 +333,7 @@ def download_stats(request):
     df = pd.DataFrame(groups_dataset)
     df.index = df.index + 1
     df.to_excel(
-        writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="№")
+        writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="\u2116")
     # ==================================================================================================================
     # ======================= Adding expenses dataframe to an Excel document as a separate sheet =======================
     expenses_dataset = {
@@ -338,7 +345,7 @@ def download_stats(request):
     }
     df = pd.DataFrame(expenses_dataset)
     df.index = df.index + 1
-    df.to_excel(writer, sheet_name="Chiqimlar", index_label="№")
+    df.to_excel(writer, sheet_name="Chiqimlar", index_label="\u2116")
     # ==================================================================================================================
     # ======================= Adding overall dataframe to an Excel document as a separate sheet ========================
     overall_stats_dataframe = {
@@ -348,7 +355,7 @@ def download_stats(request):
     }
     df = pd.DataFrame(overall_stats_dataframe)
     df.index = df.index + 1
-    df.to_excel(writer, sheet_name="Umumiy statistika", index_label="№")
+    df.to_excel(writer, sheet_name="Umumiy statistika", index_label="\u2116")
     # ==================================================================================================================
 
     writer.close()

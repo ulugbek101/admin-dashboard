@@ -26,9 +26,10 @@ def send_sms_to_pupils(request):
     token_type, token = authorize()
 
     # Incrementing sms count for teacher to keep track of sent sms count of every teacher
-    _, created = SMSSentCount.objects.get_or_create(teacher=request.user)
-    _.sms_sent_count += len(pupils_id)
-    _.save()
+    # _, created = SMSSentCount.objects.get_or_create(teacher__id=request.GET.get("user_id"))
+    # print('Teacher', _)
+    # _.sms_sent_count += len(pupils_id)
+    # _.save()
     print(pupils_id)
     for pupil_id in pupils_id:
         pupil_number = Pupil.objects.get(id=pupil_id).phone_number
