@@ -113,7 +113,6 @@ class PupilList(LoginRequiredMixin, ListView):
         return pupils
 
 
-
 class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):
     """ Render expenses list for specific teacher """
     template_name = "app_main/expenses_by_teacher.html"
@@ -127,9 +126,9 @@ class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):
         """
         Return all expenses of a specific teacher for this month
         """
-        expenses = Expense.objects.filter(owner__id=self.kwargs['teacher_id'], created__year=date.today().year, created__month=date.today().month).order_by("-created")
+        expenses = Expense.objects.filter(owner__id=self.kwargs['teacher_id'], created__year=date.today(
+        ).year, created__month=date.today().month).order_by("-created")
         return expenses
-
 
 
 class ExpenseList(LoginRequiredMixin, ListView):
@@ -160,14 +159,17 @@ class ExpenseList(LoginRequiredMixin, ListView):
         context['teachers_with_expenses'] = User.objects.annotate(
             total_expenses_amount=Sum(
                 'expense__amount',
-                filter=Q(expense__created__month=date.today().month, expense__created__year=date.today().year)
+                filter=Q(expense__created__month=date.today().month,
+                         expense__created__year=date.today().year)
             ),
             total_expenses_count=Count(
                 'expense',
-                filter=Q(expense__created__month=date.today().month, expense__created__year=date.today().year)
+                filter=Q(expense__created__month=date.today().month,
+                         expense__created__year=date.today().year)
             )
         ).filter(total_expenses_amount__gt=0).order_by('first_name', '-created')
         return context
+
 
 class ExpenseDetail(LoginRequiredMixin, DetailView):
     """Renders a page with detailed information about certain expense"""
@@ -303,17 +305,18 @@ def download_stats(request):
                 data["Oy"].append(month_)
                 data["To'lov"].append(amount_)
                 data["Qo'shimcha ma'lumot"].append(note_)
-        
+
         depricated_symbols = ["*", "/", ":", "?", "\\",  "[", "]"]
         group_name = None
 
         for depricated_symbol in depricated_symbols:
             if depricated_symbol in group.name:
                 group_name = group.name.replace(depricated_symbol, "_")
-        
+
         df = pd.DataFrame(data)
         df.index = df.index + 1
-        df.to_excel(writer, sheet_name=group.name if not group_name else group_name, index_label="\u2116")
+        df.to_excel(
+            writer, sheet_name=group.name if not group_name else group_name, index_label="\u2116")
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
@@ -369,6 +372,15 @@ def download_stats(request):
         response.write(excel_file.read())
 
     return response
+
+
+@login_required(login_url='signin')
+@is_superuser
+def download_stats_page(request):
+    context = {
+        'download_stats': True,
+    }
+    return render(request, 'app_main/download_stats_page.html', context)
 
 
 @login_required(login_url="signin")
@@ -902,7 +914,8 @@ class ExpenseDelete(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = "expense_id"
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser: # and self.request.user != self.get_object().owner:
+        # and self.request.user != self.get_object().owner:
+        if not self.request.user.is_superuser:
             raise Http404("Not found")
         return super(ExpenseDelete, self).dispatch(request, *args, **kwargs)
 

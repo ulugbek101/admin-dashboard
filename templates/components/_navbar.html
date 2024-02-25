@@ -47,6 +47,12 @@
                     </span>
             <h3>Analitika</h3>
         </a>
+        <a href="{% url 'download-stats-page' %}" class="{% if download_stats == True %} active {% endif %} download-stats">
+            <span class="material-icons-sharp">
+                file_download
+            </span>
+            <h3>Statistikani yuklash</h3>
+        </a>
         {% endif %}
         <a href="{% url 'expenses' %}" class="{% if expenses == True %} active {% endif %}">
             <span class="material-icons-sharp">

@@ -206,6 +206,10 @@ aside .sidebar a {
 	transition: all 0.3s ease;
 }
 
+aside .sidebar .download-stats {
+	display: none;	
+}
+
 aside .sidebar a span {
 	font-size: 1.6rem;
 	transition: all 0.3s ease;
@@ -265,6 +269,16 @@ aside .sidebar .message-count {
 
 .modal-active {
 	display: block !important;
+}
+
+.sendSMSModalWindow {
+	position: absolute; 
+	left: 50%; 
+	top: 50%; 
+	transform: translate(-50%, -50%); 
+	z-index: 2; 
+	display: none;
+	width: 50%;
 }
 
 .button {

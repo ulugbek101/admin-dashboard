@@ -21,6 +21,10 @@
 		background-color: var(--color-background);
 	}
 
+	aside .sidebar a.download-stats {
+		display: flex;
+	}
+
 	.container aside {
 		position: absolute;
 		width: 100%;
@@ -42,8 +46,13 @@
 		margin-left: 0;
 	}
 
+	.sendSMSModalWindow {
+		width: 80%;
+	}
+
 	main {
 		padding: 0;
+		height: 50vh;
 	}
 
 	main .card-wrapper .card {
@@ -111,9 +120,13 @@
 		margin: 0;
 	}
 
-	.right-section .user-profile, 
+	.right-section .user-profile,
 	.right-section .reminders {
 		display: none;	
+	}
+
+	.download-stats-page .reminders {
+		display: block !important;
 	}
 
 	.pupils-table th:nth-child(6),
@@ -123,7 +136,8 @@
 
 	.card-wrapper .card table td:nth-child(2),
 	.card-wrapper .card table td:nth-child(3),
-	.card-wrapper .card table td:nth-child(2) {
+	.card-wrapper .card table td:nth-child(2),
+	.group-pupils td:nth-child(5) {
 		white-space: nowrap;
 		overflow: auto;
 		max-width: 70px;

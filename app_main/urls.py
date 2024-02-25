@@ -38,5 +38,6 @@ urlpatterns = [
     path('delete-subject/<uuid:pk>/', views.delete_subject, name='delete_subject'),
     path('delete-expense/<uuid:expense_id>/', views.ExpenseDelete.as_view(), name='delete_expense'),
 
-    path('download-stats/', views.download_stats, name='download_stats')
+    path('download-stats/', views.download_stats, name='download_stats'),
+    path('download-stats-page/', views.download_stats_page, name='download-stats-page'),
 ]
