@@ -415,7 +415,7 @@ def settings(request):
     context = {
         "title": "Sozlamalar",
         "settings": True,
-        "btn_text": "Profile ma'lumotlarini yangilash",
+        "btn_text": "Profil ma'lumotlarini yangilash",
     }
     return render(request, "app_main/settings.html", context)
 

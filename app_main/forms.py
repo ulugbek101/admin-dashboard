@@ -61,6 +61,7 @@ class PaymentForm(forms.ModelForm):
             }),
             'amount': forms.TextInput(attrs={
                 "value": 0,
+                "autofocus": "true",
             })
         }
 

@@ -1,60 +1,65 @@
-{% extends 'base.html' %}
-{% block content %}
-{% load humanize %}
-
+{% extends 'base.html' %} {% block content %} {% load humanize %} 
 {% include 'components/_navbar.html' %}
 <main>
-  <h1>Barcha guruhlar</h1>
-  <div class="card-wrapper">
-    <div class="card">
-      {% if request.user.is_superuser %}
-      <a class="button add-button" href="{% url 'add_group' %}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
-        <span class='material-icons-sharp'>
-          group_add
-        </span>
-        Guruh qo'shish
-      </a>
-      {% endif %}
-      <table>
-        <tbody>
-          <tr>
-            <th>№</th>
-            <th>Guruh</th>
-            <th>O'qituvchisi</th>
-            <th>Fan</th>
-            <th>Narxi (so'm)</th>
-            <th>Bolalar soni</th>
-            <th>O'zgartirish / O'chirish</th>
-          </tr>
-          {% for group in groups_list %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-              <a href="{% url 'group_detail' id=group.id %}" class="table-link">
-                {{ group.name }}
-              </a>
-            </td>
-            <td>{{ group.teacher.full_name }}</td>
-            <td>{{ group.subject }}</td>
-            <td>{{ group.price|intcomma }}</td>
-            <td>{{ group.pupil_set.all.count|intcomma }}</td>
-            <td class='manage-pupil'>
-              <a href="{% url 'update_group' pk=group.id %}">
-                <span class="material-icons-sharp">
-                  edit
-                </span>
-              </a>
-              <a href="{% url 'delete_group' pk=group.id %}">
-                <span class="material-icons-sharp">
-                  delete
-                </span>
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
+	<h1>Barcha guruhlar</h1>
+	<div class="card-wrapper">
+		<div class="card">
+			{% if request.user.is_superuser %}
+			<a
+				class="button add-button"
+				href="{% url 'add_group' %}"
+				style="
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					width: max-content;
+					gap: 5px;
+				"
+			>
+				<span class="material-icons-sharp"> group_add </span>
+				Guruh qo'shish
+			</a>
+			{% endif %}
+			<table class="groups-table">
+				<tbody>
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Guruh</th>
+							<th>O'qituvchi</th>
+							<th>Fan</th>
+							<th>Narxi</th>
+							<th>Bolalar</th>
+							<th>O'zgartirish</th>
+						</tr>
+					</thead>
+					{% for group in groups_list %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>
+							<a href="{% url 'group_detail' id=group.id %}" class="table-link">
+								{{ group.name }}
+							</a>
+						</td>
+						<td>{{ group.teacher.full_name }}</td>
+						<td>{{ group.subject }}</td>
+						<td>{{ group.price|intcomma }}</td>
+						<td>{{ group.pupil_set.all.count|intcomma }}</td>
+						<td class="manage-pupil">
+							<div class="row-change-controller">
+								<a href="{% url 'update_group' pk=group.id %}">
+									<span class="material-icons-sharp"> edit </span>
+								</a>
+								<a href="{% url 'delete_group' pk=group.id %}">
+									<span class="material-icons-sharp"> delete </span>
+								</a>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </main>
 {% include 'components/_right_block.html' %} {% endblock content %}

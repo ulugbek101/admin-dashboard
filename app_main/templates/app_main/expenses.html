@@ -14,12 +14,12 @@
                 Chiqim qo'shish
             </a>
             {% if request.user.is_superuser %}
-            <table>
+            <table class="expenses-table">
                 <thead>
                     <th>№</th>
                     <th>Shaxs</th>
-                    <th>Shu oy uchun chiqimlari soni</th>
-                    <th>Oxirgi chiqim olingan sana</th>
+                    <th>Shu oy uchun</th>
+                    <th>Oxirgi chiqim sanasi</th>
                 </thead>
                 <tbody>
                     {% for teacher_with_expense in teachers_with_expenses %}

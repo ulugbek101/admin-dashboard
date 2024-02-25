@@ -79,15 +79,15 @@
 				SMS yuborish
 			</button>
 			{% endif %}
-			<table>
+			<table class="pupils-table">
 				<thead>
 					<tr>
 						<th>№</th>
 						<th>O'quvchi</th>
 						<th>Guruh</th>
 						<th>To'lov</th>
-						<th>O'zgartirish / O'chirish</th>
-						<th>Telefon raqami</th>
+						<th>O'zgartirish</th>
+						<th>Tel. raqam</th>
 						<th>SMS</th>
 					</tr>
 				</thead>
@@ -127,17 +127,19 @@
 						{% endfor %}
 
 						<td class="manage-pupil">
-							<a href="{% url 'update_pupil' pk=pupil.id %}">
-								<span class="material-icons-sharp"> edit </span>
-							</a>
-							<a href="{% url 'delete_pupil' pk=pupil.id %}">
-								<span class="material-icons-sharp"> delete </span>
-							</a>
-							<a
-								href="{% url 'add_payment' group_id=pupil.group.id pupil_id=pupil.id %}"
-							>
-								<span class="material-icons-sharp"> credit_card </span>
-							</a>
+							<div class="row-change-controller">
+								<a href="{% url 'update_pupil' pk=pupil.id %}">
+									<span class="material-icons-sharp"> edit </span>
+								</a>
+								<a href="{% url 'delete_pupil' pk=pupil.id %}">
+									<span class="material-icons-sharp"> delete </span>
+								</a>
+								<a
+									href="{% url 'add_payment' group_id=pupil.group.id pupil_id=pupil.id %}"
+								>
+									<span class="material-icons-sharp"> credit_card </span>
+								</a>
+							</div>
 						</td>
 						<td>{{ pupil.get_phone_number }}</td>
 						<td>

@@ -202,7 +202,7 @@ aside .sidebar a {
 	height: 3.7rem;
 	gap: 1rem;
 	position: relative;
-	margin-left: 2rem;
+	padding-left: 2rem;
 	transition: all 0.3s ease;
 }
 
@@ -222,6 +222,11 @@ aside .sidebar a.active {
 	color: var(--color-primary);
 	background-color: var(--color-light);
 	margin-left: 0;
+}
+
+aside .sidebar a:first-child.active {
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
 }
 
 aside .sidebar a.active::before {
@@ -650,14 +655,6 @@ main .recent-orders h2 {
 	background-color: var(--color-success);
 }
 
-/* .card-wrapper .card table tr:nth-child(even){
-  background-color: var(--color-info-dark);
-} */
-/* .card-wrapper .card table tr:nth-child(even){
-  background-color: ;
-} */
-/* .card-wrapper .card table tr:hover {background-color: var(--color-info-dark);} */
-
 .card-wrapper .card table th {
 	padding-top: 12px;
 	padding-bottom: 12px;
@@ -866,27 +863,11 @@ main .recent-orders a {
 		flex-basis: 40%;
 	}
 
-	main .recent-orders {
-		width: 94%;
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
-		margin: 2rem 0 0 0.8rem;
+	aside .toggle {
+		justify-content: center;
 	}
 
-	main .recent-orders table {
-		width: 83vw;
-	}
-
-	/* main table thead tr th:last-child, */
-	main table thead tr th:first-child {
-		display: none;
-	}
-
-	/* main table tbody tr td:last-child, */
-	main table tbody tr td:first-child {
-		display: none;
-	}
+	
 }
 
 @media screen and (max-width: 768px) {
@@ -894,6 +875,10 @@ main .recent-orders a {
 		width: 100%;
 		grid-template-columns: 1fr;
 		padding: 0 var(--padding-1);
+	}
+
+	aside .toggle {
+		justify-content: space-between;
 	}
 
 	aside {
@@ -956,11 +941,6 @@ main .recent-orders a {
 		width: 100%;
 	}
 
-	/* main .recent-orders table {
-    width: 100%;
-    margin: 0;
-  } */
-
 	.right-section {
 		width: 94%;
 		margin: 0 auto 4rem;
@@ -1001,5 +981,20 @@ main .recent-orders a {
 
 	.right-section .nav button span {
 		font-size: 2rem;
+	}
+
+	main .dashboard {
+		width: 100%; 
+		display: flex; 
+		flex-direction: column; 
+		align-items: center;
+	}
+
+	main .dashboard h2 {
+		text-align: center;
+	}
+
+	main .dashboard div {
+		width: 70%;
 	}
 }
