@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import "login.css";
 
 :root {
 	--color-primary: #6c9bcf;
@@ -207,7 +208,7 @@ aside .sidebar a {
 }
 
 aside .sidebar .download-stats {
-	display: none;	
+	display: none;
 }
 
 aside .sidebar a span {
@@ -272,11 +273,11 @@ aside .sidebar .message-count {
 }
 
 .sendSMSModalWindow {
-	position: absolute; 
-	left: 50%; 
-	top: 50%; 
-	transform: translate(-50%, -50%); 
-	z-index: 2; 
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
 	display: none;
 	width: 50%;
 }
@@ -881,7 +882,7 @@ main .recent-orders a {
 		justify-content: center;
 	}
 
-	
+
 }
 
 @media screen and (max-width: 768px) {
@@ -998,9 +999,9 @@ main .recent-orders a {
 	}
 
 	main .dashboard {
-		width: 100%; 
-		display: flex; 
-		flex-direction: column; 
+		width: 100%;
+		display: flex;
+		flex-direction: column;
 		align-items: center;
 	}
 
