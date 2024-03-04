@@ -1,0 +1,28 @@
+#input-wrapper {
+    margin-left: auto;
+}
+
+.table-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .table-header {
+        flex-direction: row;
+        gap: 5px;
+        padding: 0 2px;
+    }
+
+    .table-header div#input-wrapper {
+        margin: 0;
+    }
+
+    .table-header label {
+        font-size: 10px;
+    }
+
+}

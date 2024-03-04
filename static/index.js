@@ -219,5 +219,3 @@ const removeModalWindow = () => {
 	modalWindow.classList.remove('modal-active')
 	modalWindowShade.classList.remove('modal-active')
 }
-
-export { modalWindow, modalWindowShade }

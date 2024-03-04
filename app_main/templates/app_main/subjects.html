@@ -1,23 +1,48 @@
-{% extends 'base.html' %} {% load humanize %} {% block content %} 
-{% include 'components/_navbar.html' %}
+{% extends 'base.html' %} {% load humanize %} {% load static %} 
+{% block content %} {% include 'components/_navbar.html' %}
 <main>
+	<script type="text/javascript">
+		const entries = [
+			{% for subject in subjects_list %} 
+			[	
+				['id', '{{ subject.id }}'],
+				['name', '{{ subject.name }}'], 
+				['groups_count', '{{ subject.group_set.all.count|intcomma }}'],
+				['pupils_count', '{{ subject.pupils|intcomma }}']
+			],
+			{% endfor %}
+		]
+		const subjectsList = entries.map(entry => Object.fromEntries(entry))
+		console.log(subjectsList);
+	</script>
 	<h1>Barcha fanlar</h1>
 	<div class="card-wrapper">
 		<div class="card">
-			<a
-				class="button add-button"
-				href="{% url 'add_subject' %}"
-				style="
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					width: max-content;
-					gap: 5px;
-				"
-			>
-				<span class="material-icons-sharp"> bookmark_add </span>
-				Fan qo'shish
-			</a>
+			<div class="table-header">
+				<a
+					class="button add-button"
+					href="{% url 'add_subject' %}"
+					style="
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						width: max-content;
+						gap: 5px;
+					"
+				>
+					<span class="material-icons-sharp"> bookmark_add </span>
+					Fan qo'shish
+				</a>
+				<div id="input-wrapper">
+					<input
+						type="search"
+						name="search-field"
+						id="search-field"
+						placeholder=""
+					/>
+					<label for="search-field">Fan nomi bo'yicha qidirish</label>
+				</div>
+			</div>
 			<table class="subjects-table">
 				<thead>
 					<tr>
@@ -52,6 +77,5 @@
 		</div>
 	</div>
 </main>
-{% include 'components/_right_block.html' %}
-
- {% endblock content %}
+<script src="{% static 'subjectFilter.js' %}"></script>
+{% include 'components/_right_block.html' %} {% endblock content %}

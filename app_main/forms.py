@@ -39,6 +39,9 @@ class PupilForm(forms.ModelForm):
         model = Pupil
         fields = ['first_name', 'last_name', 'phone_number']
         widgets = {
+            'first_name': forms.TextInput(attrs={
+                'autofocus': 'true',
+            }),
             'phone_number': forms.TextInput(attrs={
                 'type': 'tel',
                 'id': 'phone',

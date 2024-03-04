@@ -126,11 +126,13 @@
 								<a href="{% url 'delete_pupil' pk=pupil.id %}">
 									<span class="material-icons-sharp"> delete </span>
 								</a>
-								<a
-									href="{% url 'add_payment' group_id=pupil.group.id pupil_id=pupil.id %}"
-								>
-									<span class="material-icons-sharp"> credit_card </span>
-								</a>
+								{% if request.user.is_superuser %}
+									<a
+										href="{% url 'add_payment' group_id=pupil.group.id pupil_id=pupil.id %}"
+									>
+										<span class="material-icons-sharp"> credit_card </span>
+									</a>
+								{% endif %}
 							</div>
 						</td>
 						<td>{{ pupil.get_phone_number }}</td>
