@@ -637,6 +637,12 @@ main .recent-orders h2 {
     margin-bottom: 0.8rem;
 }
 
+.row-change-controller {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .card-wrapper .card table {
     font-family: 'Poppins', sans-serif;
     border-collapse: collapse;
