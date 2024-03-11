@@ -60,13 +60,13 @@ function updatePupilsList(pupilsList) {
                         <a href="/delete-pupil/${filteredPupil.id}/">
                             <span class="material-icons-sharp"> delete </span>
                         </a>
-                        ${isSuperuser.toLowerCase() === 'true' && `
+                        ${isSuperuser.toLowerCase() === 'true' ? `
                         <a
                             href="/add_payment/${filteredPupil.groupId}/${filteredPupil.id}/"
                             >
                                 <span class="material-icons-sharp"> credit_card </span>
                         </a>
-                        `}
+                        ` : '<a href=""></a>'}
                     </div>
                 </td>
                 <td>${filteredPupil.phoneNumber}</td>
