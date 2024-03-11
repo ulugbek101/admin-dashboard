@@ -1,5 +1,5 @@
 {% extends 'base.html' %} 
-{% load humanize %} 
+{% load humanize static %} 
 {% block content %} 
 {% include 'components/_navbar.html' %}
 <div
@@ -53,24 +53,52 @@
 	"
 ></div>
 <main>
+	<script type="text/javascript">
+		const isSuperuser = '{{ request.user.is_superuser }}'
+		const entries = [
+			{% for pupil in pupils_list %} 
+			[	
+				['id', '{{ pupil.id }}'],
+				['fullName', '{{ pupil.full_name }}'], 
+				['payment', {% for payment in pupil.payments %} '{{ payment.amount|intcomma }}' {% empty %} '0' {% endfor %}],
+				['groupPayment', '{{ pupil.group.price|intcomma }}'],
+				['groupId', '{{ pupil.group.id }}'],
+				['groupName', '{{ pupil.group.name }}'],
+				['phoneNumber', '{{ pupil.get_phone_number }}']
+			],
+			{% endfor %}
+		]
+		const pupilsList = entries.map(entry => Object.fromEntries(entry))
+	</script>
 	<h1>Barcha o'quvchilar</h1>
 	<div class="card-wrapper">
 		<div class="card">
-			{% if pupils_list %}
-			<button
-				class="button warning-button send-sms"
-				style="
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					width: max-content;
-					gap: 5px;
-				"
-			>
-				<span class="material-icons-sharp"> textsms </span>
-				SMS yuborish
-			</button>
-			{% endif %}
+			<div class="table-header">
+				{% if pupils_list %}
+				<button
+					class="button warning-button send-sms"
+					style="
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						width: max-content;
+						gap: 5px;
+					"
+					>
+					<span class="material-icons-sharp"> textsms </span>
+					SMS yuborish
+				</button>
+				{% endif %}
+				<div id="input-wrapper">
+					<input
+						type="search"
+						name="search-field"
+						id="search-field"
+						placeholder=""
+					/>
+					<label for="search-field">F.I.O, guruh, tel. raqam</label>
+				</div>
+			</div>
 			<table class="pupils-table">
 				<thead>
 					<tr>
@@ -155,4 +183,5 @@
 		</div>
 	</div>
 </main>
+<script src="{% static 'pupilFilter.js' %}"></script>
 {% include 'components/_right_block.html' %} {% endblock content %}

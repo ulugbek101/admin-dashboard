@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load humanize %} {% load static %} 
+{% extends 'base.html' %} {% load humanize static %}
 {% block content %} {% include 'components/_navbar.html' %}
 <main>
 	<script type="text/javascript">
@@ -13,7 +13,7 @@
 			{% endfor %}
 		]
 		const subjectsList = entries.map(entry => Object.fromEntries(entry))
-		console.log(subjectsList);
+		console.log(user)
 	</script>
 	<h1>Barcha fanlar</h1>
 	<div class="card-wrapper">
