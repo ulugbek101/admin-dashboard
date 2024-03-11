@@ -35,4 +35,4 @@ function filterSubjects(event) {
     updateSubjectsList(filteredSubjects)
 }
 
-subjectSearchField.addEventListener('keyup', filterSubjects)
+subjectSearchField.addEventListener('input', filterSubjects)
