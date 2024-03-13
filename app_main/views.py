@@ -693,12 +693,14 @@ class PupilUpdate(LoginRequiredMixin, UpdateView):
     model = Pupil
     form_class = forms.PupilForm
     pk_url_kwarg = "pk"
-    success_url = reverse_lazy("pupils")
 
     extra_context = {
         "title": "O'quvchi ma'lumotlarini o'zgartirish",
         "btn_text": "O'quvchi ma'lumotlarini yangilash",
     }
+
+    def get_success_url(self):
+        return reverse("group_detail", kwargs={"id": self.get_object().group.id})
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_superuser and self.request.user != self.get_object().group.teacher:
