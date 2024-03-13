@@ -3,7 +3,7 @@
     <div class="toggle">
         <div class="logo">
             <img src="{% static 'favicon.png' %}" style="border-radius: 50%;">
-            <h2>SHAMS<span class="danger">XM</span></h2>
+            <h2>Al<span class="success">Xorazmiy</span></h2>
         </div>
         <div class="close" id="close-btn">
             <span class="material-icons-sharp">
@@ -46,6 +46,12 @@
                         insights
                     </span>
             <h3>Analitika</h3>
+        </a>
+        <a href="{% url 'download-stats-page' %}" class="{% if download_stats == True %} active {% endif %} download-stats">
+            <span class="material-icons-sharp">
+                file_download
+            </span>
+            <h3>Statistikani yuklash</h3>
         </a>
         {% endif %}
         <a href="{% url 'expenses' %}" class="{% if expenses == True %} active {% endif %}">

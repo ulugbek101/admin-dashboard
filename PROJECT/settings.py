@@ -1,16 +1,15 @@
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from environs import Env
 
 env = Env()
 env.read_env()
 
-from os import environ
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)'
+CORS_ORIGIN_ALLOW_ALL = True
 DEBUG = False
 
 ALLOWED_HOSTS = ['www.thedevu101.online', 'thedevu101.online', 'localhost', '127.0.0.1']
@@ -28,9 +27,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'whitenoise',
+    'phonenumber_field',
     'rest_framework',
     'django.contrib.humanize',
     'cloudinary_storage',
+    'corsheaders',
 
     'app_users.apps.AppUsersConfig',
     'app_main.apps.AppMainConfig',
@@ -52,8 +53,15 @@ DEBUG_TOOLBAR_CONFIG = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # whitenoise
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    # corsheaders
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,14 +98,14 @@ WSGI_APPLICATION = 'PROJECT.wsgi.application'
 #     }
 # }
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': env.str('DB_NAME'),
-         'HOST': env.str('DB_HOST'),
-         'PORT': env.str('DB_PORT'),
-         'USER': env.str('DB_USER'),
-         'PASSWORD': env.str('DB_PASSWORD'),
-     }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('DB_NAME'),
+        'HOST': env.str('DB_HOST'),
+        'PORT': env.str('DB_PORT'),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD'),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -142,3 +150,5 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 LOGIN_URL = reverse_lazy("signin")
 LOGOUT_REDIRECT_URL = reverse_lazy("signin")
+ESKIZ_EMAIL = env.str('ESKIZ_EMAIL')
+ESKIZ_PASSWORD = env.str('ESKIZ_PASSWORD')

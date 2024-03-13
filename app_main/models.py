@@ -1,9 +1,11 @@
 import uuid
+import phonenumbers
 
 from datetime import date
 
 from django.db.models.signals import pre_delete
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 from app_users.models import User
 
 from . import validators
@@ -56,6 +58,7 @@ class Group(models.Model):
 class Pupil(models.Model):
     first_name = models.CharField(max_length=200, verbose_name='Ism')
     last_name = models.CharField(max_length=200, verbose_name='Familiya')
+    phone_number = PhoneNumberField(null=True)
     group = models.ForeignKey(
         to=Group, on_delete=models.PROTECT, verbose_name='Guruh')
     created = models.DateTimeField(auto_now_add=True, null=True)
@@ -65,7 +68,7 @@ class Pupil(models.Model):
 
     @property
     def full_name(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.last_name} {self.first_name}'
 
     class Meta:
         unique_together = (
@@ -82,6 +85,13 @@ class Pupil(models.Model):
             if payment.month == str(date.today())[:-3] and payment.amount == self.group.price:
                 return True
         return False
+
+    @property
+    def get_phone_number(self):
+        parsed_number = phonenumbers.parse(f"{self.phone_number.country_code}{self.phone_number.national_number}", "UZ")
+        formatted_number = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        return formatted_number
+        
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'

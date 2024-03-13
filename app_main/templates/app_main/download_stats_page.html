@@ -1,0 +1,75 @@
+{% extends 'base.html' %} 
+{% load humanize %} 
+{% load static %}
+{% block content %} 
+{% include 'components/_navbar.html' %}
+<div class="download-stats-page right-section" style="width: 100%; margin-top: 4rem;">
+        <div class="nav">
+            <button id="menu-btn">
+                <span class="material-icons-sharp">
+                    menu
+                </span>
+            </button>
+            <div class="dark-mode">
+                <span class="material-icons-sharp">
+                    light_mode
+                </span>
+                <span class="material-icons-sharp">
+                    dark_mode
+                </span>
+            </div>
+
+            <div class="profile">
+                <div class="info">
+                <p>Salom, <b>{{ request.user.first_name }}</b></p>
+                    <small class="text-muted">{{ request.user.job }}</small>
+                </div>
+                <div class="profile-photo">
+                    <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}"
+                        title="{{ request.user.full_name }}">
+                </div>
+            </div>
+
+        </div>
+        <div class="user-profile">
+            <div class="logo" style="display: flex; flex-direction: column; align-items: center;">
+                {% if not request.user.profile_picture %}
+                <img src="{% static 'profile-pictures/user-default.png' %}" title="{{ request.user.full_name }}">
+                {% else %}
+                <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}"
+                    title="{{ request.user.full_name }}">
+                {% endif %}
+                <h2>{{ request.user.full_name }}</h2>
+                <p>{{ request.user.job }}</p>
+            </div>
+        </div>
+
+        {% if request.user.is_superuser %}
+        <div class="reminders">
+            <div class="header">
+                <h2>Statistikani yuklab olish</h2>
+                <span class="material-icons-sharp">
+                    addchart
+                </span>
+            </div>
+
+            <div class="notification">
+                <form action="{% url 'download_stats' %}" method="post">
+                    {% csrf_token %}
+                    <select name="month">
+                        <option value="current">Shu oy uchun</option>
+                        <option value="previous">O'tgan oy uchun</option>
+                    </select>
+                    <br>
+                    <button type="submit" class="button">
+                        <span class="material-icons-sharp">
+                            file_download
+                        </span>
+                        Yuklab olish
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+</div>
+{% endblock content %}
