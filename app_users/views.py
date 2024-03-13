@@ -30,6 +30,10 @@ def signout(request):
     return redirect("signin")
 
 def signin(request):
+    if request.user.is_authenticated:
+        messages.info(request, 'Boshqa akkauntga kirish uchun avval tizimdan chiqing')
+        return redirect('groups')
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
