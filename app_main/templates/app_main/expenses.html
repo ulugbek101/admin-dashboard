@@ -4,10 +4,43 @@
 
 {% include 'components/_navbar.html' %}
 <main>
-    <h1>Barcha guruhlar</h1>
+    <h1>Barcha chiqimlar</h1>
     <div class="card-wrapper">
         <div class="card">
-            <a class="button add-button" href="{% url 'add_expense' %}">Chiqim qo'shish</a>
+            <a class="button add-button" href="{% url 'add_expense' %}" style='display: flex; align-items: center; width: max-content; gap: 5px;'>
+                <span class="material-icons-sharp">
+                    add_chart
+                </span>
+                Chiqim qo'shish
+            </a>
+            {% if request.user.is_superuser %}
+            <table class="expenses-table">
+                <thead>
+                    <th>№</th>
+                    <th>Shaxs</th>
+                    <th>Shu oy uchun</th>
+                    <th>Oxirgi chiqim sanasi</th>
+                </thead>
+                <tbody>
+                    {% for teacher_with_expense in teachers_with_expenses %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{% url 'expenses_detail_by_teacher' teacher_id=teacher_with_expense.id %}" class="table-link">
+                                {{ teacher_with_expense.full_name }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ teacher_with_expense.total_expenses_count|intcomma }} ta
+                        </td>
+                        <td>
+                            {{ teacher_with_expense.expense_set.all.last.created }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
             <table>
                 <tbody>
                 <tr>
@@ -16,7 +49,9 @@
                     <th>Shaxs</th>
                     <th>Qiymati (so'mda)</th>
                     <th>Yaratilgan sana</th>
+                    {% if request.user.is_superuser %}
                     <th>O'chirish</th>
+                    {% endif %}
                 </tr>
                 {% for expense in expenses_list %}
                 <tr>
@@ -31,7 +66,8 @@
                     </td>
                     <td>{{ expense.amount|intcomma }}</td>
                     <td>{{ expense.created }}</td>
-                    <td>
+                    {% if request.user.is_superuser %}
+                    <td class='manage-pupil'>
                         <a href=""></a>
                         <a href="{% url 'delete_expense' expense_id=expense.id %}">
                             <span class="material-icons-sharp">
@@ -39,10 +75,12 @@
                             </span>
                         </a>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
         </div>
     </div>
 </main>

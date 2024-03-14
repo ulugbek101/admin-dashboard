@@ -2,17 +2,17 @@
 
 {% block content %}
 <div class="signin-form">
-    <form action="" method="post" class="form">
+    <form action="" method="post" class="form" id="login-form">
         {% csrf_token %}
         <h1>Tizimga kirish</h1>
         <br>
-        <div>
+        <div id="input-wrapper">
+            <input type="email" name="email" id="email" {% if not email %} autofocus {% endif %} value='{{ email }}' placeholder="">
             <label for="email">E-mail manzil:</label>
-            <input type="email" name="email" autofocus value='{{ email }}'>
         </div>
-        <div>
+        <div id="input-wrapper">
+            <input type="password" name="password" id="password" autofocus placeholder="">
             <label for="password">Parol:</label>
-            <input type="password" name="password" autofocus>
         </div>
         <input type="hidden" name="next" value="{{ request.GET.next }}">
         <br>

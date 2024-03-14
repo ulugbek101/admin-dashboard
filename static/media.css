@@ -1,0 +1,211 @@
+@media (max-width: 768px) {
+	.container {
+		padding: 0 5px;
+	}
+
+	.signin-form form {
+		border-radius: 10px;
+		padding: 15px;
+		width: 90%;
+	}
+
+	.message-container {
+		top: 1rem;
+		left: 50%;
+		transform: translate(-50%);
+		border-radius: 5px;
+		padding: 5px 10px;
+		width: max-content;
+		height: max-content;
+		z-index: 3;
+		background-color: var(--color-background);
+	}
+
+	aside .sidebar a.download-stats {
+		display: flex;
+	}
+
+	.container aside {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+
+	.container .nav {
+		position: absolute;
+	}
+
+	.right-section .nav {
+		display: flex;
+		flex-direction: row;
+		/* justify-content: space-between; */
+	}
+
+	.right-section .nav .dark-mode {
+		position: static;
+		margin-left: 0;
+	}
+
+	.sendSMSModalWindow {
+		width: 80%;
+	}
+
+	main {
+		padding: 0;
+		height: 50vh;
+	}
+
+	main .card-wrapper .card {
+		padding: 5px;
+		border-radius: 10px;
+	}
+
+	main {
+		margin-top: 6rem;
+	}
+
+	main h1 {
+		text-align: center;
+	}
+
+	main h2 {
+		font-size: 1rem;
+	}
+
+	main .dashboard div {
+		width: 100%;
+	}
+
+	.card-wrapper .card a.button.add-button {
+		padding: 10px 15px;
+		font-size: 10px;
+	}
+
+	.card-wrapper .card button.button.warning-button {
+		padding: 10px 15px;
+		font-size: 10px;
+	}
+
+	.card-wrapper .card a span {
+		font-size: 18px;
+	}
+	.card-wrapper .card button span {
+		font-size: 18px;
+	}
+
+	.card-wrapper .card table th:first-child,
+	td:first-child {
+		display: none;
+	}
+
+	.card-wrapper .card table .row-change-controller {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.card-wrapper .card table th {
+		padding: 0 0 5px;
+		font-size: 10px;
+	}
+	.card-wrapper .card table td {
+		font-size: 9px;
+	}
+
+	.sidebar a {
+		width: 100%;
+	}
+
+	.right-section {
+		margin: 0;
+	}
+
+	.right-section .user-profile,
+	.right-section .reminders {
+		display: none;	
+	}
+
+	.download-stats-page .reminders {
+		display: block !important;
+	}
+
+	.pupils-table th:nth-child(6),
+	.pupils-table td:nth-child(6) {
+		display: none;
+	}
+
+	.card-wrapper .card table td:nth-child(2),
+	.card-wrapper .card table td:nth-child(3),
+	.card-wrapper .card table td:nth-child(2),
+	.group-pupils td:nth-child(5) {
+		white-space: nowrap;
+		overflow: auto;
+		max-width: 70px;
+		/* text-overflow: ellipsis; */
+	}
+
+	.pupils-table td:last-child input,
+	.group-pupils td:last-child input {
+		width: 16px !important; 
+		height: 16px !important; 
+	}
+
+	.group-pupils th:nth-child(3),
+	.group-pupils td:nth-child(3) {
+		display: none;
+	}
+
+	.groups-table th:nth-child(5),
+	.groups-table td:nth-child(5),
+	.groups-table th:nth-child(6),
+	.groups-table td:nth-child(6) {
+		display: none;
+	}
+
+	/* Add / Change / Delete buttons */
+	.card-wrapper .card table tr td.manage-pupil span {
+		padding: 0 5px;
+		margin: 0;
+	}
+
+	.groups-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.subjects-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.teachers-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.pupils-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.expenses-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.group-pupils th:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.subjects-table td:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.groups-table td:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.teachers-table td:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.pupils-table td:not(:first-child):not(:nth-child(2)):not(:last-child),
+	.expenses-table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+		text-align: center;
+	}
+
+	.card-wrapper .card .groups-table th:last-child,
+	.card-wrapper .card .subjects-table th:last-child,
+	.card-wrapper .card .teachers-table th:last-child,
+	.card-wrapper .card .pupils-table th:last-child,
+	.card-wrapper .card .expenses-table th:last-child,
+	.card-wrapper .card .group-pupils th:last-child {
+		text-align: right;
+	}
+
+	.card-wrapper .card .groups-table td:last-child div,
+	.card-wrapper .card .subjects-table td:last-child div,
+	.card-wrapper .card .teachers-table td:last-child div,
+	.card-wrapper .card .group-pupils td:last-child div {
+		justify-content: flex-end;
+	}
+
+	.expenses-table td:last-child {
+		text-align: right;
+	}
+
+	/* settings.html */
+	.profile-form,
+	.form-wrapper form {
+		padding: 10px;
+		border-radius: 5px;
+	}
+}

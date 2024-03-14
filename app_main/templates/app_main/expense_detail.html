@@ -7,8 +7,8 @@
     <h1>{{ expense.name }}</h1>
     <div class="card-wrapper">
         <div class="card" style="flex-direction: column;">
-            <a href="{% url 'expenses' %}" class="button add-button"
-               style="display: flex; align-items: center; width: max-content;">
+            <a href="{{ request.META.HTTP_REFERER }}" class="button add-button"
+               style="display: flex; align-items: center; width: max-content; gap: 5px;">
                 <span class="material-icons-sharp">
                     reply
                 </span>

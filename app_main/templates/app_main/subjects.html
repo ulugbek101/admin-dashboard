@@ -1,48 +1,81 @@
-{% extends 'base.html' %}
-{% load humanize %}
-
-{% block content %}
-{% include 'components/_navbar.html' %}
+{% extends 'base.html' %} {% load humanize static %}
+{% block content %} {% include 'components/_navbar.html' %}
 <main>
-    <h1>Barcha fanlar</h1>
-    <div class="card-wrapper">
-        <div class="card">
-            <a class="button add-button" href="{% url 'add_subject' %}">Fan qo'shish</a>
-            <table>
-                <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>Fan</th>
-                        <th>Guruhlar soni</th>
-                        <th>O'quvchilar soni</th>
-                        <th>O'zgartirish / O'chirish</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for subject in subjects_list %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ subject.name }}</td>
-                        <td>{{ subject.group_set.all.count|intcomma }}</td>
-                        <td>{{ subject.pupils|intcomma }}</td>
-                        <td>
-                            <a href="{% url 'update_subject' pk=subject.id %}">
-                                <span class="material-icons-sharp">
-                                    edit
-                                </span>
-                            </a>
-                            <a href="{% url 'delete_subject' pk=subject.id %}">
-                                <span class="material-icons-sharp">
-                                    delete
-                                </span>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+	<script type="text/javascript">
+		const entries = [
+			{% for subject in subjects_list %} 
+			[	
+				['id', '{{ subject.id }}'],
+				['name', '{{ subject.name }}'], 
+				['groups_count', '{{ subject.group_set.all.count|intcomma }}'],
+				['pupils_count', '{{ subject.pupils|intcomma }}']
+			],
+			{% endfor %}
+		]
+		const subjectsList = entries.map(entry => Object.fromEntries(entry))
+		console.log(user)
+	</script>
+	<h1>Barcha fanlar</h1>
+	<div class="card-wrapper">
+		<div class="card">
+			<div class="table-header">
+				<a
+					class="button add-button"
+					href="{% url 'add_subject' %}"
+					style="
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						width: max-content;
+						gap: 5px;
+					"
+				>
+					<span class="material-icons-sharp"> bookmark_add </span>
+					Fan qo'shish
+				</a>
+				<div id="input-wrapper">
+					<input
+						type="search"
+						name="search-field"
+						id="search-field"
+						placeholder=""
+					/>
+					<label for="search-field">Fan nomi bo'yicha qidirish</label>
+				</div>
+			</div>
+			<table class="subjects-table">
+				<thead>
+					<tr>
+						<th>№</th>
+						<th>Fan</th>
+						<th>Guruhlar</th>
+						<th>O'quvchilar</th>
+						<th>O'zgartirish</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for subject in subjects_list %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ subject.name }}</td>
+						<td>{{ subject.group_set.all.count|intcomma }}</td>
+						<td>{{ subject.pupils|intcomma }}</td>
+						<td class="manage-pupil">
+							<div class="row-change-controller">
+								<a href="{% url 'update_subject' pk=subject.id %}">
+									<span class="material-icons-sharp"> edit </span>
+								</a>
+								<a href="{% url 'delete_subject' pk=subject.id %}">
+									<span class="material-icons-sharp"> delete </span>
+								</a>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </main>
-{% include 'components/_right_block.html' %}
-{% endblock content %}
+<script src="{% static 'subjectFilter.js' %}"></script>
+{% include 'components/_right_block.html' %} {% endblock content %}

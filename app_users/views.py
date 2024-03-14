@@ -3,15 +3,31 @@ from django.contrib.auth import logout, login, get_user_model
 from django.contrib.auth.views import LogoutView
 from django.contrib import messages
 from django.urls import reverse
+from django.http import JsonResponse
+
+from . import utils
 
 User = get_user_model()
 
 
-class CustomLogoutView(LogoutView):
-    def get_success_url(self):
-        messages.info(self.request, "Tizimdan chiqdingiz")
-        return reverse("signin")
+def send_sms(request):
+    print(request)
+    if request.method == 'GET':    
+        # Send SMS to pupils
+        return utils.send_sms_to_pupils(request)
+    
+    return JsonResponse(data={'detail': 'Method is not allowed'})
 
+
+# class CustomLogoutView(LogoutView):
+#     def get_success_url(self):
+#         messages.info(self.request, "Tizimdan chiqdingiz")
+#         return reverse("signin")
+
+def signout(request):
+    logout(request)
+    messages.info(request, "Tizmindan chiqdingiz")
+    return redirect("signin")
 
 def signin(request):
     if request.method == "POST":
