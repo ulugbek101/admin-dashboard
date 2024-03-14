@@ -62,7 +62,7 @@ function updatePupilsList(pupilsList) {
                         </a>
                         ${isSuperuser.toLowerCase() === 'true' ? `
                         <a
-                            href="/add_payment/${filteredPupil.groupId}/${filteredPupil.id}/"
+                            href="/add-payment/${filteredPupil.groupId}/${filteredPupil.id}/"
                             >
                                 <span class="material-icons-sharp"> credit_card </span>
                         </a>
