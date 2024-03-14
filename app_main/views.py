@@ -255,68 +255,75 @@ def download_stats(request):
         year=year, month=month)
     overall_expenses_amount = utils.get_total_expenses_amount(
         year=year, month=month)
-    print(year, month)
-    total_paid, total_payment = utils.get_payment_info(year=year, month=month)
+    # total_paid, total_payment = utils.get_payment_info(year=year, month=month)
 
     # Creating Excel file
     writer = pd.ExcelWriter("stats.xlsx", engine="openpyxl")
 
-    # Iterating through all groups and generating Excel sheet for each group with its payments details
-    for group in groups:
+    teachers = User.objects.all()
+    for teacher in teachers:
+
+        # Skip the teacher with no groups
+        teacher_groups = Group.objects.filter(teacher=teacher)
+        teacher_pupils = Pupil.objects.filter(group__in=teacher_groups)
+
+        if teacher_pupils.count() == 0:
+            continue
+
         data = {
-            "O'quvchi": [],
-            "Guruh": [],
-            "Oy": [],
-            "To'lov": [],
-            "Qo'shimcha ma'lumot": [],
-            # "To'langan qismi / Kutilayotgan tushum": []
+                "№": [],
+                "Guruh": [],
+                "O'quvchi": [],
+                "Oy": [],
+                "To'lov (so'm)": [],
+                "Qo'shimcha ma'lumot": [],
         }
 
-        for index, pupil in enumerate(group.pupil_set.all(), start=1):
-            if (pupil.created.year == year and pupil.created.month <= month) or (
-                    pupil.created.year < year
-            ):
-                pupil_payment = pupil.payment_set.filter(
-                    month__year=year, month__month=month
-                )
-                if pupil_payment:
-                    group_name_ = (
-                        pupil_payment[0].group.name
-                        if pupil_payment[0].group
-                        else pupil_payment.group_name
-                    )
-                    pupil_name_ = (
-                        pupil_payment[0].pupil.full_name
-                        if pupil_payment[0].pupil
-                        else pupil_payment.pupil_fullname
-                    )
-                    month_ = months[month]
-                    amount_ = f"{utils.format_number(pupil_payment[0].amount)} / {utils.format_number(pupil.group.price)}"
-                    note_ = pupil_payment[0].note if pupil_payment[0].note else "-"
-                else:
-                    group_name_ = pupil.group.name
-                    pupil_name_ = pupil.full_name
-                    month_ = months[month]
-                    amount_ = f"{0} / {utils.format_number(pupil.group.price)}"
-                    note_ = "-"
+        for group in teacher.group_set.filter(Q(created__month__lte=month, created__year__lte=year) | Q(created__month__lte=month)):
 
-                data["O'quvchi"].append(pupil_name_)
-                data["Guruh"].append(group_name_)
-                data["Oy"].append(month_)
-                data["To'lov"].append(amount_)
-                data["Qo'shimcha ma'lumot"].append(note_)
+            # Skip group if there is no pupil
+            if group.pupil_set.count() == 0:
+                continue
 
-        depricated_symbols = ["*", "/", ":", "?", "\\",  "[", "]"]
-        group_name = None
+            for index, pupil in enumerate(group.pupil_set.filter(created__year=year, created__month__lte=month), 1):
+                    pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month).first()
 
-        for depricated_symbol in depricated_symbols:
-            if depricated_symbol in group.name:
-                group_name = group.name.replace(depricated_symbol, "_")
+                    if pupil_payment:
+                        group_name = pupil_payment.group.name if pupil_payment.group else pupil_payment.group_name
+                        pupil_name = pupil_payment.pupil.full_name if pupil_payment.pupil else pupil_payment.pupil_fullname
+                        month_name = months[month]
+                        amount = f"{utils.format_number(pupil_payment.amount)} / {utils.format_number(group.price)}"
+                        note = pupil_payment.note if pupil_payment.note else "-"
+                    else:
+                        group_name = group.name
+                        pupil_name = pupil.full_name
+                        month_name = months[month]
+                        amount = f"{0} / {utils.format_number(group.price)}"
+                        note = "-"
 
-        df = pd.DataFrame(data)
-        df.index = df.index + 1
-        df.to_excel(
-            writer, sheet_name=group.name if not group_name else group_name, index_label="\u2116")
+                    data["№"].append(index)
+                    data["Guruh"].append(group_name)
+                    data["O'quvchi"].append(pupil_name)
+                    data["Oy"].append(month_name)
+                    data["To'lov (so'm)"].append(amount)
+                    data["Qo'shimcha ma'lumot"].append(note)
+            
+            group_payment_total = group.price * group.pupil_set.count()
+            group_payment_paid = Payment.objects.filter(month__year=year, month__month=month, group=group).aggregate(total_paid=Sum("amount")).get("total_paid")
+
+            data["№"].append("")
+            data["Guruh"].append("")
+            data["O'quvchi"].append("")
+            data["Oy"].append("")
+            data["To'lov (so'm)"].append(f"{group_payment_paid or 0} / {group_payment_total}")
+            data["Qo'shimcha ma'lumot"].append("")
+
+            # Add 2 new lines between groups
+            data = {key: value + [''] for key, value in data.items()}
+            data = {key: value + [''] for key, value in data.items()}
+            df = pd.DataFrame(data)
+            df.to_excel(writer, sheet_name=teacher.full_name, index=False)
+        
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
@@ -336,7 +343,7 @@ def download_stats(request):
     df = pd.DataFrame(groups_dataset)
     df.index = df.index + 1
     df.to_excel(
-        writer, sheet_name="Guruhlar bo'yicha tushumlar ko'rsatkichi", index_label="\u2116")
+        writer, sheet_name="Guruhlar bo'yicha tushumlar", index_label="\u2116")
     # ==================================================================================================================
     # ======================= Adding expenses dataframe to an Excel document as a separate sheet =======================
     expenses_dataset = {
@@ -357,8 +364,7 @@ def download_stats(request):
         "Foyda": [utils.format_number((total_paid_by_groups or 0) - (overall_expenses_amount or 0))],
     }
     df = pd.DataFrame(overall_stats_dataframe)
-    df.index = df.index + 1
-    df.to_excel(writer, sheet_name="Umumiy statistika", index_label="\u2116")
+    df.to_excel(writer, sheet_name="Umumiy statistika", index=False)
     # ==================================================================================================================
 
     writer.close()

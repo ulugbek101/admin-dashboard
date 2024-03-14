@@ -65,7 +65,7 @@ def get_total_payment_info_by_groups(year: int, month: int) -> tuple:
     groups = Group.objects.filter(created__lte=requested_date)
 
     payments_dataset_by_groups = []
-    print(groups.count())
+
     for group in groups:
         total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month,
                                             group=group).aggregate(paid_amount=Sum("amount")).get("paid_amount")

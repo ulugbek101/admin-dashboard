@@ -38,12 +38,10 @@ def signin(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         next_page = request.POST.get("next")
-
         try:
             user = User.objects.get(email=email)
         except:
             user = None
-
         if user:
             password_is_correct = user.check_password(password)
             if password_is_correct:
