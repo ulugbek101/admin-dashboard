@@ -1,6 +1,7 @@
 @media (max-width: 768px) {
 	.container {
 		padding: 0 5px;
+		display: block;
 	}
 
 	.signin-form form {
@@ -52,7 +53,11 @@
 
 	main {
 		padding: 0;
-		height: 50vh;
+		height: 70vh;
+	}
+
+	main .card-wrapper {
+		height: 100%;
 	}
 
 	main .card-wrapper .card {
