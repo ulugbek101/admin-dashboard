@@ -180,11 +180,11 @@
 					{% endfor %}
 				</tbody>
 			</table>
-			{% if page_obj.paginator.num_pages > 1 %}
-				{% include 'components/_pagination.html' with page_range=page_range %}
-			{% endif %}
 		</div>
 	</div>
+	{% if page_obj.paginator.num_pages > 1 %}
+		{% include 'components/_pagination.html' with page_range=page_range %}
+	{% endif %}
 </main>
 <script src="{% static 'pupilFilter.js' %}"></script>
 {% include 'components/_right_block.html' %} {% endblock content %}
