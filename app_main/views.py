@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpRequest, HttpResponse, Http404
+from django.http import HttpResponse, Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.core.paginator import Paginator
 from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView
 
 import pandas as pd
@@ -98,6 +99,9 @@ class PupilList(LoginRequiredMixin, ListView):
         "current_date": str(date.today())[:-3],
         "pupils": True
     }
+    paginator_class = Paginator
+    paginate_by = 50
+    page_kwarg = 'page'
 
     def get_queryset(self):
         """
@@ -111,6 +115,28 @@ class PupilList(LoginRequiredMixin, ListView):
         if not self.request.user.is_superuser:
             return pupils.filter(group__teacher=self.request.user)
         return pupils
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_obj = context['page_obj']
+        
+        left_index = page_obj.number - 2
+        right_index = page_obj.number + 2 
+
+        if left_index - 2 < 1:
+            left_index = 1
+            right_index = left_index + 4
+        
+        if right_index > page_obj.paginator.num_pages:
+            right_index = page_obj.paginator.num_pages
+            left_index = 1
+            if right_index - 4 > 0:
+                left_index = right_index - 4
+                
+        context['page_range'] = range(left_index, right_index + 1)
+        return context
+        
 
 
 class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):

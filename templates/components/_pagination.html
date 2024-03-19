@@ -1,0 +1,39 @@
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a class="button" href="?page={{ page_obj.previous_page_number }}">
+            <span class="material-icons-sharp">
+                arrow_back_ios
+            </span>
+        </a>
+    {% else %}
+        <button class="button" disabled>
+            <span class="material-icons-sharp">
+                arrow_back_ios
+            </span>
+        </button>
+    {% endif %}
+    {% for page in page_range %}
+        {% if page == page_obj.number %}
+            <button class="button" id="current_page" disabled>
+                {{ page }}
+            </button>
+        {% else %}
+            <a class="button page" href="?page={{ page }}">
+                {{ page }}
+            </a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="button" href="?page={{ page_obj.next_page_number }}">
+            <span class="material-icons-sharp">
+                arrow_forward_ios
+            </span>
+        </a>
+    {% else %}
+        <button class="button" disabled>
+            <span class="material-icons-sharp">
+                arrow_forward_ios
+            </span>
+        </button>
+    {% endif %}
+</div>
