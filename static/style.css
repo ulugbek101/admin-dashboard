@@ -557,7 +557,7 @@ main .analyse .progresss .percentage {
 }
 
 main .card-wrapper {
-    height: 100%;
+    height: 90%;
     overflow: auto;
     margin-top: 1rem;
 }
