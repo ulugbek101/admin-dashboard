@@ -12,11 +12,11 @@ SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)
 CORS_ORIGIN_ALLOW_ALL = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['shams-school.online', 'shams-school.uz', 'www.shams-school.online', 'www.shams-school.uz', 'localhost', '127.0.0.1', '137.184.90.161']
+ALLOWED_HOSTS = ['al-xorazmiy.online', 'al-xorazmiy.uz', 'www.al-xorazmiy.online', 'www.al-xorazmiy.uz', 'localhost', '127.0.0.1', '137.184.90.161']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://shams-school.online',
-    'https://shams-school.uz',
+    'https://al-xorazmiy.online',
+    'https://al-xorazmiy.uz',
 ]
 
 INSTALLED_APPS = [
@@ -130,7 +130,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-MEDIA_URL = 'shams-media/'
+MEDIA_URL = 'al-xorazmiy-media/'
 
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'static'

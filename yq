@@ -1,0 +1,116 @@
+[33ma4492d4[m[33m ([m[1;36mHEAD[m[33m)[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
+[33mbde76f6[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
+[33me6caef4[m Add pagination feature for pupils.html
+[33m67240b8[m Add pagination feature for pupils.html
+[33m7e48c2d[m Change logo color
+[33me4b8a10[m Delete and re-do migrations
+[33mf244875[m Merge al-xorazmiy (fetch latest changes)
+[33m60a6388[m Merge al-xorazmiy branch
+[33mf39f96b[m Update ALLOWED_HOSTS and MEDIA_URL
+[33mb97cf44[m Fix some bugs related to displaying groups in xlsx file
+[33m39caaaa[m Change success url after pupil update
+[33md31287d[m Merge al-xorazmiy branch
+[33m9de0820[m Fix problem related with pupilFilter.js
+[33me89b82a[m Fix a little bug in pupils.html page
+[33m0acb192[m Add pupil filter for pupils.html
+[33m1595dea[m Modify subject filter from 'keyup' to 'input' change
+[33mbf0eefb[m d:flex for .row-change-controller
+[33m2e760e3[m Add special permission for makeing payment, Add subject filter in subjects.html
+[33mfebe6bd[m Change login page's input style
+[33m7587a1d[m Complete fully responsiveness
+[33meff954d[m Make website fully responsive
+[33mb23ad05[m Responsive login page
+[33m1f63dd6[m Fix SMS inform service's bug
+[33m555d2f3[m Fix logout, Update requirements.txt
+[33m71e6006[m Fix bugs related with SMS notification
+[33m268e036[m Update filtering mechanism for groups
+[33m94cb4c4[m Update filtering mechanism for groups
+[33m48338fb[m Update settings.py
+[33mf522c18[m Update settings.py
+[33ma60ccc4[m Update pupils.html
+[33m610a5cf[m Update expenses_by_teacher.html(Add delete button), Refactor ExpenseCreate class
+[33mbba4dd1[m Update views.py, refactor ExpenseCreate class a bit
+[33ma6cf34a[m Some little bugfixes and features 	- Update requirements.txt 	- Add condition for "SMS yuborish" button in pupils.html and 	  group.html" in which it is showed only if there is at least 1 	  pupil
+[33md84bea1[m Little updates in .env file and settings.py file
+[33m3708bc7[m Massive changes, see detail information below: 	- Add SMS notification fetaure for teracher 	- Modify expenses page for superuser 	- Add icons for add buttons in every page
+[33m69c1f47[m Update navbar logo title, Update ALLOWED_HOSTS
+[33mb3167da[m Update favicon image and icon
+[33mf989754[m Update base.html and settings.py according to al-xorazmiy school eco-system
+[33me853ede[m Tiny fixes in error/success messages, Some views redirect urls change
+[33m6dfe855[m Change DEBUG mode to False
+[33m2e50897[m Merge branch 'main' of github.com:ulugbek101/admin-dashboard
+[33mb461ffa[m Update ALLOWED_HOSTS
+[33m1de0d26[m Update ALLOWED_HOSTS
+[33m0be930b[m Update logo and favicon
+[33m127b6dc[m Update main title text in components/_navbar.html, Update subjects ordering in models.py
+[33m21ee685[m Update base.html (change title), Update settings.py (change default_media_storage location)
+[33mf769130[m Update settings.py (Update ALOWED_HOSTS)
+[33m37d3140[m Pull request from github
+[33m18079cd[m Pull request from github
+[33m69920dd[m Update views.py (change success_url for GroupCreateView)
+[33m4a9feaa[m Fix bugs with statis information
+[33m7dc62cb[m Update requirements.txt
+[33mbe1bd15[m Massive changes for project, list of changes below:
+[33m2f2d04e[m Add CRUD features for Expense model
+[33m0595ded[m Massive changes, see all changes list below:
+[33m0e318a1[m Update requirements.txt, Update urls.py, Update settings.py
+[33mff9b5a9[m Update settings.py, Change staticfiles source
+[33m8677ceb[m Update settings.py
+[33mbe64859[m Massive changes, see full log below:
+[33m3072146[m Update pupils display order in pupils.html
+[33m73e9431[m Update logo and favicon
+[33m1b4f874[m Add informational message for operations, Add some tiny features for signin.html page, Modify title of the website  to be changed in every page
+[33mfd32d85[m Update settings.py, Update aLLOWED_HOSTS list
+[33mb39ee07[m Massive bugfixes while downloading stats
+[33m54150e0[m Add db.sqlite3 to ignoring files list
+[33m754614f[m Update total_payment display mode in dashboard.html
+[33m087a925[m Update payment form, Uppdate payment ordering, Update payment month's default value in form while renderring
+[33m5ad297f[m Update payment display mode in admin panel [update date]
+[33mb48e942[m Update payment display mode in admin panel
+[33m30be23e[m Adapt a project for my own puposes
+[33me4bc4cc[m Update project structure
+[33mcf2da0c[m[33m ([m[1;31morigin/master[m[33m)[m Update settings.py (change local database to remote)
+[33m8ffe6e9[m Add massive changes for stats download fetaure and other little changes
+[33m6ba0a3c[m Change DEBUG mode back to False
+[33md9f3e14[m Update ALLOWED_HOSTS
+[33mab60e8f[m Add gunicorn to req-ts.txt file
+[33mdd25c17[m Update requirements.txt
+[33m1a58c96[m Getting ready for deployment
+[33mb29fb16[m Complete stats import feature as xlsx file
+[33mcb1b891[m Center charts
+[33m174540e[m Merge branch 'main' of github.com:ulugbek101/admin-dashboard
+[33m0293805[m Update .gitignore, Update chart to like nicer
+[33m2765a49[m Complete theme autodetect and change feature
+[33m8572df8[m Complete signin page
+[33m5798731[m Complete settings.py page
+[33m592f029[m Complete dashboard page
+[33m1f60308[m Add login_required decorator for all views in app_main
+[33mc30f425[m Add extra button to every model list page to navigate to add model page
+[33ma41a956[m Dashboard samples created
+[33ma2316ee[m Bugfix
+[33ma1dd21c[m Massive changes for suject model
+[33mbf54837[m Massive changes for group model
+[33me11e7ed[m Fix problem with table icons colors and add one more endpoint for '/' route
+[33m1960b4e[m Teachers list page customized with nice looking tables
+[33m129999c[m Add edit and delete button for teachers list page
+[33m34ecbdb[m Complete payment fetaure
+[33m34ddf56[m Update styles and change text of delete.html
+[33m65a7057[m Resole merge conflicts
+[33m2808496[m Delete pupil feature complete
+[33mc26e3c4[m Update pupil fetaure complete
+[33m3893003[m Update pupil
+[33m462586b[m Create PupilForm and a view to process POST request
+[33m48f2ea6[m Add payment button with no functionality to pupils list page
+[33meafdace[m Create pupils list page without any functionality on its button
+[33ma131dfc[m Create groups list page without any functionality on its buttons
+[33mbe8d2fc[m Complete add teacher fetaure
+[33m23fe465[m Create form page to add teachers
+[33m00a06aa[m Remove add-teacher-form
+[33m04661a4[m Add a form to add a teacher
+[33m4712bc3[m Build teachers page
+[33me3c4fa4[m Configure templates and routes
+[33m55c6efe[m Update models.py, staticfiles, requirements.txt
+[33me680458[m Create Subject, Group, Pupil models
+[33me963dec[m Create User model
+[33me7a444d[m Split template into components
+[33m151f6d2[m First commit
