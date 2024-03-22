@@ -20,8 +20,9 @@
                     <tr>
                         <th>№</th>
                         <th>O'quvchi</th>
-                        <th>To'langan (so'm)</th>
-                        <th>Sana</th>
+                        <th>Guruh</th>
+                        <th>Miqdor (so'm)</th>
+                        <th>To'langan sana</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,6 +30,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{% if payment.pupil %} {{ payment.pupil }} {% else %} {{ payment.pupil_fullname }} {% endif %}</td>
+                        <td>{% if payment.group %} {{ payment.group }} {% else %} {{ payment.group_name }} {% endif %}</td>
                         <td>{{ payment.amount|intcomma }}</td>
                         <td>{{ payment.updated|date:"d/m/Y H:m" }}</td>
                     </tr>
