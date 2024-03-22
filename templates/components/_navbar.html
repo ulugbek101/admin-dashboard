@@ -53,6 +53,12 @@
             </span>
             <h3>Statistikani yuklash</h3>
         </a>
+        <a href="{% url 'payments' %}" class="{% if payments == True %} active {% endif %}">
+            <span class="material-icons-sharp">
+                event
+            </span>
+            <h3>To'lovlar</h3>
+        </a>
         {% endif %}
         <a href="{% url 'expenses' %}" class="{% if expenses == True %} active {% endif %}">
             <span class="material-icons-sharp">
@@ -62,9 +68,9 @@
         </a>
         <a href="{% url 'settings' %}" class="{% if settings == True %} active {% endif %}">
                     <span class="material-icons-sharp">
-                        settings
+                        person
                     </span>
-            <h3>Sozlamalar</h3>
+            <h3>Profil</h3>
         </a>
 
         <a href="{% url 'signout' %}">

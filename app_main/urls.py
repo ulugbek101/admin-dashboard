@@ -40,4 +40,5 @@ urlpatterns = [
 
     path('download-stats/', views.download_stats, name='download_stats'),
     path('download-stats-page/', views.download_stats_page, name='download-stats-page'),
+    path('payments/', views.PaymentsList.as_view(), name='payments'),
 ]

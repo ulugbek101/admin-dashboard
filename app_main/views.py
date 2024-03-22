@@ -547,17 +547,19 @@ def add_payment(request, group_id, pupil_id):
     if payment:
         form = forms.PaymentForm(
             data={
-                "amount": payment.amount if payment else 0,
                 "note": payment.note if payment.note else "",
             }
         )
+
+        if payment:
+            form.data['amount'] = payment.amount
+
     # Otherwise display a form with blank note field
     else:
-        form = forms.PaymentForm(
-            data={
-                "amount": payment.amount if payment else 0,
-            }
-        )
+        form = forms.PaymentForm(data={})
+
+        if payment:
+            form.data['amount'] = payment.amount
 
     pupil = Pupil.objects.get(group__id=group_id, id=pupil_id)
 
@@ -575,7 +577,7 @@ def add_payment(request, group_id, pupil_id):
 
             if int(request.POST.get("amount")) > pupil.group.price:
                 messages.error(
-                    request, "Qo'lov miqdori guruh to'lovi moiqdoridan ko'p")
+                    request, "To'lov miqdori guruh to'lovi moiqdoridan ko'p")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             payment = form.save(commit=False)
@@ -962,4 +964,53 @@ class ExpenseDelete(LoginRequiredMixin, DeleteView):
         context.update({
             "title": f'"{self.object.name}"',
         })
+        return context
+
+
+
+class PaymentsList(LoginRequiredMixin, IsSuperuserMixin, ListView):
+    model = Payment
+    template_name = 'app_main/payments.html'
+    context_object_name = 'payments_list'
+    ordering = ['created', 'pupil']
+    extra_context = {
+        'current_date': date.today().strftime("%Y-%m-%d"),
+        'payments': True,
+    }
+    paginate_by = 100
+    paginator_class = Paginator
+    page_kwarg = 'page'
+
+    def get(self, request):
+        if request.GET.get('date'):
+            year, month, day = request.GET.get('date').split('-')
+            self.queryset = Payment.objects.filter(updated__year=year, updated__month=month, updated__day=day)
+            self.extra_context['current_date'] = request.GET.get('date')
+            self.extra_context['title'] = f"{request.GET.get('date')} dagi to'lovlar"
+        
+            return super().get(request)
+        else:
+            self.queryset = Payment.objects.filter(updated__year=date.today().year, updated__month=date.today().month, updated__day=date.today().day)
+            self.extra_context['current_date'] = date.today().strftime("%Y-%m-%d")
+            self.extra_context['title'] = f"Bugugi to'lovlar"
+            return super().get(request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_obj = context['page_obj']
+        
+        left_index = page_obj.number - 2
+        right_index = page_obj.number + 2 
+
+        if left_index - 2 < 1:
+            left_index = 1
+            right_index = left_index + 4
+        
+        if right_index > page_obj.paginator.num_pages:
+            right_index = page_obj.paginator.num_pages
+            left_index = 1
+            if right_index - 4 > 0:
+                left_index = right_index - 4
+                
+        context['page_range'] = range(left_index, right_index + 1)
         return context

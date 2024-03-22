@@ -52,9 +52,12 @@ async function sendSMSToCheckedPupils(pupilsList, smsText, token) {
 	let pupilsListUnique = new Set(pupilsList)
 	pupilsListUnique = new Array(...pupilsListUnique)
 
-	await fetch(`https://shams-school.uz/profiles/send-sms?pupils=${pupilsListUnique}&text=${smsText}`, {
-		method: 'GET',
-	})
+	await fetch(
+		`https://shams-school.uz/profiles/send-sms?pupils=${pupilsListUnique}&text=${smsText}`,
+		{
+			method: 'GET',
+		}
+	)
 }
 
 function getAllCheckedPupils() {
