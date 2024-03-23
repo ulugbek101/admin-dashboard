@@ -63,8 +63,7 @@ class PaymentForm(forms.ModelForm):
                 # "disabled": "true",
             }),
             'amount': forms.TextInput(attrs={
-                "value": 0,
-                "autofocus": "true",
+                "autofocus": "true",    
             })
         }
 
@@ -73,6 +72,9 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['subject', 'name', 'teacher', 'price']
+        widgets = {
+            'price': forms.TextInput(),
+        }
 
 
 class GroupUpdateForm(forms.ModelForm):

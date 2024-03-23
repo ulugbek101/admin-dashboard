@@ -2,6 +2,7 @@
 @import "login.css";
 @import "table-headers.css";
 @import "pagination.css";
+@import "payments.css";
 
 :root {
     --color-primary: #6c9bcf;
