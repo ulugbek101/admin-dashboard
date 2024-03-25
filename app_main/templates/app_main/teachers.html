@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     {% for teacher in teachers_list %}
-                    <tr>
+                    <tr class="table-row">
                         <td>{{ forloop.counter }}</td>
                         <td>{{ teacher.full_name }}</td>
                         <td>{% if teacher.email %} {{ teacher.email }} {% else %} - {% endif %}</td>
