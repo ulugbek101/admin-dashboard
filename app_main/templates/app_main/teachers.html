@@ -33,7 +33,11 @@
                     {% for teacher in teachers_list %}
                     <tr class="table-row">
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ teacher.full_name }}</td>
+                        <td>
+                            <a href="{% url 'teacher_detail' id=teacher.id %}">
+                                {{ teacher.full_name }}
+                            </a>
+                        </td>
                         <td>{% if teacher.email %} {{ teacher.email }} {% else %} - {% endif %}</td>
                         <td>{{ teacher.created|date }}</td>
                         <td class='manage-pupil'>

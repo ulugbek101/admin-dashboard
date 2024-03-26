@@ -20,7 +20,7 @@ from . import utils
 
 from .decorators import is_superuser
 from .models import Group, Pupil, Payment, Subject, Expense
-from .mixins import IsSuperuserMixin
+from utils.mixins import IsSuperuserMixin
 
 
 class SubjectList(LoginRequiredMixin, ListView):

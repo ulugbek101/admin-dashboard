@@ -3,6 +3,7 @@
 @import 'table-headers.css';
 @import 'pagination.css';
 @import 'payments.css';
+@import 'teacher_detail.css';
 
 :root {
 	--color-primary: #6c9bcf;
@@ -652,6 +653,10 @@ main .recent-orders h2 {
 
 .table-row:hover {
 	background: #6774832b;
+}
+
+.table-row:hover td:nth-child(2) {
+	text-decoration: underline;
 }
 
 .card-wrapper .card table {

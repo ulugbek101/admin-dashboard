@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, get_user_model
-from django.contrib.auth.views import LogoutView
 from django.contrib import messages
-from django.urls import reverse
 from django.http import JsonResponse
+from utils.mixins import IsSuperuserMixin
+from django.views.generic import DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import utils
 
@@ -19,10 +20,12 @@ def send_sms(request):
     return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
-# class CustomLogoutView(LogoutView):
-#     def get_success_url(self):
-#         messages.info(self.request, "Tizimdan chiqdingiz")
-#         return reverse("signin")
+class TeacherDetail(LoginRequiredMixin, IsSuperuserMixin, DetailView):
+    model = User
+    template_name = 'app_users/teacher_detail.html'
+    context_object_name = 'teacher'
+    pk_url_kwarg = 'id'
+
 
 def signout(request):
     logout(request)
