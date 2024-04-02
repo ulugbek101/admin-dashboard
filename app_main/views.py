@@ -112,7 +112,7 @@ class PupilList(LoginRequiredMixin, ListView):
         pupils = Pupil.objects.all().order_by(
             "group__name", "first_name", "last_name", "-created"
         )
-        if not self.request.user.is_superuser:
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             return pupils.filter(group__teacher=self.request.user)
         return pupils
 
@@ -531,7 +531,7 @@ class PupilCreate(LoginRequiredMixin, CreateView):
 def add_payment(request, group_id, pupil_id):
     pupil = Pupil.objects.get(id=pupil_id)
 
-    if not request.user.is_superuser and request.user != pupil.group.teacher:
+    if not request.user.is_superuser and not request.user.is_admin and request.user != pupil.group.teacher:
         messages.error(
             request, "Boshqalarning o'quvchisini uchun to'lov qila olmaysiz")
         return redirect("groups")
