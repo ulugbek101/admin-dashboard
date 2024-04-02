@@ -14,7 +14,7 @@
 	</div>
 
 	<div class="sidebar">
-		{% if request.user.is_superuser %}
+		{% if request.user.is_superuser or request.user.is_admin %}
 		<a
 			href="{% url 'subjects' %}"
 			class="{% if subjects == True %} active {% endif %}"
@@ -60,6 +60,7 @@
 			<span class="material-icons-sharp"> file_download </span>
 			<h3>Statistikani yuklash</h3>
 		</a>
+		{% elif request.user.is_superuser or request.user.is_admin %}
 		<a
 			href="{% url 'payments' %}"
 			class="{% if payments == True %} active {% endif %}"

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, get_user_model
 from django.contrib import messages
 from django.http import JsonResponse
-from utils.mixins import IsSuperuserMixin
+from utils.mixins import IsSuperuserOrAdminMixin
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -20,7 +20,7 @@ def send_sms(request):
     return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
-class TeacherDetail(LoginRequiredMixin, IsSuperuserMixin, DetailView):
+class TeacherDetail(LoginRequiredMixin, IsSuperuserOrAdminMixin, DetailView):
     model = User
     template_name = 'app_users/teacher_detail.html'
     context_object_name = 'teacher'
