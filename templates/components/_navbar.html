@@ -43,9 +43,10 @@
 		>
 			<span class="material-icons-sharp"> school </span>
 			<h3>O'quvchilar</h3>
-			<!-- <span class="message-count">27</span>-->
+
 		</a>
-		{% if request.user.is_superuser %}
+
+		{% if request.user.is_superuser and request.user.is_admin %}
 		<a
 			href="{% url 'dashboard' %}"
 			class="{% if dashboard == True %} active {% endif %}"
@@ -67,7 +68,9 @@
 			<span class="material-icons-sharp"> event </span>
 			<h3>To'lovlar</h3>
 		</a>
-		{% elif request.user.is_admin %}
+		{% endif %}
+
+		{% if not request.user.is_superuser and request.user.is_admin %}
 		<a
 			href="{% url 'payments' %}"
 			class="{% if payments == True %} active {% endif %}"
@@ -76,6 +79,8 @@
 			<h3>To'lovlar</h3>
 		</a>
 		{% endif %}
+
+
 		<a
 			href="{% url 'expenses' %}"
 			class="{% if expenses == True %} active {% endif %}"
