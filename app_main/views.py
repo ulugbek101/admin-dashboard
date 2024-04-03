@@ -100,7 +100,7 @@ class PupilList(LoginRequiredMixin, ListView):
         "pupils": True
     }
     paginator_class = Paginator
-    paginate_by = 1
+    paginate_by = 50
     page_kwarg = 'page'
 
     def get_queryset(self):
