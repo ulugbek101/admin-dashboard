@@ -1,0 +1,22 @@
+.teacher_detail {
+    width: 100%;
+	display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.teacher_detail img {
+    width: 150px;
+}
+.teacher_detail .body div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid var(--color-dark-variant);
+    padding: 10px 0;
+}
+
+.teacher_detail .body {
+    width: 100%;
+}

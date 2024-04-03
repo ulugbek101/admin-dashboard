@@ -63,7 +63,7 @@ class PaymentForm(forms.ModelForm):
                 # "disabled": "true",
             }),
             'amount': forms.TextInput(attrs={
-                "autofocus": "true",    
+                "autofocus": "true",
             })
         }
 
@@ -72,9 +72,6 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['subject', 'name', 'teacher', 'price']
-        widgets = {
-            'price': forms.TextInput(),
-        }
 
 
 class GroupUpdateForm(forms.ModelForm):
@@ -114,5 +111,5 @@ class ExpenseForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super(ExpenseForm, self).__init__(*args, **kwargs)
 
-        if user and not user.is_superuser:
+        if user and not user.is_superuser and not user.is_admin:
             self.fields.pop('owner')

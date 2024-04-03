@@ -1,0 +1,41 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+{% include 'components/_navbar.html' %}
+<main>
+	<div>
+		<h1>O'qituvchi ma'lumotlari</h1>
+	    <div class="card-wrapper">
+		    <div class="card">
+				<a class="button add-button" href="{% url 'teachers' %}" style="display: flex; align-items: center; width: max-content; gap: 5px;">
+					<span class="material-icons-sharp">reply</span>
+					Orqaga qaytish
+				</a>
+				<div class="teacher_detail">
+                	<img src="{{ teacher.profile_picture.url }}" alt="">
+					<br>
+					<div class="body">
+						<div>
+							<h3>O'qituvchi: </h3>
+							<p>{{ teacher.full_name }}</p>
+						</div>
+						<div>
+							<h3>E-mail:</h3>
+							<p>{{ teacher.email }}</p>
+						</div>
+						<div>
+							<h3>Qo'shilgan sana:</h3>
+							<p>{{ teacher.created }}</p>
+						</div>
+						<div>
+							<h3>Ma'lumotlari yangilangan sana</h3>
+							<p>{{ teacher.updated }}</p>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+	</div>
+</main>
+{% include 'components/_right_block.html' %}
+{% endblock content %}

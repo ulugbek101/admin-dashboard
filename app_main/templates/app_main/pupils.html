@@ -4,11 +4,13 @@
 {% include 'components/_navbar.html' %}
 <div
 	class="sendSMSModalWindow"
+	style="z-index: 10;"
 >
 	<form class="send-sms-form">
 		<label for="sms-body">SMS xabar:</label>
 		{% csrf_token %}
 		<textarea
+			autofocus
 			id="sms-body"
 			rows="10"
 			cols="30"
@@ -50,6 +52,7 @@
 		background-color: rgba(0, 0, 0, 0.5);
 		backdrop-filter: blur(5px);
 		display: none;
+		z-index: 9;
 	"
 ></div>
 <main>
@@ -90,13 +93,19 @@
 				</button>
 				{% endif %}
 				<div id="input-wrapper">
-					<input
-						type="search"
-						name="search-field"
-						id="search-field"
-						placeholder=""
-					/>
-					<label for="search-field">F.I.O, guruh, tel. raqam</label>
+					<form class="pupil-search-form" action="" method="get">
+						<div style="position: relative;">
+							<input
+								value="{{ searchField }}"
+								type="search"
+								name="search-field"
+								id="search-field"
+								placeholder=""
+							/>
+							<label for="search-field">Familiya, Ism yoki Tel. raqam</label>
+						</div>
+						<button class="button" type="submit">Qidirish</button>
+					</form>
 				</div>
 			</div>
 			<table class="pupils-table">
@@ -154,7 +163,7 @@
 								<a href="{% url 'delete_pupil' pk=pupil.id %}">
 									<span class="material-icons-sharp"> delete </span>
 								</a>
-								{% if request.user.is_superuser %}
+								{% if request.user.is_superuser or request.user.is_admin %}
 									<a
 										href="{% url 'add_payment' group_id=pupil.group.id pupil_id=pupil.id %}"
 									>
@@ -186,5 +195,5 @@
 		{% include 'components/_pagination.html' with page_range=page_range %}
 	{% endif %}
 </main>
-<script src="{% static 'pupilFilter.js' %}"></script>
+<!-- <script src="{% static 'custom-js/pupilFilter.js' %}"></script> -->
 {% include 'components/_right_block.html' %} {% endblock content %}

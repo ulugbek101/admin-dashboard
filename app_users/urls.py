@@ -6,9 +6,9 @@ from . import views
 urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signup/', views.signup, name='signup'),
-    # path('signout/', views.CustomLogoutView.as_view(), name='signout'),
     path('signout/', views.signout, name='signout'),
 
     path('send-sms/', views.send_sms, name='send_sms'),
-    # path('social-auth/', include('social_django.urls', namespace='social')),
+    
+    path('teacher/<uuid:id>/', views.TeacherDetail.as_view(), name='teacher_detail'),
 ]
