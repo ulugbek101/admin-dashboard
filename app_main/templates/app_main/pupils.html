@@ -90,13 +90,19 @@
 				</button>
 				{% endif %}
 				<div id="input-wrapper">
-					<input
-						type="search"
-						name="search-field"
-						id="search-field"
-						placeholder=""
-					/>
-					<label for="search-field">F.I.O, guruh, tel. raqam</label>
+					<form class="pupil-search-form" action="" method="get">
+						<div style="position: relative;">
+							<input
+								value="{{ searchField }}"
+								type="search"
+								name="search-field"
+								id="search-field"
+								placeholder=""
+							/>
+							<label for="search-field">F.I.O, guruh, tel. raqam</label>
+						</div>
+						<button class="button" type="submit">Qidirish</button>
+					</form>
 				</div>
 			</div>
 			<table class="pupils-table">
@@ -186,5 +192,5 @@
 		{% include 'components/_pagination.html' with page_range=page_range %}
 	{% endif %}
 </main>
-<script src="{% static 'custom-js/pupilFilter.js' %}"></script>
+<!-- <script src="{% static 'custom-js/pupilFilter.js' %}"></script> -->
 {% include 'components/_right_block.html' %} {% endblock content %}

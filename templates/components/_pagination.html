@@ -14,7 +14,7 @@
     {% endif %}
     {% for page in page_range %}
         {% if page == page_obj.number %}
-            <button class="button" id="current_page" disabled>
+            <button class="button page" id="current_page" disabled>
                 {{ page }}
             </button>
         {% else %}
@@ -37,3 +37,25 @@
         </button>
     {% endif %}
 </div>
+
+<script type="text/javascript">
+    const pagesBtns = document.querySelectorAll('a.page')
+    
+    pagesBtns.forEach(pageBtn => {
+        pageBtn.addEventListener('click', event => {
+            event.preventDefault()
+            const pageNumber = event.target.textContent.trim();
+            const searchFieldValue = document.getElementById('search-field');
+            const form = document.querySelector('.pupil-search-form');
+
+            const pageElement = document.createElement('input')
+            pageElement.type = 'hidden'
+            pageElement.name = 'page'
+            pageElement.value = pageNumber
+
+            form.insertAdjacentElement('afterbegin', pageElement)
+            form.submit()
+
+        })
+    })
+</script>

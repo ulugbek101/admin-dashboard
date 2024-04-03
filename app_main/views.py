@@ -109,9 +109,15 @@ class PupilList(LoginRequiredMixin, ListView):
         otherwise only students of the teacher
         """
 
-        pupils = Pupil.objects.all().order_by(
-            "group__name", "first_name", "last_name", "-created"
-        )
+        if self.request.GET.get('search-field'):
+            q = self.request.GET.get('search-field')
+            pupils = Pupil.objects.filter(Q(first_name__icontains=q) | Q(
+                last_name__icontains=q) | Q(phone_number__icontains=q))
+        else:
+            pupils = Pupil.objects.all().order_by(
+                "first_name", "last_name", "group", "-created"
+            )
+
         if not self.request.user.is_superuser and not self.request.user.is_admin:
             return pupils.filter(group__teacher=self.request.user)
         return pupils
@@ -133,6 +139,8 @@ class PupilList(LoginRequiredMixin, ListView):
             if right_index - 4 > 0:
                 left_index = right_index - 4
 
+        context['searchField'] = self.request.GET.get(
+            'search-field') if self.request.GET.get('search-field') else ""
         context['page_range'] = range(left_index, right_index + 1)
         return context
 
