@@ -1068,10 +1068,9 @@ main .recent-orders a {
 		margin: 0;
 	}
 
-	/* .table-header {
-		flex-direction: column;
+	.table-header {
 		align-items: flex-start;
-	} */
+	}
 
 	#input-wrapper input:not(:placeholder-shown) ~ label, #input-wrapper input:focus ~ label {
 		font-size: 6px;
