@@ -13,10 +13,11 @@ class User(AbstractUser):
         max_length=200, verbose_name="E-mail manzil", unique=True)
     job = models.CharField(
         max_length=200, default="O'qituvchi", blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='thedevu101-admin-media/profile-pictures/',
+    profile_picture = models.ImageField(upload_to='profile-pictures/',
                                         null=True,
                                         blank=True,
                                         default='profile-pictures/user-default.png', verbose_name="Profil rasmi")
+    is_admin = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     id = models.UUIDField(default=uuid.uuid4, editable=False,

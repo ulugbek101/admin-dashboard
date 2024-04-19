@@ -1,81 +1,104 @@
 {% load static %}
 <aside>
-    <div class="toggle">
-        <div class="logo">
-            <img src="{% static 'favicon.png' %}" style="border-radius: 50%;">
-<<<<<<< HEAD
-            <h2>Al<span class="success">Xorazmiy</span></h2>
-=======
-            <h2>thedevu<span class="danger">101</span></h2>
->>>>>>> 62abc2db0116585148df5aa678ac6058fbad3614
-        </div>
-        <div class="close" id="close-btn">
-            <span class="material-icons-sharp">
-                close
-            </span>
-        </div>
-    </div>
+	<div class="toggle">
+		<div class="logo">
+			<img
+				src="{% static 'custom-images/favicon.png' %}"
+				style="border-radius: 50%"
+			/>
+			<h2>thedevu101<span class="danger">101</span></h2>
+		</div>
+		<div class="close" id="close-btn">
+			<span class="material-icons-sharp"> close </span>
+		</div>
+	</div>
 
-    <div class="sidebar">
-        {% if request.user.is_superuser %}
-        <a href="{% url 'subjects' %}" class="{% if subjects == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        bookmark
-                    </span>
-            <h3>Fanlar</h3>
-        </a>
-        {% endif %}
-        <a href="{% url 'groups' %}" class="{% if groups == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        groups
-                    </span>
-            <h3>Guruhlar</h3>
-        </a>
-        <a href="{% url 'teachers' %}" class="{% if teachers == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        people_alt
-                    </span>
-            <h3>O'qituvchilar</h3>
-        </a>
-        <a href="{% url 'pupils' %}" class="{% if pupils == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        school
-                    </span>
-            <h3>O'quvchilar</h3>
-        <!-- <span class="message-count">27</span>-->
-        </a>
-        {% if request.user.is_superuser %}
-        <a href="{% url 'dashboard' %}" class="{% if dashboard == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        insights
-                    </span>
-            <h3>Analitika</h3>
-        </a>
-        <a href="{% url 'download-stats-page' %}" class="{% if download_stats == True %} active {% endif %} download-stats">
-            <span class="material-icons-sharp">
-                file_download
-            </span>
-            <h3>Statistikani yuklash</h3>
-        </a>
-        {% endif %}
-        <a href="{% url 'expenses' %}" class="{% if expenses == True %} active {% endif %}">
-            <span class="material-icons-sharp">
-                request_quote
-            </span>
-            <h3>Chiqimlar</h3>
-        </a>
-        <a href="{% url 'settings' %}" class="{% if settings == True %} active {% endif %}">
-                    <span class="material-icons-sharp">
-                        settings
-                    </span>
-            <h3>Sozlamalar</h3>
-        </a>
+	<div class="sidebar">
+		{% if request.user.is_superuser or request.user.is_admin %}
+		<a
+			href="{% url 'subjects' %}"
+			class="{% if subjects == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> bookmark </span>
+			<h3>Fanlar</h3>
+		</a>
+		{% endif %}
+		<a
+			href="{% url 'groups' %}"
+			class="{% if groups == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> groups </span>
+			<h3>Guruhlar</h3>
+		</a>
+		<a
+			href="{% url 'teachers' %}"
+			class="{% if teachers == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> people_alt </span>
+			<h3>O'qituvchilar</h3>
+		</a>
+		<a
+			href="{% url 'pupils' %}"
+			class="{% if pupils == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> school </span>
+			<h3>O'quvchilar</h3>
 
-        <a href="{% url 'signout' %}">
-                    <span class="material-icons-sharp">
-                        logout
-                    </span>
-            <h3>Chiqish</h3>
-        </a>
-    </div>
+		</a>
+
+		{% if request.user.is_superuser and request.user.is_admin %}
+		<a
+			href="{% url 'dashboard' %}"
+			class="{% if dashboard == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> insights </span>
+			<h3>Analitika</h3>
+		</a>
+		<a
+			href="{% url 'download-stats-page' %}"
+			class="{% if download_stats == True %} active {% endif %} download-stats"
+		>
+			<span class="material-icons-sharp"> file_download </span>
+			<h3>Statistikani yuklash</h3>
+		</a>
+		<a
+			href="{% url 'payments' %}"
+			class="{% if payments == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> event </span>
+			<h3>To'lovlar</h3>
+		</a>
+		{% endif %}
+
+		{% if not request.user.is_superuser and request.user.is_admin %}
+		<a
+			href="{% url 'payments' %}"
+			class="{% if payments == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> event </span>
+			<h3>To'lovlar</h3>
+		</a>
+		{% endif %}
+
+
+		<a
+			href="{% url 'expenses' %}"
+			class="{% if expenses == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> request_quote </span>
+			<h3>Chiqimlar</h3>
+		</a>
+		<a
+			href="{% url 'settings' %}"
+			class="{% if settings == True %} active {% endif %}"
+		>
+			<span class="material-icons-sharp"> person </span>
+			<h3>Profil</h3>
+		</a>
+
+		<a href="{% url 'signout' %}">
+			<span class="material-icons-sharp"> logout </span>
+			<h3>Chiqish</h3>
+		</a>
+	</div>
 </aside>

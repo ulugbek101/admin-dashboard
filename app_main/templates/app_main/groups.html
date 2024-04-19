@@ -4,7 +4,7 @@
 	<h1>Barcha guruhlar</h1>
 	<div class="card-wrapper">
 		<div class="card">
-			{% if request.user.is_superuser %}
+			{% if request.user.is_superuser or request.user.is_admin %}
 			<a
 				class="button add-button"
 				href="{% url 'add_group' %}"

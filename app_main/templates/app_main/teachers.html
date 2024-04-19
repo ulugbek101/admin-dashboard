@@ -7,7 +7,7 @@
     <h1>Barcha o'qituvchilar</h1>
     <div class="card-wrapper">
         <div class="card">
-            {% if request.user.is_superuser %}
+            {% if request.user.is_superuser or request.user.is_admin %}
             <a class="button add-button" href="{% url 'add_teacher' %}" style='display: flex; flex-direction: row; align-items: center; width: max-content; gap: 5px;'>
                 <span class='material-icons-sharp'>
                     person_add_alt
@@ -23,7 +23,7 @@
                         <th>E-mail</td>
                         <th>Qo'shilgan</td>
                         <th>
-                            {% if request.user.is_superuser %}
+                            {% if request.user.is_superuser or request.user.is_admin %}
                             O'zgartirish
                             {% endif %}
                         </td>
@@ -31,21 +31,25 @@
                 </thead>
                 <tbody>
                     {% for teacher in teachers_list %}
-                    <tr>
+                    <tr class="table-row">
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ teacher.full_name }}</td>
+                        <td>
+                            <a href="{% url 'teacher_detail' id=teacher.id %}">
+                                {{ teacher.full_name }}
+                            </a>
+                        </td>
                         <td>{% if teacher.email %} {{ teacher.email }} {% else %} - {% endif %}</td>
                         <td>{{ teacher.created|date }}</td>
                         <td class='manage-pupil'>
                             <div class="row-change-controller">
-                                {% if request.user.is_superuser %}
+                                {% if request.user.is_superuser or request.user.is_admin %}
                                 <a href="{% url 'update_teacher' pk=teacher.id %}" class="button">
                                     <span class="material-icons-sharp">
                                         edit
                                     </span>
                                 </a>
                                 {% endif %}
-                                {% if request.user.is_superuser and request.user != teacher %}
+                                {% if request.user.is_superuser or request.user.is_admin and request.user != teacher %}
                                 <a href="{% url 'delete_teacher' pk=teacher.id %}" class="button">
                                     <span class="material-icons-sharp">
                                         delete

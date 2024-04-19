@@ -4,7 +4,6 @@ from django.db.models import Q
 from .models import Payment, Group, Expense
 from datetime import date
 
-
 def get_months() -> dict:
     """Helper function to get month name by month number"""
 

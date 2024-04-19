@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpRequest, HttpResponse, Http404
+from django.http import HttpResponse, Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.core.paginator import Paginator
 from django.views.generic import DetailView, ListView, UpdateView, DeleteView, CreateView
 
 import pandas as pd
@@ -19,7 +20,7 @@ from . import utils
 
 from .decorators import is_superuser
 from .models import Group, Pupil, Payment, Subject, Expense
-from .mixins import IsSuperuserMixin
+from utils.mixins import IsSuperuserOrAdminMixin
 
 
 class SubjectList(LoginRequiredMixin, ListView):
@@ -37,7 +38,7 @@ class SubjectList(LoginRequiredMixin, ListView):
         otherwise throw 404 error
         """
         subjects = Subject.objects.annotate(pupils=Count("group__pupil"))
-        if not self.request.user.is_superuser:
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             raise Http404("Not found")
         return subjects
 
@@ -52,7 +53,7 @@ class GroupList(LoginRequiredMixin, ListView):
     }
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if self.request.user.is_superuser or self.request.user.is_admin:
             return Group.objects.all()
         return Group.objects.filter(teacher=self.request.user).order_by("name", "-created")
 
@@ -64,7 +65,7 @@ class GroupDetail(LoginRequiredMixin, DetailView):
     context_object_name = "group"
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object().teacher:
+        if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().teacher:
             raise Http404("Not found")
         return super(GroupDetail, self).dispatch(request, *args, **kwargs)
 
@@ -98,6 +99,9 @@ class PupilList(LoginRequiredMixin, ListView):
         "current_date": str(date.today())[:-3],
         "pupils": True
     }
+    paginator_class = Paginator
+    paginate_by = 50
+    page_kwarg = 'page'
 
     def get_queryset(self):
         """
@@ -105,15 +109,43 @@ class PupilList(LoginRequiredMixin, ListView):
         otherwise only students of the teacher
         """
 
-        pupils = Pupil.objects.all().order_by(
-            "group__name", "first_name", "last_name", "-created"
-        )
-        if not self.request.user.is_superuser:
+        if self.request.GET.get('search-field'):
+            q = self.request.GET.get('search-field')
+            pupils = Pupil.objects.filter(Q(first_name__icontains=q) | Q(
+                last_name__icontains=q) | Q(phone_number__icontains=q))
+        else:
+            pupils = Pupil.objects.all().order_by(
+                "first_name", "last_name", "group", "-created"
+            )
+
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             return pupils.filter(group__teacher=self.request.user)
         return pupils
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_obj = context['page_obj']
 
-class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserMixin, ListView):
+        left_index = page_obj.number - 2
+        right_index = page_obj.number + 2
+
+        if left_index - 2 < 1:
+            left_index = 1
+            right_index = left_index + 4
+
+        if right_index > page_obj.paginator.num_pages:
+            right_index = page_obj.paginator.num_pages
+            left_index = 1
+            if right_index - 4 > 0:
+                left_index = right_index - 4
+
+        context['searchField'] = self.request.GET.get(
+            'search-field') if self.request.GET.get('search-field') else ""
+        context['page_range'] = range(left_index, right_index + 1)
+        return context
+
+
+class ExpenseListByTeacher(LoginRequiredMixin, IsSuperuserOrAdminMixin, ListView):
     """ Render expenses list for specific teacher """
     template_name = "app_main/expenses_by_teacher.html"
     context_object_name = "expenses_list"
@@ -185,7 +217,7 @@ class ExpenseDetail(LoginRequiredMixin, DetailView):
         otherwise throws 404 error
         """
 
-        if not self.request.user.is_superuser and self.get_object().owner != self.request.user:
+        if (not self.request.user.is_superuser and not request.user.is_admin) and self.get_object().owner != self.request.user:
             raise Http404("Not found")
         return super(ExpenseDetail, self).dispatch(request, *args, **kwargs)
 
@@ -271,12 +303,12 @@ def download_stats(request):
             continue
 
         data = {
-                "№": [],
-                "Guruh": [],
-                "O'quvchi": [],
-                "Oy": [],
-                "To'lov (so'm)": [],
-                "Qo'shimcha ma'lumot": [],
+            "№": [],
+            "Guruh": [],
+            "O'quvchi": [],
+            "Oy": [],
+            "To'lov (so'm)": [],
+            "Qo'shimcha ma'lumot": [],
         }
 
         for group in teacher.group_set.filter(Q(created__month__lte=month, created__year__lte=year) | Q(created__month__lte=month)):
@@ -286,36 +318,39 @@ def download_stats(request):
                 continue
 
             for index, pupil in enumerate(group.pupil_set.filter(created__year=year, created__month__lte=month), 1):
-                    pupil_payment = pupil.payment_set.filter(month__year=year, month__month=month).first()
+                pupil_payment = pupil.payment_set.filter(
+                    month__year=year, month__month=month).first()
 
-                    if pupil_payment:
-                        group_name = pupil_payment.group.name if pupil_payment.group else pupil_payment.group_name
-                        pupil_name = pupil_payment.pupil.full_name if pupil_payment.pupil else pupil_payment.pupil_fullname
-                        month_name = months[month]
-                        amount = f"{utils.format_number(pupil_payment.amount)} / {utils.format_number(group.price)}"
-                        note = pupil_payment.note if pupil_payment.note else "-"
-                    else:
-                        group_name = group.name
-                        pupil_name = pupil.full_name
-                        month_name = months[month]
-                        amount = f"{0} / {utils.format_number(group.price)}"
-                        note = "-"
+                if pupil_payment:
+                    group_name = pupil_payment.group.name if pupil_payment.group else pupil_payment.group_name
+                    pupil_name = pupil_payment.pupil.full_name if pupil_payment.pupil else pupil_payment.pupil_fullname
+                    month_name = months[month]
+                    amount = f"{utils.format_number(pupil_payment.amount)} / {utils.format_number(group.price)}"
+                    note = pupil_payment.note if pupil_payment.note else "-"
+                else:
+                    group_name = group.name
+                    pupil_name = pupil.full_name
+                    month_name = months[month]
+                    amount = f"{0} / {utils.format_number(group.price)}"
+                    note = "-"
 
-                    data["№"].append(index)
-                    data["Guruh"].append(group_name)
-                    data["O'quvchi"].append(pupil_name)
-                    data["Oy"].append(month_name)
-                    data["To'lov (so'm)"].append(amount)
-                    data["Qo'shimcha ma'lumot"].append(note)
-            
+                data["№"].append(index)
+                data["Guruh"].append(group_name)
+                data["O'quvchi"].append(pupil_name)
+                data["Oy"].append(month_name)
+                data["To'lov (so'm)"].append(amount)
+                data["Qo'shimcha ma'lumot"].append(note)
+
             group_payment_total = group.price * group.pupil_set.count()
-            group_payment_paid = Payment.objects.filter(month__year=year, month__month=month, group=group).aggregate(total_paid=Sum("amount")).get("total_paid")
+            group_payment_paid = Payment.objects.filter(month__year=year, month__month=month, group=group).aggregate(
+                total_paid=Sum("amount")).get("total_paid")
 
             data["№"].append("")
             data["Guruh"].append("")
             data["O'quvchi"].append("")
             data["Oy"].append("")
-            data["To'lov (so'm)"].append(f"{group_payment_paid or 0} / {group_payment_total}")
+            data["To'lov (so'm)"].append(
+                f"{group_payment_paid or 0} / {group_payment_total}")
             data["Qo'shimcha ma'lumot"].append("")
 
             # Add 2 new lines between groups
@@ -323,7 +358,6 @@ def download_stats(request):
             data = {key: value + [''] for key, value in data.items()}
             df = pd.DataFrame(data)
             df.to_excel(writer, sheet_name=teacher.full_name, index=False)
-        
 
     # ======================== Adding groups dataframe to an Excel document as a separate sheet ========================
     # Creating special variables to insert them to the end of row for payments column in an Excel sheet
@@ -449,7 +483,7 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser:
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             raise Http404("Not found")
         return super(TeacherCreate, self).dispatch(request, *args, **kwargs)
 
@@ -489,7 +523,7 @@ class PupilCreate(LoginRequiredMixin, CreateView):
         """
 
         group = get_object_or_404(Group, id=self.request.GET.get('group_id'))
-        if self.request.user != group.teacher and not self.request.user.is_superuser:
+        if self.request.user != group.teacher and (not self.request.user.is_superuser and not self.request.user.is_admin):
             raise Http404("Not found")
         return super(PupilCreate, self).dispatch(request, *args, **kwargs)
 
@@ -505,7 +539,7 @@ class PupilCreate(LoginRequiredMixin, CreateView):
 def add_payment(request, group_id, pupil_id):
     pupil = Pupil.objects.get(id=pupil_id)
 
-    if not request.user.is_superuser and request.user != pupil.group.teacher:
+    if not request.user.is_superuser and not request.user.is_admin and request.user != pupil.group.teacher:
         messages.error(
             request, "Boshqalarning o'quvchisini uchun to'lov qila olmaysiz")
         return redirect("groups")
@@ -521,17 +555,19 @@ def add_payment(request, group_id, pupil_id):
     if payment:
         form = forms.PaymentForm(
             data={
-                "amount": payment.amount if payment else 0,
                 "note": payment.note if payment.note else "",
             }
         )
+
+        if payment:
+            form.data['amount'] = payment.amount
+
     # Otherwise display a form with blank note field
     else:
-        form = forms.PaymentForm(
-            data={
-                "amount": payment.amount if payment else 0,
-            }
-        )
+        form = forms.PaymentForm(data={})
+
+        if payment:
+            form.data['amount'] = payment.amount
 
     pupil = Pupil.objects.get(group__id=group_id, id=pupil_id)
 
@@ -549,7 +585,7 @@ def add_payment(request, group_id, pupil_id):
 
             if int(request.POST.get("amount")) > pupil.group.price:
                 messages.error(
-                    request, "Qo'lov miqdori guruh to'lovi moiqdoridan ko'p")
+                    request, "To'lov miqdori guruh to'lovi moiqdoridan ko'p")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             payment = form.save(commit=False)
@@ -637,7 +673,7 @@ class SubjectCreate(LoginRequiredMixin, CreateView):
         otherwise throw 404 error
         """
 
-        if not self.request.user.is_superuser:
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             raise Http404("Not found")
         return super(SubjectCreate, self).dispatch(request, *args, **kwargs)
 
@@ -709,7 +745,7 @@ class PupilUpdate(LoginRequiredMixin, UpdateView):
         return reverse("group_detail", kwargs={"id": self.get_object().group.id})
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object().group.teacher:
+        if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().group.teacher:
             raise Http404("Not found")
         return super(PupilUpdate, self).dispatch(request, *args, **kwargs)
 
@@ -736,7 +772,7 @@ class TeacherUpdate(LoginRequiredMixin, UpdateView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object():
+        if (not self.request.user.is_superuser and not request.user.is_admin) and self.request.user != self.get_object():
             raise Http404("Not found")
         return super(TeacherUpdate, self).dispatch(request, *args, **kwargs)
 
@@ -839,7 +875,7 @@ class PupilDelete(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = "pk"
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object().group.teacher:
+        if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().group.teacher:
             raise Http404("Not found")
         return super(PupilDelete, self).dispatch(request, *args, **kwargs)
 
@@ -880,7 +916,7 @@ class GroupDelete(LoginRequiredMixin, DeleteView):
     pk_url_kwarg = "pk"
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.request.user.is_superuser and self.request.user != self.get_object().teacher:
+        if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().teacher:
             raise Http404("Not found")
         return super(GroupDelete, self).dispatch(request, *args, **kwargs)
 
@@ -923,7 +959,7 @@ class ExpenseDelete(LoginRequiredMixin, DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         # and self.request.user != self.get_object().owner:
-        if not self.request.user.is_superuser:
+        if not self.request.user.is_superuser and not self.request.user.is_admin:
             raise Http404("Not found")
         return super(ExpenseDelete, self).dispatch(request, *args, **kwargs)
 
@@ -936,4 +972,55 @@ class ExpenseDelete(LoginRequiredMixin, DeleteView):
         context.update({
             "title": f'"{self.object.name}"',
         })
+        return context
+
+
+class PaymentsList(LoginRequiredMixin, IsSuperuserOrAdminMixin, ListView):
+    model = Payment
+    template_name = 'app_main/payments.html'
+    context_object_name = 'payments_list'
+    ordering = ['created', 'pupil']
+    extra_context = {
+        'current_date': date.today().strftime("%Y-%m-%d"),
+        'payments': True,
+    }
+    paginate_by = 100
+    paginator_class = Paginator
+    page_kwarg = 'page'
+
+    def get(self, request):
+        if request.GET.get('date'):
+            year, month, day = request.GET.get('date').split('-')
+            self.queryset = Payment.objects.filter(
+                updated__year=year, updated__month=month, updated__day=day)
+            self.extra_context['current_date'] = request.GET.get('date')
+            self.extra_context['title'] = f"{request.GET.get('date')} dagi to'lovlar"
+
+            return super().get(request)
+        else:
+            self.queryset = Payment.objects.filter(updated__year=date.today(
+            ).year, updated__month=date.today().month, updated__day=date.today().day)
+            self.extra_context['current_date'] = date.today().strftime(
+                "%Y-%m-%d")
+            self.extra_context['title'] = f"Bugugi to'lovlar"
+            return super().get(request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_obj = context['page_obj']
+
+        left_index = page_obj.number - 2
+        right_index = page_obj.number + 2
+
+        if left_index - 2 < 1:
+            left_index = 1
+            right_index = left_index + 4
+
+        if right_index > page_obj.paginator.num_pages:
+            right_index = page_obj.paginator.num_pages
+            left_index = 1
+            if right_index - 4 > 0:
+                left_index = right_index - 4
+
+        context['page_range'] = range(left_index, right_index + 1)
         return context

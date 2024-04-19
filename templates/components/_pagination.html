@@ -1,0 +1,61 @@
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a class="button" href="?page={{ page_obj.previous_page_number }}">
+            <span class="material-icons-sharp">
+                arrow_back_ios
+            </span>
+        </a>
+    {% else %}
+        <button class="button" disabled>
+            <span class="material-icons-sharp">
+                arrow_back_ios
+            </span>
+        </button>
+    {% endif %}
+    {% for page in page_range %}
+        {% if page == page_obj.number %}
+            <button class="button page" id="current_page" disabled>
+                {{ page }}
+            </button>
+        {% else %}
+            <a class="button page" href="?page={{ page }}">
+                {{ page }}
+            </a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="button" href="?page={{ page_obj.next_page_number }}">
+            <span class="material-icons-sharp">
+                arrow_forward_ios
+            </span>
+        </a>
+    {% else %}
+        <button class="button" disabled>
+            <span class="material-icons-sharp">
+                arrow_forward_ios
+            </span>
+        </button>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    const pagesBtns = document.querySelectorAll('a.page')
+    
+    pagesBtns.forEach(pageBtn => {
+        pageBtn.addEventListener('click', event => {
+            event.preventDefault()
+            const pageNumber = event.target.textContent.trim();
+            const searchFieldValue = document.getElementById('search-field');
+            const form = document.querySelector('.pupil-search-form');
+
+            const pageElement = document.createElement('input')
+            pageElement.type = 'hidden'
+            pageElement.name = 'page'
+            pageElement.value = pageNumber
+
+            form.insertAdjacentElement('afterbegin', pageElement)
+            form.submit()
+
+        })
+    })
+</script>
