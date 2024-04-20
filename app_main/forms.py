@@ -26,11 +26,12 @@ class TeacherForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email",
-                  "profile_picture", "password1", "password2"]
+                  "profile_picture", "job", "password1", "password2"]
         widgets = {
             "profile_picture": forms.FileInput(attrs={
                 "accept": "image/*"
-            })
+            }),
+            "job": forms.Select()
         }
 
 

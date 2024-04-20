@@ -496,7 +496,11 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
             teacher.username = self.request.POST.get("email")[
                 : self.request.POST.get("email").find("@")
             ]
-            teacher.set_password(password2)
+
+            if password1 and password2:
+                # Set password if password is provided
+                teacher.set_password(password2)
+            
             teacher.save()
 
             messages.success(self.request, "O'qituvchi qo'shildi")

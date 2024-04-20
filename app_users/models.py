@@ -7,12 +7,19 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    class JobChoices(models.TextChoices):
+        TEACHER = "teacher", "O'qituvchi"
+        ADMIN = "admin", "Admin"
+        SUPERUSER = "superuser", "Superadmin"
+
     first_name = models.CharField(max_length=200, verbose_name="Ism")
     last_name = models.CharField(max_length=200, verbose_name="Familiya")
     email = models.EmailField(
         max_length=200, verbose_name="E-mail manzil", unique=True)
     job = models.CharField(
-        max_length=200, default="O'qituvchi", blank=True, null=True)
+        verbose_name="Xodim statusi",
+        choices=JobChoices.choices,
+        max_length=200, default=JobChoices.TEACHER, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile-pictures/',
                                         null=True,
                                         blank=True,
@@ -39,6 +46,7 @@ class User(AbstractUser):
 
 
 class SMSSentCount(models.Model):
+    """ *Not implemented yet """
     teacher = models.OneToOneField(User, on_delete=models.CASCADE)
     sms_sent_count = models.IntegerField(default=0)
 
