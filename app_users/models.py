@@ -33,6 +33,12 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     @property
+    def get_role(self):
+        if self.job == "teacher": return "O'qituvchi"
+        if self.job == "admin": return "Admin"
+        if self.job == "superuser": return "Superadmin"
+
+    @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
