@@ -1,4 +1,9 @@
-[33ma4492d4[m[33m ([m[1;36mHEAD[m[33m)[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
+[33m6fad66a[m[33m ([m[1;36mHEAD -> [m[1;32mal-xorazmiy[m[33m, [m[1;31morigin/al-xorazmiy[m[33m)[m Update staticfiiles
+[33m9ffca8f[m Update staticfiles
+[33m10fac15[m Update settings.py
+[33m07b4c02[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
+[33mf275664[m Change pagination component location
+[33ma4492d4[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
 [33mbde76f6[m Merge branch 'al-xorazmiy' of github.com:ulugbek101/admin-dashboard into al-xorazmiy
 [33me6caef4[m Add pagination feature for pupils.html
 [33m67240b8[m Add pagination feature for pupils.html
