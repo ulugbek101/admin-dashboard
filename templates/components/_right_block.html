@@ -18,7 +18,7 @@
         <div class="profile">
             <div class="info">
 		    <p>Salom, <b>{{ request.user.first_name }}</b></p>
-                <small class="text-muted">{{ request.user.job }}</small>
+                <small class="text-muted">{{ request.user.get_role|capfirst }}</small>
             </div>
             <div class="profile-photo">
                 <img src="{{ request.user.profile_picture.url }}" alt="{{ request.user.full_name }}"
@@ -38,7 +38,7 @@
                 title="{{ request.user.full_name }}">
             {% endif %}
             <h2>{{ request.user.full_name }}</h2>
-            <p>{{ request.user.job }}</p>
+            <p>{{ request.user.get_role }}</p>
         </div>
     </div>
 

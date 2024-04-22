@@ -10,6 +10,18 @@ from .models import Pupil, Payment, Group, Subject, Expense
 
 
 class TeacherForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        updating_user = kwargs.get('instance')
+        super(TeacherForm, self).__init__(*args, **kwargs)
+        
+        if updating_user:
+            if (user.is_admin and not user.is_superuser) and (kwargs.get('instance').is_admin and not kwargs.get('instance').is_superuser):
+                self.fields.pop('job')
+        
+        if user.is_admin and not user.is_superuser:
+            self.fields.pop('job')
+
     password1 = forms.CharField(
         label=_("Parol"),
         strip=False,
