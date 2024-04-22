@@ -499,10 +499,23 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
 
         if password1 == password2:
             teacher = form.save(commit=False)
-            
+
             if form.cleaned_data.get('job'):
                 # Set user status if provided
                 teacher.job = form.cleaned_data.get('job')
+
+                # Set user privileges based on status
+                if form.cleaned_data.get("job") == "superuser":
+                    teacher.is_superuser = True
+                    teacher.is_admin = True
+
+                elif form.cleaned_data.get("job") == "admin":
+                    teacher.is_superuser = False
+                    teacher.is_admin = True
+
+                elif form.cleaned_data.get("job") == "teacher":
+                    teacher.is_superuser = False
+                    teacher.is_admin = False
 
             teacher.username = self.request.POST.get("email")[
                 : self.request.POST.get("email").find("@")
@@ -511,7 +524,7 @@ class TeacherCreate(LoginRequiredMixin, CreateView):
             if password1 and password2:
                 # Set password if password is provided
                 teacher.set_password(password2)
-            
+
             teacher.save()
 
             messages.success(self.request, "O'qituvchi qo'shildi")
@@ -794,6 +807,7 @@ class TeacherUpdate(LoginRequiredMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super(TeacherUpdate, self).get_form_kwargs()
         kwargs['user'] = self.request.user  # Pass request.user to the form
+        kwargs['update_form'] = True
         return kwargs
 
     def form_valid(self, form):
@@ -801,21 +815,34 @@ class TeacherUpdate(LoginRequiredMixin, UpdateView):
         password2 = form.cleaned_data.get("password2")
         teacher = self.object
 
-        if form.cleaned_data.get('job'):
-            teacher.job = form.cleaned_data.get('job')
+        if form.cleaned_data.get("job"):
+            teacher.job = form.cleaned_data.get("job")
 
-        if (password1 or password2):
+            # Set user privileges based on status
+            if form.cleaned_data.get("job") == "superuser":
+                teacher.is_superuser = True
+                teacher.is_admin = True
+
+            elif form.cleaned_data.get("job") == "admin":
+                teacher.is_superuser = False
+                teacher.is_admin = True
+
+            elif form.cleaned_data.get("job") == "teacher":
+                teacher.is_superuser = False
+                teacher.is_admin = False
+
+        if password1 or password2:
             if password1 == password2:
                 teacher.set_password(password2)
 
             else:
                 messages.error(self.request, "Parollar bir xil bo'lishi shart")
                 return redirect("update_teacher", pk=teacher.id)
-        
+
         teacher.save()
         messages.success(
             self.request, "O'qituvchi ma'lumotlari yangilandi")
-        return redirect("teachers")        
+        return redirect("teachers")
 
     def form_invalid(self, form):
         messages.error(

@@ -12,15 +12,24 @@ from .models import Pupil, Payment, Group, Subject, Expense
 class TeacherForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        update_form = kwargs.pop('update_form', None)
         updating_user = kwargs.get('instance')
         super(TeacherForm, self).__init__(*args, **kwargs)
-        
+
         if updating_user:
-            if (user.is_admin and not user.is_superuser) and (kwargs.get('instance').is_admin and not kwargs.get('instance').is_superuser):
+            if (user.is_admin and not user.is_superuser) and (
+                    (kwargs.get('instance').is_admin and not kwargs.get('instance').is_superuser) or
+                    (not kwargs.get('instance').is_admin and not kwargs.get('instance').is_superuser)
+            ):
                 self.fields.pop('job')
-        
-        if user.is_admin and not user.is_superuser:
-            self.fields.pop('job')
+
+        # if user.is_admin and not user.is_superuser:
+        #     self.fields.pop('job')
+
+        if update_form:
+            # Allow update teachers' profile without changing their passwords
+            self.fields.get('password1').required = False
+            self.fields.get('password2').required = False
 
     password1 = forms.CharField(
         label=_("Parol"),
