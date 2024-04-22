@@ -31,6 +31,19 @@
 							<h3>Ma'lumotlari yangilangan sana</h3>
 							<p>{{ teacher.updated }}</p>
 						</div>
+						<div>
+							<h3>Xodim statusi</h3>
+							<p>
+								{% if teacher.job == 'superuser' %}
+									⭐️⭐️⭐️
+								{% elif teacher.job == 'admin' %}
+									⭐️⭐️
+								{% elif teacher.job == 'teacher' %}
+									⭐️
+								{% endif %}
+								{{ teacher.get_role }}
+							</p>
+						</div>
 					</div>
 				</div>
             </div>
