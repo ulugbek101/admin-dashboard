@@ -19,7 +19,7 @@ class User(AbstractUser):
     job = models.CharField(
         verbose_name="Xodim statusi",
         choices=JobChoices.choices,
-        max_length=200, default=JobChoices.TEACHER, blank=True, null=True)
+        max_length=200, default=JobChoices.TEACHER)
     profile_picture = models.ImageField(upload_to='profile-pictures/',
                                         null=True,
                                         blank=True,
