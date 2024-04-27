@@ -41,7 +41,7 @@ def send_sms_to_pupils(request):
             }, data={
                 'mobile_phone': f"{pupil_number.country_code}{pupil_number.national_number}",
                 'message': sms_text,
-                'from': '4546',
+                'from': 'SHAMS_TALIM',
                 'callback_url': ''
             }, files=[])
 
