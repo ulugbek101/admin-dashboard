@@ -21,34 +21,35 @@ def authorize():
 
 
 def send_sms_to_pupils(request):
-    pupils_id = list(set(request.GET.get('pupils').split(',')))
-    sms_text = request.GET.get('text')
-    token_type, token = authorize()
+    pass
+    # pupils_id = list(set(request.GET.get('pupils').split(',')))
+    # sms_text = request.GET.get('text')
+    # token_type, token = authorize()
 
-    # Incrementing sms count for teacher to keep track of sent sms count of every teacher
-    # _, created = SMSSentCount.objects.get_or_create(teacher__id=request.GET.get("user_id"))
-    # print('Teacher', _)
-    # _.sms_sent_count += len(pupils_id)
-    # _.save()
-    print(pupils_id)
-    for pupil_id in pupils_id:
-        pupil_number = Pupil.objects.get(id=pupil_id).phone_number
+    # # Incrementing sms count for teacher to keep track of sent sms count of every teacher
+    # # _, created = SMSSentCount.objects.get_or_create(teacher__id=request.GET.get("user_id"))
+    # # print('Teacher', _)
+    # # _.sms_sent_count += len(pupils_id)
+    # # _.save()
+    # print(pupils_id)
+    # for pupil_id in pupils_id:
+    #     pupil_number = Pupil.objects.get(id=pupil_id).phone_number
 
-        try:
-            pupil_number = Pupil.objects.get(id=pupil_id).phone_number
-            response = requests.request(method="POST", url="https://notify.eskiz.uz/api/message/sms/send", headers={
-                'Authorization': f'{token_type.capitalize()} {token}'
-            }, data={
-                'mobile_phone': f"{pupil_number.country_code}{pupil_number.national_number}",
-                'message': sms_text,
-                'from': '4546',
-                'callback_url': ''
-            }, files=[])
+    #     try:
+    #         pupil_number = Pupil.objects.get(id=pupil_id).phone_number
+    #         response = requests.request(method="POST", url="https://notify.eskiz.uz/api/message/sms/send", headers={
+    #             'Authorization': f'{token_type.capitalize()} {token}'
+    #         }, data={
+    #             'mobile_phone': f"{pupil_number.country_code}{pupil_number.national_number}",
+    #             'message': sms_text,
+    #             'from': '4546',
+    #             'callback_url': ''
+    #         }, files=[])
 
-            print(response.json())
+    #         print(response.json())
 
-        except Exception as exp:
-            print(f"{exp.__class__.__name__}: {exp}")
-            pass
+    #     except Exception as exp:
+    #         print(f"{exp.__class__.__name__}: {exp}")
+    #         pass
 
-    return JsonResponse(data={'detail': 'Message was sent successfully'})
+    # return JsonResponse(data={'detail': 'Message was sent successfully'})
