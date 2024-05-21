@@ -20,7 +20,7 @@ def send_sms(request):
     return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
-class TeacherDetail(LoginRequiredMixin, IsSuperuserOrAdminMixin, DetailView):
+class TeacherDetail(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'app_users/teacher_detail.html'
     context_object_name = 'teacher'
