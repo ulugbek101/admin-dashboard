@@ -35,7 +35,7 @@ def send_sms_to_pupils(request):
             }, data={
                 'mobile_phone': f"{pupil_number.country_code}{pupil_number.national_number}",
                 'message': sms_text,
-                'from': 'AL_XORAZMIY',
+                'from': env.str('ALPHA_NAME'),
                 'callback_url': ''
             }, files=[])
 
