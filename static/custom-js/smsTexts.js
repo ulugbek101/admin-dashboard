@@ -2,10 +2,6 @@ const smsTextsRaw = document.getElementById("sms-texts");
 const smsTexts = JSON.parse(smsTextsRaw.textContent);
 const smsTextsContainer = document.getElementById("sms-texts-container");
 const smsBody = document.getElementById("sms-body");
-let sendSMSButton = document.querySelector('button.send-sms')
-let SMSModelWindowBackdrop = document.querySelector(
-    '.sendSMSModalWindowBackdrop'
-)
 
 smsTexts.forEach(smsText => {
     const smsTextCard = document.createElement("div");

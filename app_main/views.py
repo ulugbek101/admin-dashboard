@@ -64,6 +64,9 @@ class GroupDetail(LoginRequiredMixin, DetailView):
     template_name = "app_main/group_detail.html"
     pk_url_kwarg = "id"
     context_object_name = "group"
+    extra_context = {
+        "sms_texts": sms_texts,
+    }
 
     def dispatch(self, request, *args, **kwargs):
         if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().teacher:
