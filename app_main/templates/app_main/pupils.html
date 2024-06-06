@@ -1,6 +1,6 @@
-{% extends 'base.html' %} 
-{% load humanize static %} 
-{% block content %} 
+{% extends 'base.html' %}
+{% load humanize static %}
+{% block content %}
 {% include 'components/_navbar.html' %}
 <div
 	class="sendSMSModalWindow"
@@ -10,15 +10,18 @@
 		<label for="sms-body">SMS xabar:</label>
 		{% csrf_token %}
 		<textarea
+            readonly
 			autofocus
 			id="sms-body"
-			rows="10"
+			rows="5"
 			cols="30"
 			type="text"
 			class="font-size: 20px;"
 			required
 		></textarea>
 		<br />
+        <div id="sms-texts-container" style="max-height: 300px; overflow: auto; display: flex; flex-direction: column; gap: 5px;"></div>
+        <br />
 		{% if pupils_list %}
 		<button
 			class="button send-sms-button"
@@ -56,13 +59,14 @@
 	"
 ></div>
 <main>
+    {{ sms_texts|json_script:"sms-texts" }}
 	<script type="text/javascript">
 		const isSuperuser = '{{ request.user.is_superuser }}'
 		const entries = [
-			{% for pupil in pupils_list %} 
-			[	
+			{% for pupil in pupils_list %}
+			[
 				['id', '{{ pupil.id }}'],
-				['fullName', '{{ pupil.full_name }}'], 
+				['fullName', '{{ pupil.full_name }}'],
 				['payment', {% for payment in pupil.payments %} '{{ payment.amount|intcomma }}' {% empty %} '0' {% endfor %}],
 				['groupPayment', '{{ pupil.group.price|intcomma }}'],
 				['groupId', '{{ pupil.group.id }}'],
@@ -195,5 +199,5 @@
 		{% include 'components/_pagination.html' with page_range=page_range %}
 	{% endif %}
 </main>
-<!-- <script src="{% static 'custom-js/pupilFilter.js' %}"></script> -->
+<script src="{% static 'custom-js/smsTexts.js' %}"></script>
 {% include 'components/_right_block.html' %} {% endblock content %}
