@@ -5,8 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.forms.models import BaseModelForm
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -22,6 +21,7 @@ from . import utils
 from .decorators import is_superuser
 from .models import Group, Pupil, Payment, Subject, Expense
 from utils.mixins import IsSuperuserOrAdminMixin
+from utils.sms_texts import sms_texts
 
 
 class SubjectList(LoginRequiredMixin, ListView):
@@ -64,6 +64,9 @@ class GroupDetail(LoginRequiredMixin, DetailView):
     template_name = "app_main/group_detail.html"
     pk_url_kwarg = "id"
     context_object_name = "group"
+    extra_context = {
+        "sms_texts": sms_texts,
+    }
 
     def dispatch(self, request, *args, **kwargs):
         if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().teacher:
@@ -98,7 +101,8 @@ class PupilList(LoginRequiredMixin, ListView):
     extra_context = {
         "title": "Barcha o'quvchilar",
         "current_date": str(date.today())[:-3],
-        "pupils": True
+        "pupils": True,
+        "sms_texts": sms_texts,
     }
     paginator_class = Paginator
     paginate_by = 50

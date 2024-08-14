@@ -5,18 +5,19 @@ from django.http import JsonResponse
 from utils.mixins import IsSuperuserOrAdminMixin
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.csrf import csrf_exempt
 
 from . import utils
 
 User = get_user_model()
 
 
+@csrf_exempt
 def send_sms(request):
-    print(request)
-    if request.method == 'GET':    
+    if request.method == 'POST':
         # Send SMS to pupils
         return utils.send_sms_to_pupils(request)
-    
+
     return JsonResponse(data={'detail': 'Method is not allowed'})
 
 
@@ -31,6 +32,7 @@ def signout(request):
     logout(request)
     messages.info(request, "Tizmindan chiqdingiz")
     return redirect("signin")
+
 
 def signin(request):
     if request.method == "POST":

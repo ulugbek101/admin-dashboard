@@ -1,17 +1,16 @@
 {% load static %}
 <aside>
-	<div class="toggle">
-		<div class="logo">
-			<img
-				src="{% static 'custom-images/favicon.png' %}"
-				style="border-radius: 50%"
-			/>
-			<h2>SHAMS<span class="danger">XM</span></h2>
-		</div>
-		<div class="close" id="close-btn">
-			<span class="material-icons-sharp"> close </span>
-		</div>
-	</div>
+    <div class="toggle">
+        <div class="logo">
+            <img src="{% static 'favicon.jpeg' %}" style="border-radius: 50%;">
+            <h2>AL<span class="success">XORAZMIY</span></h2>
+        </div>
+        <div class="close" id="close-btn">
+            <span class="material-icons-sharp">
+                close
+            </span>
+        </div>
+    </div>
 
 	<div class="sidebar">
 		{% if request.user.is_superuser or request.user.is_admin %}
