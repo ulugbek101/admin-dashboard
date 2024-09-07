@@ -11,4 +11,12 @@ sms_texts = [
 
     "Assalomu alaykum o'quvchi ! "
     "Kurs uchun to'lovni 15 sanadan kechiktirmasligingizni so'raymiz. \"SHAMS\" o'quv markazi administratsiyasi",
+
+    "Farzandingiz \"SHAMS\" xususiy maktabiga yetib keldi",
+
+    "Farzandingiz \"SHAMS\" xususiy maktabiga kelmadi",
+
+    "Farzandingiz \"SHAMS\" xususiy maktabiga kechikib yetib keldi",
+
+    "Farzandingiz \"SHAMS\" xususiy maktabida darslarini yakunlab uyga yo'l oldi",
 ]
