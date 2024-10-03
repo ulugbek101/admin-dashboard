@@ -12,10 +12,11 @@ SECRET_KEY = 'django-insecure-8e)*boeb4v6_$h7v79qv)x+s9j3$ujm$js$92i-e2o388%6ld)
 CORS_ORIGIN_ALLOW_ALL = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['shams-school-chorrindi.uz', 'www.shams-school-chorrindi.uz', 'localhost', '127.0.0.1', '137.184.90.161']
+ALLOWED_HOSTS = ['shams-school-chorrindi.up.railway.app', 'www.shams-school-chorrindi.up.railway.app', 'shams-school-chorrindi.uz', 'www.shams-school-chorrindi.uz', 'localhost', '127.0.0.1', '137.184.90.161']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://shams-school-chorrindi.uz',
+    'https://shams-school-chorrindi.up.railway.app',
 ]
 
 INSTALLED_APPS = [
