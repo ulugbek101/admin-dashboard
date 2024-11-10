@@ -631,7 +631,7 @@ def add_payment(request, group_id, pupil_id):
             payment.group = pupil.group
             payment.save()
             messages.success(request, "To'lov amalga oshirildi")
-            return redirect("pupils")
+            return redirect("group_detail", id=pupil.group.id)
         else:
             messages.error(request, "Forma noto'g'ri to'ldirilgan")
             return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
