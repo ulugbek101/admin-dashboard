@@ -35,7 +35,7 @@ def get_payment_info(year: int, month: int) -> tuple:
     ).get("paid_amount")
 
     for group in groups.filter(created__year__lte=year):
-        total_payment += group.price * group.pupil_set.count()
+        total_payment += (group.price * group.pupil_set.filter(is_preferential=False).count()) + sum([pupil.group_payment for pupil in group.pupil_set.filter(is_preferential=True)])
 
     if not total_paid:
         total_paid = 0
@@ -68,7 +68,7 @@ def get_total_payment_info_by_groups(year: int, month: int) -> tuple:
     for group in groups:
         total_paid = Payment.objects.filter(month__year__exact=year, month__month__exact=month,
                                             group=group).aggregate(paid_amount=Sum("amount")).get("paid_amount")
-        total_payment = group.price * group.pupil_set.count()
+        total_payment = group.price * group.pupil_set.filter(is_preferential=False).count() + sum([pupil.group_payment for pupil in group.pupil_set.filter(is_preferential=True)])
         payments_dataset_by_groups.append({
             "name": group.name,
             "total_paid": total_paid or 0,

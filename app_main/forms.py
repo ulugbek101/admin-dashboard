@@ -59,7 +59,7 @@ class TeacherForm(forms.ModelForm):
 class PupilForm(forms.ModelForm):
     class Meta:
         model = Pupil
-        fields = ['first_name', 'last_name', 'phone_number']
+        fields = ['first_name', 'last_name', 'phone_number', 'is_preferential']
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'autofocus': 'true',
@@ -69,7 +69,7 @@ class PupilForm(forms.ModelForm):
                 'id': 'phone',
                 'placeholder': '(+998) 99-000-00-00',
                 'value': '+998'
-            })
+            }),
         }
 
 

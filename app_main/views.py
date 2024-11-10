@@ -330,13 +330,13 @@ def download_stats(request):
                     group_name = pupil_payment.group.name if pupil_payment.group else pupil_payment.group_name
                     pupil_name = pupil_payment.pupil.full_name if pupil_payment.pupil else pupil_payment.pupil_fullname
                     month_name = months[month]
-                    amount = f"{utils.format_number(pupil_payment.amount)} / {utils.format_number(group.price)}"
+                    amount = f"{utils.format_number(pupil_payment.amount)} / {utils.format_number(group.price if not pupil.is_preferential else pupil.group_payment)}"
                     note = pupil_payment.note if pupil_payment.note else "-"
                 else:
                     group_name = group.name
                     pupil_name = pupil.full_name
                     month_name = months[month]
-                    amount = f"{0} / {utils.format_number(group.price)}"
+                    amount = f"{0} / {utils.format_number(group.price if not pupil.is_preferential else pupil.group_payment)}"
                     note = "-"
 
                 data["№"].append(index)
@@ -346,7 +346,7 @@ def download_stats(request):
                 data["To'lov (so'm)"].append(amount)
                 data["Qo'shimcha ma'lumot"].append(note)
 
-            group_payment_total = group.price * group.pupil_set.count()
+            group_payment_total = group.price * group.pupil_set.filter(is_preferential=False).count() + sum([pupil.group_payment for pupil in group.pupil_set.filter(is_preferential=True)])
             group_payment_paid = Payment.objects.filter(month__year=year, month__month=month, group=group).aggregate(
                 total_paid=Sum("amount")).get("total_paid")
 
@@ -563,6 +563,10 @@ class PupilCreate(LoginRequiredMixin, CreateView):
         group = get_object_or_404(Group, id=self.request.GET.get("group_id"))
         pupil = form.save(commit=False)
         pupil.group = group
+        
+        if self.request.POST.get('group_payment'):
+            pupil.group_payment = self.request.POST.get('group_payment')
+            
         pupil.save()
         return redirect("group_detail", id=group.id)
 
@@ -610,14 +614,15 @@ def add_payment(request, group_id, pupil_id):
             form = forms.PaymentForm(request.POST)
 
         if form.is_valid():
-            if request.POST.get("amount") == "0":
+            if int(request.POST.get("amount")) < 1:
                 messages.error(
-                    request, "To'lov miqdori 0 bo'lishi mumkin emas")
+                    request, "To'lov miqdori 0 kam bo'lishi mumkin emas")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
-            if int(request.POST.get("amount")) > pupil.group.price:
+            max_amount = pupil.group_payment if not pupil.is_preferential else pupil.group_payment
+            if int(request.POST.get("amount")) > max_amount:
                 messages.error(
-                    request, "To'lov miqdori guruh to'lovi moiqdoridan ko'p")
+                    request, "To'lov miqdori maksimal to'lanishi mumkin bo'lgan summadan ko'p")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
             payment = form.save(commit=False)
@@ -636,7 +641,7 @@ def add_payment(request, group_id, pupil_id):
         "form": form,
         "title": f"{Pupil.objects.get(id=pupil_id).full_name} ga {Group.objects.get(id=group_id).name} guruhi uchun to'lov kiritish",
         "btn_text": "To'lovni kiritish",
-        "max_payment": pupil.group.price,
+        "max_payment": pupil.group.price if not pupil.is_preferential else pupil.group_payment,
     }
     return render(request, "form.html", context)
 
@@ -773,22 +778,64 @@ class PupilUpdate(LoginRequiredMixin, UpdateView):
         "btn_text": "O'quvchi ma'lumotlarini yangilash",
     }
 
+    def get_form(self):
+        form = self.form_class(instance=self.get_object())
+        form.fields.pop('is_preferential')
+        return form
+    
     def get_success_url(self):
         return reverse("group_detail", kwargs={"id": self.get_object().group.id})
 
     def dispatch(self, request, *args, **kwargs):
+        # Permission check
         if (not self.request.user.is_superuser and not self.request.user.is_admin) and self.request.user != self.get_object().group.teacher:
             raise Http404("Not found")
-        return super(PupilUpdate, self).dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        messages.success(self.request, "O'quvchi ma'lumotlari yangilandi")
-        return super(PupilUpdate, self).form_valid(form)
+        if request.method == "POST":
+            # Collect form data
+            is_preferential = request.POST.get("is_preferential")
+            first_name = request.POST.get("first_name")
+            last_name = request.POST.get("last_name")
+            phone_number = request.POST.get("phone_number")
 
-    def form_invalid(self, form):
-        messages.error(
-            self.request, "Forma noto'g'ri to'ldirilgan. Bundan ma'lumotlarga ega o'quvchi mavjud")
-        return super(PupilUpdate, self).form_invalid(form)
+            pupil = self.get_object()
+            
+            # Initialize form with POST data
+            form = self.form_class(data=request.POST)
+            
+            # Check if form data is valid
+            if form.is_valid():
+                # Process preferential status and payment if applicable
+                if is_preferential:
+                    group_payment = int(request.POST.get("group_payment"))
+                    last_payment = pupil.payment_set.all().order_by('-created').last()
+
+                    if last_payment and last_payment.amount > group_payment:
+                        last_payment.amount = group_payment
+                        last_payment.save()
+
+                    pupil.is_preferential = True
+                    pupil.group_payment = group_payment
+
+                # Update pupil details from form data
+                pupil.first_name = first_name
+                pupil.last_name = last_name
+                pupil.phone_number = phone_number if len(phone_number) == 13 else redirect("update_pupil", pk=self.get_object().id)
+                pupil.save()
+                messages.success(self.request, "O'quvchi ma'lumotlari yangilandi")
+                return redirect("group_detail", id=self.get_object().group.id)
+            else:
+                messages.error(self.request, "Forma noto'g'ri to'ldirilgan")
+                return redirect("update_pupil", pk=self.get_object().id)
+
+        return super().dispatch(request, *args, **kwargs)
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pupil_update_form"] = True
+        context["group_payment"] = self.get_object().group_payment if self.get_object().is_preferential else 0
+        return context
 
 
 class TeacherUpdate(LoginRequiredMixin, UpdateView):

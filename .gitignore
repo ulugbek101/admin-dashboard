@@ -1,4 +1,5 @@
 venv/
+.venv/
 stats.xlsx
 db.sqlite3
 .idea/

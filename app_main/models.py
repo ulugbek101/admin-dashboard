@@ -49,11 +49,10 @@ class Group(models.Model):
 
     @property
     def get_total_payment(self):
-        return self.pupil_set.count() * self.price
+        return (self.pupil_set.filter(is_preferential=False).count() * self.price) + sum([pupil.group_payment for pupil in self.pupil_set.filter(is_preferential=True)])
 
     def __str__(self) -> str:
         return self.name
-
 
 class Pupil(models.Model):
     first_name = models.CharField(max_length=200, verbose_name='Ism')
@@ -61,6 +60,9 @@ class Pupil(models.Model):
     phone_number = PhoneNumberField(null=True)
     group = models.ForeignKey(
         to=Group, on_delete=models.PROTECT, verbose_name='Guruh')
+    is_preferential = models.BooleanField(default=False, verbose_name='O\'quvchi uchun imtiyozli to\'lov')
+    group_payment = models.IntegerField(verbose_name='To\'lov miqdori', validators=[
+        validators.min_value_validator], default=0)
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,

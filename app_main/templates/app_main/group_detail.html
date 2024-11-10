@@ -116,13 +116,26 @@
                             {% for payment in pupil.payments %}
 
                                 <td
-                                        class="{% if payment.amount == pupil.group.price %} success {% endif %}"
+                                        class="{% if payment.amount == pupil.group.price or payment.amount == pupil.group_payment %} success {% endif %}"
                                 >
-                                    {{ payment.amount|intcomma }} / {{ pupil.group.price|intcomma }}
+                                    {{ payment.amount|intcomma }}
+                                    /
+                                    {% if pupil.is_preferential %}
+                                        {{ pupil.group_payment|intcomma }}
+                                    {% else %}
+                                        {{ pupil.group.price|intcomma }}
+                                    {% endif %}
                                 </td>
 
                             {% empty %}
-                                <td>0 / {{ pupil.group.price|intcomma }}</td>
+                                <td>0 
+                                    /
+                                    {% if pupil.is_preferential %}
+                                        {{ pupil.group_payment|intcomma }}
+                                    {% else %}
+                                        {{ pupil.group.price|intcomma }}
+                                    {% endif %}
+                                </td>
                             {% endfor %}
                             <td class="manage-pupil">
                                 <div class="row-change-controller">

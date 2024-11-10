@@ -462,6 +462,12 @@ input[type='password'] {
 	margin: 1rem 0;
 }
 
+input[type='checkbox'] {
+	height: 24px; 
+	width: 24px; 
+	accent-color: var(--color-success);
+}
+
 .form button {
 	border-radius: var(--border-radius-1);
 	border: 1px solid var(--color-dark);

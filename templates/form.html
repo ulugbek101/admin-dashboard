@@ -1,22 +1,45 @@
-{% extends 'base.html' %} {% load humanize static %} {% block content %} 
+{% extends 'base.html' %} 
+{% load humanize static %} 
+
+{% block content %} 
 {% include 'components/_navbar.html' %}
 <main>
 	<h1>{{ title }}</h1>
 	<div class="form-wrapper">
 		<form action="" method="post" class="form" enctype="multipart/form-data">
-			{% csrf_token %} {% for field in form %}
-			<div>
-				<label for="id_{{ field.name }}">{{ field.label }}:</label>
-				{{ field }} {% if max_payment and field.name == 'amount' %}
-				<p class="max-payment">
-					Maksimal to'lov: <span>{{ max_payment|intcomma }}</span> so'm
-				</p>
-				{% endif %}
-			</div>
+			{% csrf_token %} 
+			
+			{% for field in form %}
+				<div style="{% if field.name == 'is_preferential' %} display: flex; align-items: center; gap: 10px; margin-bottom: 10px; {% endif %}">
+					<label for="id_{{ field.name }}">{{ field.label }}:</label>
+					{{ field }} 
+					{% if max_payment and field.name == 'amount' %}
+						<p class="max-payment">
+							Maksimal to'lov: <span>{{ max_payment|intcomma }}</span> so'm
+						</p>
+					{% endif %}
+				</div>
 			{% endfor %}
+			{% if pupil_update_form %}
+				{% if not object.is_preferential %}
+					<div style=" display: flex; align-items: center; gap: 10px; margin-bottom: 10px; ">
+						<label for="id_is_preferential">O'quvchi uchun imtiyozli to'lov:</label>
+						<input type="checkbox" name="is_preferential" id="id_is_preferential"> 
+					</div>
+				{% else %}
+					<div style=" display: flex; align-items: center; gap: 10px; margin-bottom: 10px; ">
+						<label for="id_is_preferential">O'quvchi uchun imtiyozli to'lov:</label>
+						<input checked type="checkbox" name="is_preferential" id="id_is_preferential"> 
+						<div id="group-payment">
+							<input value="{{ group_payment }}" type="number" name="group_payment" required="" id="id_group_payment"> 
+						</div>
+					</div>
+				{% endif %}
+			{% endif %}
 			<br />
 			<button type="submit" class="button">{{ btn_text }}</button>
 		</form>
 	</div>
 </main>
+<script src="{% static 'custom-js/createPupil.js' %}"></script>
 {% include 'components/_right_block.html' %} {% endblock content %}
