@@ -619,7 +619,7 @@ def add_payment(request, group_id, pupil_id):
                     request, "To'lov miqdori 0 kam bo'lishi mumkin emas")
                 return redirect("add_payment", group_id=group_id, pupil_id=pupil_id)
 
-            max_amount = pupil.group_payment if not pupil.is_preferential else pupil.group_payment
+            max_amount = pupil.group.price if not pupil.is_preferential else pupil.group_payment
             if int(request.POST.get("amount")) > max_amount:
                 messages.error(
                     request, "To'lov miqdori maksimal to'lanishi mumkin bo'lgan summadan ko'p")
@@ -808,20 +808,26 @@ class PupilUpdate(LoginRequiredMixin, UpdateView):
                 # Process preferential status and payment if applicable
                 if is_preferential:
                     group_payment = int(request.POST.get("group_payment"))
-                    last_payment = pupil.payment_set.all().order_by('-created').last()
 
-                    if last_payment and last_payment.amount > group_payment:
-                        last_payment.amount = group_payment
-                        last_payment.save()
+                    payment_for_this_month = pupil.payment_set.filter(created__year=date.today().year, created__month=date.today().month)
+                    payment = payment_for_this_month.last() if payment_for_this_month else None
+                    print(payment, group_payment)
+                    if payment and payment.amount > group_payment:
+                        payment.amount = group_payment
+                        payment.save()
 
                     pupil.is_preferential = True
                     pupil.group_payment = group_payment
+                else:
+                    pupil.is_preferential = False
+                    pupil.group_payment = 0
 
                 # Update pupil details from form data
                 pupil.first_name = first_name
                 pupil.last_name = last_name
-                pupil.phone_number = phone_number if len(phone_number) == 13 else redirect("update_pupil", pk=self.get_object().id)
+                pupil.phone_number = phone_number
                 pupil.save()
+
                 messages.success(self.request, "O'quvchi ma'lumotlari yangilandi")
                 return redirect("group_detail", id=self.get_object().group.id)
             else:
@@ -907,6 +913,7 @@ def update_group(request, pk):
 
     if request.method == "POST":
         name = request.POST.get("name")
+        price = request.POST.get("price")
 
         # Get those fields only if user is admin
         if request.user.is_superuser:
@@ -926,6 +933,19 @@ def update_group(request, pk):
                 group.teacher = teacher
                 group.subject = subject
 
+                if int(price) < group.price and int(price) > 0:
+                    group.price = int(price)
+                    for pupil in group.pupil_set.filter(is_preferential=False):
+                        payment_for_this_month = pupil.payment_set.filter(created__year=date.today().year, created__month=date.today().month)
+                        payment = payment_for_this_month.last() if payment_for_this_month else None
+
+                        if payment and price and payment.amount > int(price):
+                            payment.amount = price
+                            payment.save()
+                else:
+                    messages.error(request, "Forma noto'g'ri to'ldirilgan")
+                    return redirect("update_group", pk=group.id)
+
             group.save()
             messages.success(request, "Guruh ma'lumotlari yangilandi")
             return redirect("groups")
@@ -934,7 +954,6 @@ def update_group(request, pk):
             return redirect("update_group", pk=pk)
 
     form = forms.GroupForm(instance=group)
-    form.fields.pop("price")
 
     if not request.user.is_superuser:
         form.fields.pop("subject")
