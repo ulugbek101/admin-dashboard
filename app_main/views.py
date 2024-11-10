@@ -942,9 +942,6 @@ def update_group(request, pk):
                         if payment and price and payment.amount > int(price):
                             payment.amount = price
                             payment.save()
-                else:
-                    messages.error(request, "Forma noto'g'ri to'ldirilgan")
-                    return redirect("update_group", pk=group.id)
 
             group.save()
             messages.success(request, "Guruh ma'lumotlari yangilandi")
