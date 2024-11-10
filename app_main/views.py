@@ -933,8 +933,8 @@ def update_group(request, pk):
                 group.teacher = teacher
                 group.subject = subject
 
+                group.price = int(price)
                 if int(price) < group.price and int(price) > 0:
-                    group.price = int(price)
                     for pupil in group.pupil_set.filter(is_preferential=False):
                         payment_for_this_month = pupil.payment_set.filter(created__year=date.today().year, created__month=date.today().month)
                         payment = payment_for_this_month.last() if payment_for_this_month else None
