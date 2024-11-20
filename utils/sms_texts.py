@@ -1,6 +1,16 @@
 sms_texts = [
-    "Bag'dodliklar diqqatiga !!!\n\n"
+    "Farzandingiz uchun belgilangan badal puli to'lovi qabul qilindi.\n\n"
+    "\"SHAMS\" xususiy maktabi ma'muriyati.",
 
+    "Assalomu alaykum xurmatli ota-ona !\n"
+    "Farzandingiz uchun maktab badal to'lovini  kechiktirmasligingizni so'raymiz.\n\n"
+    "\"SHAMS\" xususiy maktabi ma'muriyati",
+
+    "Assalomu alaykum xurmatli ota-ona !\n"
+    "Farzandingiz uchun maktab badal to'lovini oyning 15-sanasidan kechiktirmasligingizni so'raymiz.\n\n"
+    "\"SHAMS\" xususiy maktabi ma'muriyati",
+
+    "Bag'dodliklar diqqatiga !!!\n\n"
     "\"SHAMS\" xususiy maktabida 5-sinfdan 10-sinfgacha qabul davom etmoqda. \n\n"
 
     "6-sinfdan 10-sinfgacha o'quvchilar cheklangan bo'sh o'quvchi o'rinlari uchun imtihon asosida qabul qilinadi. \n"
