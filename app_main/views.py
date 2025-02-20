@@ -316,13 +316,15 @@ def download_stats(request):
             "Qo'shimcha ma'lumot": [],
         }
 
-        for group in teacher.group_set.filter(Q(created__month__lte=month, created__year__lte=year) | Q(created__month__lte=month)):
+        # for group in teacher.group_set.filter(Q(created__month__lte=month, created__year__lte=year) | Q(created__month__lte=month)):
+        for group in teacher.group_set.all():
 
             # Skip group if there is no pupil
             if group.pupil_set.count() == 0:
                 continue
-
-            for index, pupil in enumerate(group.pupil_set.filter(created__year=year, created__month__lte=month), 1):
+            
+            # for index, pupil in enumerate(group.pupil_set.filter(created__year__lte=year, created__month__lte=month), 1)
+            for index, pupil in enumerate(group.pupil_set.all()):
                 pupil_payment = pupil.payment_set.filter(
                     month__year=year, month__month=month).first()
 
